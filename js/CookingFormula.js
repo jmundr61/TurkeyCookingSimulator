@@ -1,6 +1,11 @@
+//Useful Websites
+//http://math.stackexchange.com/questions/406082/numerical-method-to-solve-a-trigonometric-cotangent-function-transient-heat
+
 //Global Variables for Turkey
 density = 996; // kg/m3 Assuming Density of Water 1000 kg/m3
 cp = 2810 // J/kg K for Turkey
+heatConvection = 12; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
+thermalConduct = 0.412 // W/m K
 
 function celsiusToFarenheit(celsius) {
 farenheit = (celsius*(9/5)) + 32;
@@ -51,13 +56,10 @@ console.log("Simple Radius  " + simpleRadius + " Meters")
 console.log("Complex Radius  " + complexRadius + " Meters")
 }
 
-function LumpedCapacitanceMethod (radiusTotal,radiusInner,tempInitial,tempInfini, t) {
+function lumpedCapacitanceMethod (radiusTotal,radiusInner,tempInitial,tempInfini, t) {
 name : "Skin"
 volume = (4/3)*Math.PI*Math.pow(radiusTotal,3) - (4/3)*Math.PI*Math.pow(radiusInner,3); //3D Sphere
 surfaceArea = 4*Math.PI*Math.pow(radiusTotal,2); //3D Sphere
-heatConvection = 12; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 0.412 // W/m K
-cp = 2810 // J/kg K
 
 mass = density * volume;
 
@@ -77,9 +79,14 @@ Qdot = -1*heatConvection*surfaceArea*(tempAtTime-tempInfini) //Heat Transfer Rat
 console.log("The Heat Flux is " + Qdot )
 }
 
+
+
+function advancedLumpedCapacitanceMethod() {
+
+
+}
+
 function transientSphereOneTerm (rPosition,rTotal,tempInitial,tempInfini,t) {
-heatConvection = 12; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 0.412 // W/m K
 alpha = thermalConduct/(density*cp)
 console.log("Alpha is " + alpha)
 
@@ -129,7 +136,7 @@ console.log("The Temperature At radius " + rPosition +" m and time " + t + "  se
 
 
 function findAllRoots (Biot) {
-limit = 11; //Terms to Compute too
+limit = 150; //Terms to Compute too
 storage = [];
 	for (var k=0; k<=limit; k++) {
 		minK = (k+0.5)*Math.PI;
@@ -139,14 +146,14 @@ storage = [];
 		storage.push(answer);
 		}
 	}
-console.log(storage)
+//console.log(storage)
 return(storage)
 }
 
 
 function bisectionMethod(min,max,Biot) {
-errorTolerance = (1/Math.pow(10,8))
-result = 100 // some large value to ensure the calculation goes through.
+errorTolerance = (1/Math.pow(10,9))
+result = Infinity // some large value to ensure the calculation goes through.
 negativeTest =lambdaFormula(min, Biot)*lambdaFormula(max, Biot)
 if (negativeTest <=0 ) {
 	while (Math.abs(result) > errorTolerance) {	
@@ -178,12 +185,9 @@ return(result)
 
 
 function transientSphereSeries (rPosition,rTotal,tempInitial,tempInfini,t) {
-heatConvection = 6000; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 20 // W/m K
-//alpha = thermalConduct/(density*cp)
-alpha = 6.66 * (1/Math.pow(10,6))
-console.log("Alpha is " + alpha)
 sum=0;
+alpha = thermalConduct/(density*cp)
+console.log("Alpha is " + alpha)
 
 Fourier = (alpha*t)/Math.pow(rTotal,2)
 console.log("Fourier is " +  Fourier)
@@ -200,5 +204,7 @@ lambdaTerms = findAllRoots(biotNum)
 		sum = frontCoefficientPortion*exponentialPortion*sinPortion + sum
 }
 tempAtTimeAndRadius=(sum*(tempInitial-tempInfini))+tempInfini
+return(tempAtTimeAndRadius)
 console.log("The Temperature at radius " + rPosition + " m and time " + t + "  seconds is " + tempAtTimeAndRadius + " C or " + celsiusToFarenheit(tempAtTimeAndRadius) + " F");
 }
+
