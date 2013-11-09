@@ -1,9 +1,12 @@
 function GameState(){
-
 	var that = this;
+
+	this.pubsub = {};
+	BindPubSub( this.pubsub );
+
 	this.oldTime = new Date().getTime();
 
-	this.mainUI = new GameUI( "demoCanvas" );
+	this.mainUI = new GameUI( "demoCanvas", this );
     createjs.Ticker.addEventListener( "tick", gameLoop );
 
 	function gameLoop(){
@@ -16,11 +19,11 @@ function GameState(){
 	}
 
 	return {
-
+		"main": this
 	}
 }
 
-function GameUI( canvasElem ){
+function GameUI( canvasElem, gameState ){
 	var that = this;
 
 	this.stage = new createjs.Stage( canvasElem );
@@ -32,6 +35,7 @@ function GameUI( canvasElem ){
 		"LoadingTitleScreen" : LoadingTitleScreen,
 		"InfoHelpScreen" 	 : InfoHelpScreen,
 		"MainScreen" 	 	 : MainScreen,
+		"DifficultyScreen" 	 : DifficultyScreen,
 		"KitchenScreen"		 : KitchenScreen,
 		"MarketScreen"		 : MarketScreen,
 		"TurkeyOutScreen"	 : TurkeyOutScreen,
@@ -40,15 +44,15 @@ function GameUI( canvasElem ){
 		"CreditsScreen"		 : CreditsScreen
 	}
 
-	this.activeScreenObj = new MainScreen( this.stage );
+	this.activeScreenObj = new MainScreen( this.stage, gameState );
 
 	this.switchScreen = function( screenName ){
 		console.log("Switch screen called with" + screenName);
 		that.stage.removeAllChildren();
-		that.activeScreenObj = new that.screens[ screenName ]( that.stage );
+		that.activeScreenObj = new that.screens[ screenName ]( that.stage, gameState );
 	}
 
-	pubsub.subscribe( "SwitchScreen", this.switchScreen );
+	gameState.pubsub.subscribe( "SwitchScreen", this.switchScreen );
 
 	return {
 		draw : function(){
@@ -59,7 +63,7 @@ function GameUI( canvasElem ){
 }
 
 /* Screens, inheritance would be nice */
-function LoadingTitleScreen( stage ){
+function LoadingTitleScreen( stage, gameState ){
 	var that = this;
     this.picture = new createjs.Bitmap( "res/Loading-Title.png" );
     this.ovenLight = new createjs.Shape();
@@ -83,7 +87,7 @@ function LoadingTitleScreen( stage ){
 	}
 }
 
-function InfoHelpScreen( stage ){
+function InfoHelpScreen( stage, gameState ){
 		var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -103,7 +107,7 @@ function InfoHelpScreen( stage ){
 
 }
 
-function MainScreen( stage ){
+function MainScreen( stage, gameState ){
 	var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -113,17 +117,17 @@ function MainScreen( stage ){
     var infoButton = new createjs.Shape();
  	infoButton.graphics.beginFill("#ffffff").drawRect(13, 445, 222, 65);
  	infoButton.alpha = 0.1;
- 	infoButton.addEventListener( "click", function(){ pubsub.publish( "SwitchScreen", "InfoHelpScreen" ) } );
+ 	infoButton.addEventListener( "click", function(){ gameState.pubsub.publish( "SwitchScreen", "InfoHelpScreen" ) } );
 
  	var creditsButton = new createjs.Shape();
  	creditsButton.graphics.beginFill("#ffffff").drawRect(13, 515, 222, 65);
  	creditsButton.alpha = 0.1;
- 	creditsButton.addEventListener( "click",  function(){ pubsub.publish( "SwitchScreen", "CreditsScreen" ) } );
+ 	creditsButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "CreditsScreen" ) } );
 
 	var startButton = new createjs.Shape();
  	startButton.graphics.beginFill("#ffffff").drawRect(564, 520, 222, 65);
  	startButton.alpha = 0.1;
- 	startButton.addEventListener( "click",  function(){ pubsub.publish( "SwitchScreen", "KitchenScreen" ) } );
+ 	startButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "DifficultyScreen" ) } );
 
  	stage.addChild( infoButton );
  	stage.addChild( creditsButton );
@@ -141,10 +145,40 @@ function MainScreen( stage ){
 	}
 
 //start button
-//difficulty selection
+
 }
 
-function KitchenScreen( stage ){
+function DifficultyScreen( stage, gameState ){
+	var that = this;
+
+	this.background = new createjs.Bitmap( "res/Difficulty-Selection.png" );
+    stage.addChild( this.background );
+
+    var easyButton = new createjs.Shape();
+ 	easyButton.graphics.beginFill("#ffffff").drawRect(170, 40, 450, 105);
+ 	easyButton.alpha = 0.1;
+ 	easyButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "KitchenScreen" ) } );
+
+    var hardButton = new createjs.Shape();
+ 	hardButton.graphics.beginFill("#ffffff").drawRect(170, 150, 450, 105);
+ 	hardButton.alpha = 0.1;
+ 	hardButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "KitchenScreen" ) } );
+
+ 	stage.addChild( easyButton );
+ 	stage.addChild( hardButton );
+
+	return {
+		blit : function(){
+
+			// Draw all the uiElements
+	        for( var index in that.uiElems ){
+				that.uiElems[ index ].tick();
+			}
+		}
+	}
+}
+
+function KitchenScreen( stage, gameState ){
 	var that = this;
 	this.uiElems = [];
 
@@ -162,7 +196,7 @@ function KitchenScreen( stage ){
 	}
 }
 
-function MarketScreen( stage ){
+function MarketScreen( stage, gameState ){
 	var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -182,7 +216,7 @@ function MarketScreen( stage ){
 
 }
 
-function TurkeyOutScreen( stage ){
+function TurkeyOutScreen( stage, gameState ){
 		var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -202,7 +236,7 @@ function TurkeyOutScreen( stage ){
 
 }
 
-function EndingScreen( stage ){
+function EndingScreen( stage, gameState ){
 		var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -222,7 +256,7 @@ function EndingScreen( stage ){
 
 }
 
-function ScoreScreen( stage ){
+function ScoreScreen( stage, gameState ){
 		var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -242,7 +276,7 @@ function ScoreScreen( stage ){
 	// Retry Button
 }
 
-function CreditsScreen( stage ){
+function CreditsScreen( stage, gameState ){
 		var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
@@ -319,7 +353,7 @@ function DialogUI( stage ){
 	var DIALOG_SHOWING = 1;
 	var DIALOG_PAUSING = 2;
 
-	this.dialogSpeed = 25;
+	this.dialogSpeed = 15;
 	this.dialogState = DIALOG_PAUSING;
 
 	this.dialogMotionQueue = [DIALOG_RECEDING,DIALOG_SHOWING,DIALOG_RECEDING];
@@ -330,29 +364,39 @@ function DialogUI( stage ){
 	this.dialogBox = new createjs.Shape();
 	this.dialogBox.graphics.beginFill( "#00ffff" ).drawRect( 0, 450, 800, 150 );
 
+	this.textContent = new createjs.Text( "Hello World This is some conversation text", "20px Arial", "#ff7700" );
+	this.textContent.x = 50;
+	this.textContent.y = 500;
+	this.textContent.textBaseline = "alphabetic";
+
 	stage.addChild( this.dialogBox );
+	stage.addChild( this.textContent );
 
     return {
     	tick: function(){
 
     		if( that.dialogState == DIALOG_RECEDING ){
 	    		that.dialogBox.y+=that.dialogSpeed;
+	    		that.textContent.y +=that.dialogSpeed;
 	    		console.log( "Receding" + that.dialogBox.y );
     		}
     		if( that.dialogState == DIALOG_SHOWING ){
     			that.dialogBox.y-=that.dialogSpeed;
+    			that.textContent.y -=that.dialogSpeed;
     			console.log( "Advancing" + that.dialogBox.y );
     		}
 
     		// toggle states
     		if( that.dialogBox.y > 150 && that.dialogState == DIALOG_RECEDING ){
     			that.dialogBox.y = 150;
+    			that.textContent.y = 650;
     			that.dialogState = DIALOG_PAUSING;
     			console.log( "Pausing on recede" + that.dialogBox.y );
 
     		}
     		if( that.dialogBox.y < 0 && that.dialogState == DIALOG_SHOWING ){
     			that.dialogBox.y = 0;
+    			that.textContent.y = 500;
     			that.dialogState = DIALOG_PAUSING;
     			console.log( "Pausing on showing" + that.dialogBox.y );
     		}
@@ -395,49 +439,49 @@ function Dialogue( character, text ){
 	// Render one character at a time
 }
 
+function BindPubSub( obj ){
+	(function(q) {
+	    var topics = {}, subUid = -1;
+	    q.subscribe = function(topic, func) {
+	        if (!topics[topic]) {
+	            topics[topic] = [];
+	        }
+	        var token = (++subUid).toString();
+	        topics[topic].push({
+	            token: token,
+	            func: func
+	        });
+	        return token;
+	    };
 
-var pubsub = {};
-(function(q) {
-    var topics = {}, subUid = -1;
-    q.subscribe = function(topic, func) {
-        if (!topics[topic]) {
-            topics[topic] = [];
-        }
-        var token = (++subUid).toString();
-        topics[topic].push({
-            token: token,
-            func: func
-        });
-        return token;
-    };
- 
-    q.publish = function(topic, args) {
-        if (!topics[topic]) {
-            return false;
-        }
-        setTimeout(function() {
-            var subscribers = topics[topic],
-                len = subscribers ? subscribers.length : 0;
- 
-            while (len--) {
-                subscribers[len].func(args);
-            }
-        }, 0);
-        return true;
- 
-    };
- 
-    q.unsubscribe = function(token) {
-        for (var m in topics) {
-            if (topics[m]) {
-                for (var i = 0, j = topics[m].length; i < j; i++) {
-                    if (topics[m][i].token === token) {
-                        topics[m].splice(i, 1);
-                        return token;
-                    }
-                }
-            }
-        }
-        return false;
-    };
-}(pubsub));
+	    q.publish = function(topic, args) {
+	        if (!topics[topic]) {
+	            return false;
+	        }
+	        setTimeout(function() {
+	            var subscribers = topics[topic],
+	                len = subscribers ? subscribers.length : 0;
+
+	            while (len--) {
+	                subscribers[len].func(args);
+	            }
+	        }, 0);
+	        return true;
+
+	    };
+
+	    q.unsubscribe = function(token) {
+	        for (var m in topics) {
+	            if (topics[m]) {
+	                for (var i = 0, j = topics[m].length; i < j; i++) {
+	                    if (topics[m][i].token === token) {
+	                        topics[m].splice(i, 1);
+	                        return token;
+	                    }
+	                }
+	            }
+	        }
+	        return false;
+	    };
+	}(obj));
+}
