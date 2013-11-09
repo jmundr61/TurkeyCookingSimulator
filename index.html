@@ -1,0 +1,37 @@
+<html>
+<head>
+  <title>Turkey Banking Simulator</title>
+</head>
+  <body>
+    <br/><br/><br/><br/>
+    <center>
+    <div class="canvasContainer">
+      <canvas onmousemove="showXY(event)" id="demoCanvas" width="800" height="600" style="border:1px solid #000000"></canvas>
+    </div>
+  </center>
+    <script>
+
+    </script>
+  </body>
+  <script src="http://code.createjs.com/createjs-2013.09.25.min.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    new GameState();
+
+    function showXY(e)
+    {
+    var mouseX, mouseY;
+
+    if(e.offsetX) {
+        mouseX = e.offsetX;
+        mouseY = e.offsetY;
+    }
+    else if(e.layerX) {
+        mouseX = e.layerX;
+        mouseY = e.layerY;
+    }
+    console.log("x: " + mouseX + "y :" + mouseY);
+    /* do something with mouseX/mouseY */
+    }
+  </script>
+</html>
