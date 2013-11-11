@@ -1,5 +1,6 @@
 //Useful Websites
-//http://math.stackexchange.com/questions/406082/numerical-method-to-solve-a-trigonometric-cotangent-function-transient-heat
+// http://math.stackexchange.com/questions/406082/numerical-method-to-solve-a-trigonometric-cotangent-function-transient-heat
+// http://web.cecs.pdx.edu/~gerry/epub/pdf/transientConductionSphere.pdf
 
 //Global Variables for Turkey
 density = 996; // kg/m3 Assuming Density of Water 1000 kg/m3
@@ -54,37 +55,66 @@ complexRadius = Math.pow(rectangleVolume/((4/3)*Math.PI), 1/3); //Volume of 3D B
 
 console.log("Simple Radius  " + simpleRadius + " Meters")
 console.log("Complex Radius  " + complexRadius + " Meters")
+return(complexRadius)
 }
 
-function lumpedCapacitanceMethod (radiusTotal,radiusInner,tempInitial,tempInfini, t) {
-name : "Skin"
-volume = (4/3)*Math.PI*Math.pow(radiusTotal,3) - (4/3)*Math.PI*Math.pow(radiusInner,3); //3D Sphere
-surfaceArea = 4*Math.PI*Math.pow(radiusTotal,2); //3D Sphere
+function Turkey(weight,time) {
 
+totalRadius = calculateRadius(weight)
+ovenTemp = 163;
+airConvection = 12; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
+	function Layer(name) {
+	this.name = name
+	this.temperature = 20;
+	this.waterContent =100;
+	this.Qdot = 0;
+	}
+	
+skin= new Layer("Skin")
+body = new Layer("Body")
+core = new Layer("Core")
+
+skin.temperature = lumpedCapacitance(totalRadius,totalRadius*0.85,skin.temperature,ovenTemp,airConvection,time)[0]
+body.temperature = lumpedCapacitance(totalRadius*0.85,totalRadius*0.30,body.temperature,skin.temperature,airConvection*1000,time)[0]
+core.temperature = lumpedCapacitance(totalRadius*0.30,0,core.temperature,body.temperature,airConvection*1000,time)[0]
+
+} 
+
+function lumpedCapacitance (outerRadius,radiusInner,tempInitial,tempInfini,heatConvectionTerm,t) {
+volume = (4/3)*Math.PI*Math.pow(outerRadius,3) - (4/3)*Math.PI*Math.pow(radiusInner,3); //3D Sphere
+surfaceArea = 4*Math.PI*Math.pow(outerRadius,2); //3D Sphere
 mass = density * volume;
-
 charLength = volume/surfaceArea ;
-
-biotNum = heatConvection * charLength/thermalConduct
-
+biotNum = heatConvectionTerm * charLength/thermalConduct
 console.log("The Biot Value is " + biotNum)
-
-b=(heatConvection)/(density*charLength*cp)
+b=(heatConvectionTerm)/(density*charLength*cp)
 console.log("The time constant b is "+ b)
-
 tempAtTime = Math.exp(-b*t)*(tempInitial-tempInfini)+tempInfini;
 console.log("The Temperature at time " + t +" seconds is " + tempAtTime)
+qDot = -1*heatConvectionTerm*surfaceArea*(tempAtTime-tempInfini) //Heat Transfer Rate Useful for water Loss
+console.log("The Heat Flux is " + qDot )
+return([tempAtTime,qDot])
+}
 
+
+
+
+function lumpedCapacitanceMethod (outerRadius,radiusInner,tempInitial,tempInfini, t) {
+volume = (4/3)*Math.PI*Math.pow(outerRadius,3) - (4/3)*Math.PI*Math.pow(radiusInner,3); //3D Sphere
+surfaceArea = 4*Math.PI*Math.pow(outerRadius,2); //3D Sphere
+mass = density * volume;
+charLength = volume/surfaceArea ;
+biotNum = heatConvection * charLength/thermalConduct
+console.log("The Biot Value is " + biotNum)
+b=(heatConvection)/(density*charLength*cp)
+console.log("The time constant b is "+ b)
+tempAtTime = Math.exp(-b*t)*(tempInitial-tempInfini)+tempInfini;
+console.log("The Temperature at time " + t +" seconds is " + tempAtTime)
 Qdot = -1*heatConvection*surfaceArea*(tempAtTime-tempInfini) //Heat Transfer Rate Useful for water Loss
 console.log("The Heat Flux is " + Qdot )
+return(tempAtTime)
 }
 
-
-
-function advancedLumpedCapacitanceMethod() {
-
-
-}
 
 function transientSphereOneTerm (rPosition,rTotal,tempInitial,tempInfini,t) {
 alpha = thermalConduct/(density*cp)
@@ -107,42 +137,14 @@ tempAtTimeAndRadius=(sinPortion*expotentialPortion*(tempInitial-tempInfini))+tem
 console.log("The Temperature at radius " + rPosition + " m and time " + t + "  seconds is " + tempAtTimeAndRadius + " C or " + celsiusToFarenheit(tempAtTimeAndRadius) + " F");
 }
 
-
-function transientSphereEgg (rPosition,tempInitial,tempInfini,t) {
-rTotal = 0.025
-heatConvection = 1200; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 0.627 // W/m K
-alpha = 0.000000151
-console.log("Alpha is " + alpha)
-
-Fourier = alpha * t/Math.pow(rTotal,2)
-console.log("Fourier is " +  Fourier)
-biotNum = heatConvection * rTotal/thermalConduct
-
-console.log("The Biot Value is " + biotNum)
-temp=biotSphereCoefficients(biotNum)
-lambdaOne=temp[0];
-alphaOne=temp[1];
-console.log("lambda1 is " + lambdaOne)
-console.log("A1 is " + alphaOne)
-
-//This is only valid for Fourier greater than 0.2
-sinPortion= Math.sin(lambdaOne*rPosition/rTotal)/(lambdaOne*rPosition/rTotal);
-expotentialPortion = alphaOne*(1/Math.exp(Math.pow(lambdaOne,2)*Fourier))
-tempAtTimeAndRadius=(sinPortion*expotentialPortion*(tempInitial-tempInfini))+tempInfini
-console.log("The Temperature At radius " + rPosition +" m and time " + t + "  seconds is " + tempAtTimeAndRadius + " C or " + celsiusToFarenheit(tempAtTimeAndRadius) + " F" );
-}
-
-
-
 function findAllRoots (Biot) {
-limit = 150; //Terms to Compute too
+limit = 50; //Terms to Compute too
 storage = [];
 	for (var k=0; k<=limit; k++) {
 		minK = (k+0.5)*Math.PI;
 		maxK = (k+1)*Math.PI;
 		answer = bisectionMethod(minK,maxK,Biot);
-		if (answer !=null) {
+		if (answer !=undefined) {
 		storage.push(answer);
 		}
 	}
@@ -150,32 +152,53 @@ storage = [];
 return(storage)
 }
 
-
+function findAllRootsAlternative (min,max,splitsNum,Biot) {
+var step = ( max - min ) / ( splitsNum - 1 );
+var storage = [];
+	for (var i = step; i < max; i=i+step ) {
+		negativeTest = lambdaFormula(i-step, Biot)*lambdaFormula(i, Biot);
+		if (negativeTest <= 0) {
+			answer = bisectionMethod(i-step,i,Biot);
+			if (answer !=undefined) {
+				storage.push(answer);
+			}
+		}
+		else {
+			//console.log("No Bracketed Root " + negativeTest)
+		}
+	}
+return(storage)	
+}
+	  
+function linspace(min, max, length) {
+var arr = new Array(length);
+var step = ( max - min ) / ( length - 1 );
+for (var i = 0; i < length; ++i )
+        arr[i] = min + ( i * step )
+      return arr
+}
+	
 function bisectionMethod(min,max,Biot) {
 errorTolerance = (1/Math.pow(10,9))
 result = Infinity // some large value to ensure the calculation goes through.
 negativeTest =lambdaFormula(min, Biot)*lambdaFormula(max, Biot)
-if (negativeTest <=0 ) {
-	while (Math.abs(result) > errorTolerance) {	
-		lambdaN = (min+max)/2
-		result=lambdaFormula(lambdaN, Biot)
-	
-		if (Math.abs(result) <= errorTolerance) {
-			return (lambdaN); //At Root
-		}
-		else if ((lambdaFormula(min, Biot)*lambdaFormula(lambdaN, Biot))>=0) {
-		min=lambdaN;
-		}
-		else if ((lambdaFormula(max, Biot)*lambdaFormula(lambdaN, Biot))>=0) {
-		max=lambdaN;
+	if (negativeTest <=0 ) {
+		var antiFreeze=0;
+		while (Math.abs(result) > errorTolerance && antiFreeze<=10000) {	
+			lambdaN = (min+max)/2
+			result=lambdaFormula(lambdaN, Biot)
+			if (Math.abs(result) <= errorTolerance && result<=errorTolerance) {
+				return (lambdaN); //At Root
+			}
+			else if ((lambdaFormula(min, Biot)*lambdaFormula(lambdaN, Biot))>=0) {
+				min=lambdaN;
+			}
+			else if ((lambdaFormula(max, Biot)*lambdaFormula(lambdaN, Biot))>=0) {
+				max=lambdaN;
+			}
+			antiFreeze++
 		}
 	}
-	return (lambdaN);
-}
-else
-{
-//console.log("No Bracketed Root " + negativeTest)
-}
 }
 
 function lambdaFormula(lambdaN, Biot) { 
