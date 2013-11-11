@@ -5,7 +5,7 @@
 //Global Variables for Turkey
 density = 996; // kg/m3 Assuming Density of Water 1000 kg/m3
 cp = 2810 // J/kg K for Turkey
-heatConvection = 12; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
+heatConvection = 5; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
 thermalConduct = 0.412 // W/m K
 
 function celsiusToFarenheit(celsius) {
@@ -179,12 +179,12 @@ for (var i = 0; i < length; ++i )
 }
 	
 function bisectionMethod(min,max,Biot) {
-errorTolerance = (1/Math.pow(10,9))
+errorTolerance = (1/Math.pow(10,10))
 result = Infinity // some large value to ensure the calculation goes through.
 negativeTest =lambdaFormula(min, Biot)*lambdaFormula(max, Biot)
 	if (negativeTest <=0 ) {
 		var antiFreeze=0;
-		while (Math.abs(result) > errorTolerance && antiFreeze<=10000) {	
+		while (Math.abs(result) > errorTolerance && antiFreeze<=100000) {	
 			lambdaN = (min+max)/2
 			result=lambdaFormula(lambdaN, Biot)
 			if (Math.abs(result) <= errorTolerance && result<=errorTolerance) {
@@ -217,7 +217,10 @@ console.log("Fourier is " +  Fourier)
 biotNum = heatConvection * rTotal/thermalConduct
 console.log("The Biot Value is " + biotNum)
 
-lambdaTerms = findAllRoots(biotNum)
+min = 0;
+max = 250;
+
+lambdaTerms=findAllRootsAlternative (min,max,max*1000,biotNum)
 	for (var i = 0; i<lambdaTerms.length; i++) {
 		lambdaN = lambdaTerms[i]
 
@@ -227,7 +230,7 @@ lambdaTerms = findAllRoots(biotNum)
 		sum = frontCoefficientPortion*exponentialPortion*sinPortion + sum
 }
 tempAtTimeAndRadius=(sum*(tempInitial-tempInfini))+tempInfini
-return(tempAtTimeAndRadius)
 console.log("The Temperature at radius " + rPosition + " m and time " + t + "  seconds is " + tempAtTimeAndRadius + " C or " + celsiusToFarenheit(tempAtTimeAndRadius) + " F");
+return(tempAtTimeAndRadius)
 }
 
