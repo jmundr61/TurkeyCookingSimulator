@@ -1,6 +1,7 @@
 //Useful Websites
 // http://math.stackexchange.com/questions/406082/numerical-method-to-solve-a-trigonometric-cotangent-function-transient-heat
 // http://web.cecs.pdx.edu/~gerry/epub/pdf/transientConductionSphere.pdf
+// http://web.cecs.pdx.edu/~gerry/epub/
 
 //Global Variables for Turkey
 density = 996; // kg/m3 Assuming Density of Water 1000 kg/m3
@@ -179,12 +180,12 @@ for (var i = 0; i < length; ++i )
 }
 	
 function bisectionMethod(min,max,Biot) {
-errorTolerance = (1/Math.pow(10,10))
+errorTolerance = (1/Math.pow(10,8))
 result = Infinity // some large value to ensure the calculation goes through.
 negativeTest =lambdaFormula(min, Biot)*lambdaFormula(max, Biot)
 	if (negativeTest <=0 ) {
 		var antiFreeze=0;
-		while (Math.abs(result) > errorTolerance && antiFreeze<=100000) {	
+		while (Math.abs(result) > errorTolerance && antiFreeze<=500) { //The greater the antiFreeze, the more wasted cycles around a singularity	
 			lambdaN = (min+max)/2
 			result=lambdaFormula(lambdaN, Biot)
 			if (Math.abs(result) <= errorTolerance && result<=errorTolerance) {
@@ -206,6 +207,24 @@ result = 1-lambdaN*(1/Math.tan(lambdaN))-Biot;
 return(result)
 }
 
+function stove(setTemp) { // Set Temp will need to be sent each time iteration
+this.actualTemp=0; //C
+proportional = 0.01; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
+var errorTolerance = 0.01;
+var error = 0;
+	if (setTemp>storedTemp) {
+	error = Math.abs(setTemp-storedTemp);
+	actualTemp = actualTemp + error*proportional;
+	}
+	else if (setTemp<storedTemp) {
+	error = Math.abs(setTemp-storedTemp);
+	actualTemp = actualTemp - error*proportional;
+	}
+	if (error>errorTolerance) {
+	return (true) //Need to run the Heat Calculations again
+	}
+
+}
 
 function transientSphereSeries (rPosition,rTotal,tempInitial,tempInfini,t) {
 sum=0;
@@ -218,9 +237,9 @@ biotNum = heatConvection * rTotal/thermalConduct
 console.log("The Biot Value is " + biotNum)
 
 min = 0;
-max = 250;
+max = 1000;
 
-lambdaTerms=findAllRootsAlternative (min,max,max*1000,biotNum)
+lambdaTerms=findAllRootsAlternative (min,max,max*Math.PI*10,biotNum)
 	for (var i = 0; i<lambdaTerms.length; i++) {
 		lambdaN = lambdaTerms[i]
 
@@ -230,7 +249,7 @@ lambdaTerms=findAllRootsAlternative (min,max,max*1000,biotNum)
 		sum = frontCoefficientPortion*exponentialPortion*sinPortion + sum
 }
 tempAtTimeAndRadius=(sum*(tempInitial-tempInfini))+tempInfini
-console.log("The Temperature at radius " + rPosition + " m and time " + t + "  seconds is " + tempAtTimeAndRadius + " C or " + celsiusToFarenheit(tempAtTimeAndRadius) + " F");
+console.log("The Temperature at radius " + rPosition + " m and time" + t + " seconds is " + tempAtTimeAndRadius + " C or " + celsiusToFarenheit(tempAtTimeAndRadius) + " F");
 return(tempAtTimeAndRadius)
 }
 
