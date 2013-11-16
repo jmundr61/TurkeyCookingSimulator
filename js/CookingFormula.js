@@ -59,28 +59,6 @@ console.log("Complex Radius  " + complexRadius + " Meters")
 return(complexRadius)
 }
 
-function Turkey(weight,time) {
-
-totalRadius = calculateRadius(weight)
-ovenTemp = 163;
-airConvection = 12; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-	function Layer(name) {
-	this.name = name
-	this.temperature = 20;
-	this.waterContent =100;
-	this.Qdot = 0;
-	}
-	
-skin= new Layer("Skin")
-body = new Layer("Body")
-core = new Layer("Core")
-
-skin.temperature = lumpedCapacitance(totalRadius,totalRadius*0.85,skin.temperature,ovenTemp,airConvection,time)[0]
-body.temperature = lumpedCapacitance(totalRadius*0.85,totalRadius*0.30,body.temperature,skin.temperature,airConvection*1000,time)[0]
-core.temperature = lumpedCapacitance(totalRadius*0.30,0,core.temperature,body.temperature,airConvection*1000,time)[0]
-
-} 
-
 function lumpedCapacitance (outerRadius,radiusInner,tempInitial,tempInfini,heatConvectionTerm,t) {
 volume = (4/3)*Math.PI*Math.pow(outerRadius,3) - (4/3)*Math.PI*Math.pow(radiusInner,3); //3D Sphere
 surfaceArea = 4*Math.PI*Math.pow(outerRadius,2); //3D Sphere
@@ -207,37 +185,63 @@ result = 1-lambdaN*(1/Math.tan(lambdaN))-Biot;
 return(result)
 }
 
-function stove(setTemp) { // Set Temp will need to be sent each time iteration
-this.actualTemp=0; //C
-proportional = 0.01; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
-var errorTolerance = 0.01;
-var error = 0;
-	if (setTemp>storedTemp) {
-	error = Math.abs(setTemp-storedTemp);
-	actualTemp = actualTemp + error*proportional;
-	}
-	else if (setTemp<storedTemp) {
-	error = Math.abs(setTemp-storedTemp);
-	actualTemp = actualTemp - error*proportional;
-	}
-	if (error>errorTolerance) {
-	return (true) //Need to run the Heat Calculations again
+function oven() {
+this.tempInfini=0; //C
+this.setTemp = 0;
+var proportional = 0.01; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
+var errorTolerance = 1; //Stove is accurate to 1 degree Celcius Should hopefully oscillate below that value.
+
+	this.changeTemp = function(setTemp) {
+		this.setTemp = setTemp;
 	}
 
+	this.equalizeTemp = function() { // Equalize Temp will need to be sent each time iteration
+		var error = Math.abs(this.setTemp-this.tempInfini);
+		if (this.setTemp>this.tempInfini) {
+			this.tempInfini = this.tempInfini + error*proportional;
+		}
+		else if (this.setTemp<this.tempInfini) {
+			this.tempInfini = this.tempInfini - error*proportional;
+		}
+		if (error>errorTolerance) {
+			return (true) //Need to run the Heat Calculations again next cycle
+		}
+	}
 }
+ovenObject = new oven ();
+
+function Turkey(weight,time) {
+
+totalRadius = calculateRadius(weight)
+	function Layer(name) {
+	this.name = name
+	this.temperature = 20;
+	this.waterContent =100;
+	this.Qdot = 0;
+	}
+	
+skin= new Layer("Skin")
+body = new Layer("Body")
+core = new Layer("Core")
+
+skin.temperature = lumpedCapacitance(totalRadius,totalRadius*0.85,skin.temperature,ovenTemp,airConvection,time)[0]
+body.temperature = lumpedCapacitance(totalRadius*0.85,totalRadius*0.30,body.temperature,skin.temperature,airConvection*1000,time)[0]
+core.temperature = lumpedCapacitance(totalRadius*0.30,0,core.temperature,body.temperature,airConvection*1000,time)[0]
+} 
+
 
 function transientSphereSeries (rPosition,rTotal,tempInitial,tempInfini,t) {
-sum=0;
-alpha = thermalConduct/(density*cp)
+var sum=0;
+var alpha = thermalConduct/(density*cp)
 console.log("Alpha is " + alpha)
 
-Fourier = (alpha*t)/Math.pow(rTotal,2)
+var Fourier = (alpha*t)/Math.pow(rTotal,2)
 console.log("Fourier is " +  Fourier)
-biotNum = heatConvection * rTotal/thermalConduct
+var biotNum = heatConvection * rTotal/thermalConduct
 console.log("The Biot Value is " + biotNum)
 
-min = 0;
-max = 1000;
+var min = 0;
+var max = 1000;
 
 lambdaTerms=findAllRootsAlternative (min,max,max*Math.PI*10,biotNum)
 	for (var i = 0; i<lambdaTerms.length; i++) {
@@ -253,3 +257,10 @@ console.log("The Temperature at radius " + rPosition + " m and time" + t + " sec
 return(tempAtTimeAndRadius)
 }
 
+
+setInterval(function(){time()},1000);
+
+function time() {
+ovenObject.equalizeTemp();
+
+}
