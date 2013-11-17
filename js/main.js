@@ -3,6 +3,7 @@ function GameState(){
 
 	this.pubsub = {};
 	BindPubSub( this.pubsub );
+	this.currentTime = new Date().getTime();
 
 	this.oldTime = new Date().getTime();
 
@@ -11,10 +12,17 @@ function GameState(){
 
 	function gameLoop(){
 		if( ( new Date().getTime() - that.oldTime )  > 1000 ){
+
 			// It's been at least one second, do logic loop depending on difference
 			console.log("One second");
+
+			// Maintain our own internal clock
+			that.currentTime+=1000;
+
 			that.oldTime = new Date().getTime();
+
 		}
+
 		that.mainUI.draw();
 	}
 
@@ -59,290 +67,6 @@ function GameUI( canvasElem, gameState ){
 			that.activeScreenObj.blit();
 			that.stage.update();
 		}
-	}
-}
-
-/* Screens, inheritance would be nice */
-function LoadingTitleScreen( stage, gameState ){
-	var that = this;
-    this.picture = new createjs.Bitmap( "res/Loading-Title.png" );
-    this.ovenLight = new createjs.Shape();
-    this.ovenLight.graphics.beginFill( "red" ).drawCircle( 396, 318, 5 );
-    this.ovenLight.addEventListener( "click", function(){alert("hello world")});
-
-    stage.addChild( this.picture );
-	stage.addChild( this.ovenLight );
-
-    this.uiElems = [];
-	this.uiElems.push( new DialogUI( stage ) );
-
-	return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-}
-
-function InfoHelpScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
-
-function MainScreen( stage, gameState ){
-	var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    // buttons info/credits/start
-    var infoButton = new createjs.Shape();
- 	infoButton.graphics.beginFill("#ffffff").drawRect(13, 445, 222, 65);
- 	infoButton.alpha = 0.1;
- 	infoButton.addEventListener( "click", function(){ gameState.pubsub.publish( "SwitchScreen", "InfoHelpScreen" ) } );
-
- 	var creditsButton = new createjs.Shape();
- 	creditsButton.graphics.beginFill("#ffffff").drawRect(13, 515, 222, 65);
- 	creditsButton.alpha = 0.1;
- 	creditsButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "CreditsScreen" ) } );
-
-	var startButton = new createjs.Shape();
- 	startButton.graphics.beginFill("#ffffff").drawRect(564, 520, 222, 65);
- 	startButton.alpha = 0.1;
- 	startButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "DifficultyScreen" ) } );
-
- 	stage.addChild( infoButton );
- 	stage.addChild( creditsButton );
- 	stage.addChild( startButton );
-    this.uiElems = [];
-
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-//start button
-
-}
-
-function DifficultyScreen( stage, gameState ){
-	var that = this;
-
-	this.background = new createjs.Bitmap( "res/Difficulty-Selection.png" );
-    stage.addChild( this.background );
-
-    var easyButton = new createjs.Shape();
- 	easyButton.graphics.beginFill("#ffffff").drawRect(170, 40, 450, 105);
- 	easyButton.alpha = 0.1;
- 	easyButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "KitchenScreen" ) } );
-
-    var hardButton = new createjs.Shape();
- 	hardButton.graphics.beginFill("#ffffff").drawRect(170, 150, 450, 105);
- 	hardButton.alpha = 0.1;
- 	hardButton.addEventListener( "click",  function(){ gameState.pubsub.publish( "SwitchScreen", "KitchenScreen" ) } );
-
- 	stage.addChild( easyButton );
- 	stage.addChild( hardButton );
-
-	return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-}
-
-function KitchenScreen( stage, gameState ){
-	var that = this;
-	this.uiElems = [];
-
-	this.uiElems.push( new OvenUI( stage ) );
-	this.uiElems.push( new DialogUI( stage ) );
-
-	return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-}
-
-function MarketScreen( stage, gameState ){
-	var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
-
-function TurkeyOutScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
-
-function EndingScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
-
-function ScoreScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-	// Retry Button
-}
-
-function CreditsScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-	//
-}
-
-/* Object models */
-function TurkeyModel( weight ){
-	this.weight = weight;
-}
-
-function OvenModel(){
-	this.temperature = "";
-}
-
-
-function GameModel(){
-	this.timeElapsed = 0;
-	this.ovenModel = new OvenModel();
-	this.turkeyModel = new TurkeyModel();
-}
-
-function OvenUI( stage ){
-	var that = this;
-
-	this.ovenLight = new createjs.Shape();
-	this.analogClock = "";
-	this.text = new createjs.Text( "325F", "50px Arial", "#ff7700" );
-	this.text.x = 70;
-	this.text.y = 100;
-	this.text.textBaseline = "alphabetic";
-
-    //Create a Shape DisplayObject.
-    this.circle = new createjs.Shape();
-    this.circle.graphics.beginFill( "red" ).drawCircle( 0, 0, 40 );
-    this.ovenLight.graphics.beginFill( "red" ).drawCircle( 223, 73, 5 );
-
-    //Set position of Shape instance.
-    this.circle.x = this.circle.y = 50;
-
-    this.picture = new createjs.Bitmap( "res/Base_Game_Screen.png" );
-    //this.picture.scaleX = this.picture.scaleY = 0.5;
-    stage.addChild( this.picture );
-    stage.addChild( this.circle );
-    stage.addChild( this.ovenLight );
-    stage.addChild( this.text );
-    return {
-    	tick: function(){
-    		// Circle will move 10 units to the right.
-        	that.circle.x += 1;
-
-        	// Will cause the circle to wrap back
-        	if ( that.circle.x > stage.canvas.width ) { that.circle.x = 0; }
-    	}
 	}
 }
 
