@@ -17,7 +17,7 @@ function TurkeyLayer( name, percentRadius, turkeyModel, ovenModel ){
     																		turkeyModel.totalRadius,
     																		that.initialTemp,
     																		ovenModel.tempInfini,
-    																		globalTime );
+    																		ovenModel.globalTime );
 	        that.initialTemp = that.finalTemperature;
     	}
     }
@@ -32,7 +32,7 @@ function TurkeyModel( weight, ovenModel ){
 	this.totalRadius = UtilityFunctions.calculateRadius( weight, this.density );
 	this.totalLayers = [ new TurkeyLayer("Skin", 0.85, this, ovenModel ),
 						 new TurkeyLayer("Body", 0.45, this, ovenModel ),
-						 new TurkeyLayer("Core", 0.01, this, ovenModel ) ];
+						 new TurkeyLayer("Core", 0.05, this, ovenModel ) ];
 
 	// Whenever temperature is changed
 	this.updateLayerTemps = function() {
@@ -42,31 +42,56 @@ function TurkeyModel( weight, ovenModel ){
 	}
 }
 
-function OvenModel() {
-	this.tempInfini=20; //C
+function OvenModel( turkeyWeight, gameState ) {
+	var that = this;
+	this.tempInfini = 20; //C
 	this.setTemp = 20;
+	this.globalTime = 0;
+
+	var turkey = new TurkeyModel( 8, this );
 
 	var proportional = 0.1; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
 	var errorTolerance = 5; //Stove is accurate to 1 degree Celcius Should hopefully oscillate below that value.
+   	// Equalize temp will need to be sent each time iteration
+   	this.equalizeTemp= function(){
+            var error = Math.abs(this.setTemp-this.tempInfini);
+            if( this.setTemp>this.tempInfini ){
+                    this.tempInfini = this.tempInfini + error*proportional;
+            }
+            else if( this.setTemp<this.tempInfini ){
+                    this.tempInfini = this.tempInfini - error*proportional;
+            }
 
-        this.changeTemp = function(setTemp) {
-                this.setTemp = setTemp;
-        }
+            if( error>errorTolerance ) {
+                    return (true) //Need to run the Heat Calculations again next cycle
+            }
+    	}
+    return {
 
-        // Equalize temp will need to be sent each time iteration
-        this.equalizeTemp = function() {
-                var error = Math.abs(this.setTemp-this.tempInfini);
-                if( this.setTemp>this.tempInfini ){
-                        this.tempInfini = this.tempInfini + error*proportional;
-                }
-                else if( this.setTemp<this.tempInfini ){
-                        this.tempInfini = this.tempInfini - error*proportional;
-                }
+    	changeTemp: function(setTemp){
+    		console.log("temp changed to " + setTemp);
+            that.setTemp = setTemp;
+    	},
+	    secondTick: function(){
+	    	if ( that.equalizeTemp() ) {
 
-                if( error>errorTolerance ) {
-                        return (true) //Need to run the Heat Calculations again next cycle
-                }
-        }
+	    		// Turn on oven light
+				gameState.pubsub.publish( "OvenLight", "On" );
+
+				//Reset the model's time calculation if there are major changes in the tolerance of the temperature
+			    that.globalTime = 0;
+			}
+			else {
+
+				// Turn off oven light
+				gameState.pubsub.publish( "OvenLight", "Off" );
+
+				that.globalTime = that.globalTime + 60;
+			}
+				console.log( that.tempInfini )
+				turkey.updateLayerTemps();
+	    }
+	}
 }
 
 
@@ -189,7 +214,7 @@ UtilityFunctions = {
 		return ( (celsius*(9/5)) + 32 );
 	},
 	F2C: function( farenheit ) {
-		return ( (farenheit*(9/5)) + 32 );
+		return ( (farenheit-32) *(5/9) );
 	},
 	lbs2kgs: function(){
 		return pounds * 0.453592
@@ -197,7 +222,7 @@ UtilityFunctions = {
 }
 
 //Running the Program Stuff
-
+/*
 var ovenObject = new OvenModel();
 var turkey = new TurkeyModel( 8, ovenObject );
 
@@ -214,3 +239,4 @@ function time() {
     turkey.updateLayerTemps();
 }
 
+*/

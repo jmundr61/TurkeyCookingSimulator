@@ -11,18 +11,6 @@ function GameState(){
     createjs.Ticker.addEventListener( "tick", gameLoop );
 
 	function gameLoop(){
-		if( ( new Date().getTime() - that.oldTime )  > 1000 ){
-
-			// It's been at least one second, do logic loop depending on difference
-			console.log("One second");
-
-			// Maintain our own internal clock
-			that.currentTime+=1000;
-
-			that.oldTime = new Date().getTime();
-
-		}
-
 		that.mainUI.draw();
 	}
 
@@ -35,6 +23,8 @@ function GameUI( canvasElem, gameState ){
 	var that = this;
 
 	this.stage = new createjs.Stage( canvasElem );
+//	this.stage.enableMouseOver(36);
+
 	this.activeScreenName = "EndingScreen";
 	this.activeScreenObj = {};
 
