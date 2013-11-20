@@ -84,7 +84,7 @@ function OvenUI( stage, gameState ){
 
 	this.changeTemperature = function( direction ){
 
-		if( temperatureText.text == "OFF" && direction == "Up" ) temperatureText.text = "150";
+		if( temperatureText.text == "OFF" && direction == "Up" ) temperatureText.text = "125";
 		if( !( temperatureText.text == "OFF" && direction == "Down" ) ){
 
 			var temp = ( direction == "Up" ? parseInt(temperatureText.text)+25 : parseInt(temperatureText.text)-25);
@@ -110,8 +110,8 @@ function OvenUI( stage, gameState ){
     		gameState.currentTime += 1000;
 	}
 
-    setInterval(this.secondTick, 500);
-    
+    setInterval(this.secondTick, 1000);
+
     stage.addChild( this.text );
 
     return {
@@ -131,33 +131,36 @@ return {
 }
 }
 
-function Item(){
-		/*img.onPress = function(e) {
-	    document.body.style.cursor='move';
-	    offset = {x:e.stageX - e.target.x, y:e.stageY - e.target.y};
+function MarketItem( stage, gameState, x, y, cost, mouseOutImg, mouseOverImg ){
+		var mouseOver = new createjs.Bitmap( mouseOverImg );
+		var mouseOut = new createjs.Bitmap( mouseOutImg );
+		mouseOver.x = mouseOut.x = x;
+		mouseOver.y = mouseOut.y = y;
+	 	mouseOut.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
+ 		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
+ 		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
+ 		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
+ 		mouseOver.addEventListener( "click", function(){ alert("buy!"); } );
+ 		mouseOver.visible = false;
+    	stage.addChild( mouseOut );
+    	stage.addChild( mouseOver );
 
-	    e.onMouseMove = drag;
-	}*/
+	return {
+		tick: function(){}
+	}
 
 }
 
 function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg ){
 	var that = this;
 
-	var infoButton = new createjs.Shape();
- 	infoButton.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	infoButton.alpha = 0.5;
- 	infoButton.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
+	var button = new createjs.Shape();
+ 	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
+ 	button.alpha = 0.5;
+ 	button.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
+ 	button.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
+ 	button.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
 
-	infoButton.onMouseOver = function(e) {
-		alert("mouseover");
-    	document.body.style.cursor='pointer';
-	}
-
-	infoButton.onMouseOut = function(e) {
-	    document.body.style.cursor='default';
-	}
-
-	return infoButton;
+	return button;
 
 }
