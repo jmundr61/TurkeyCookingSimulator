@@ -2,6 +2,7 @@
 // http://math.stackexchange.com/questions/406082/numerical-method-to-solve-a-trigonometric-cotangent-function-transient-heat
 // http://web.cecs.pdx.edu/~gerry/epub/pdf/transientConductionSphere.pdf
 // http://web.cecs.pdx.edu/~gerry/epub/
+//http://highered.mcgraw-hill.com/sites/dl/free/0073129305/314124/cen29305_ch04.pdf
 
 //Global Variables for Turkey
 density = 996; // kg/m3 Assuming Density of Water 1000 kg/m3
@@ -127,7 +128,7 @@ function layerModel(name,radiusPercent) {
 	this.radiusPercent=radiusPercent;
 	this.initialTemp = 20;
 	this.waterContent =100000;
-	this.Qdot = 0;
+	this.heat = 0;
 	this.finalTemperature = 20;
 }
  
@@ -151,6 +152,7 @@ this.core = new layerModel("Core",0.01)
 	}
 }
 
+
 var oldBiot=null;
 function transientSphereSeries (rPosition,rTotal,tempInitial,tempInfini,t) {
 var min = 0;
@@ -158,10 +160,10 @@ var max = 1000; // This are for setting Lambda boundries and nothing else
 
 var sum=0;
 var alpha = thermalConduct/(density*cp)
-//console.log("Alpha is " + alpha)
+console.log("Alpha is " + alpha)
 
 var Fourier = (alpha*t)/Math.pow(rTotal,2)
-//console.log("Fourier is " +  Fourier)
+console.log("Fourier is " +  Fourier)
 
 var biotNum = heatConvection * rTotal/thermalConduct
 
@@ -171,7 +173,7 @@ var biotNum = heatConvection * rTotal/thermalConduct
 		oldBiot = biotNum;
 	}
 
-//console.log("The Biot Value is " + biotNum)
+console.log("The Biot Value is " + biotNum)
 
 for (var i = 0; i<lambdaTerms.length; i++) {
 	lambdaN = lambdaTerms[i]
