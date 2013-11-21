@@ -64,7 +64,7 @@ function OvenUI( stage, gameState ){
 
 	gameState.pubsub.subscribe( "OvenLight", this.changeOvenLight );
 
-	var temperatureText = new createjs.Text( "325", "40px Arial", "#ff7700" );
+	var temperatureText = new createjs.Text( "OFF", "40px Arial", "#ff7700" );
 	temperatureText.x = 50;
 	temperatureText.y = 147;
 	temperatureText.textBaseline = "alphabetic";
@@ -93,13 +93,17 @@ function OvenUI( stage, gameState ){
 			 temp = temp < 150 ? temp = "OFF" : temp;
 
 			 // Check upper bound
-			 // Set up to 500, then it's BROIL @ 980
+			 // if over 1100 F, burn house down
+			 if( temp > 1100 ){
+			 	console.log("You have died in a fire");
+			 	return;
+			 }
 
 			 temperatureText.text = temp;
 		}
 
 		 // Tell our model to set the actual temperature
-		 ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 150 : parseInt( temperatureText.text ) ) );
+		 ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 125 : parseInt( temperatureText.text ) ) );
 	}
 
     // change temperature, this one's for the UI
@@ -131,7 +135,10 @@ return {
 }
 }
 
-function MarketItem( stage, gameState, x, y, cost, mouseOutImg, mouseOverImg ){
+function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg ){
+	var that = this;
+		this.name = name;
+		this.bought = false;
 		var mouseOver = new createjs.Bitmap( mouseOverImg );
 		var mouseOut = new createjs.Bitmap( mouseOutImg );
 		mouseOver.x = mouseOut.x = x;
@@ -140,7 +147,53 @@ function MarketItem( stage, gameState, x, y, cost, mouseOutImg, mouseOverImg ){
  		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
  		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
  		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
- 		mouseOver.addEventListener( "click", function(){ alert("buy!"); } );
+ 		mouseOver.addEventListener( "click", function(){
+ 			if(!that.bought){
+	 			if( that.name.indexOf("Turkey") == 0 && gameState.turkeyBought != true){
+	 				gameState.turkeyBought = true;
+				    gameState.marketItems[ that.name ].delete();
+	 			}
+
+	 			// can we buy this? Only possible if you already bought a turkey
+	 			if( !that.name.indexOf("Turkey") ==  0 && gameState.turkeyBought == true ){
+		 			gameState.purchasedItems.push( objReturn );
+		 			gameState.marketItems[ that.name ].delete();
+		 			that.bought = true;
+		 		}
+ 			}
+ 		});
+
+ 		mouseOver.visible = false;
+ 	var objReturn = {
+		tick: function(){},
+		getName: function(){return that.name;},
+		delete: function( stage ){
+			gameState.pubsub.publish("RemoveItems", [mouseOut, mouseOver]);
+		},
+		draw: function( stage, newx, newy ){
+			if( newx && newy ){
+				mouseOut.x = mouseOver.x = newx;
+				mouseOut.y = mouseOver.y = newy;
+			}
+			stage.addChild( mouseOut );
+	    	stage.addChild( mouseOver );
+		}
+	}
+	return objReturn;
+}
+
+
+
+function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd, arg ){
+		var mouseOver = new createjs.Bitmap( mouseOverImg );
+		var mouseOut = new createjs.Bitmap( mouseOutImg );
+		mouseOver.x = mouseOut.x = x;
+		mouseOver.y = mouseOut.y = y;
+	 	mouseOut.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
+ 		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
+ 		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
+ 		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
+ 		mouseOver.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
  		mouseOver.visible = false;
     	stage.addChild( mouseOut );
     	stage.addChild( mouseOver );
@@ -148,7 +201,6 @@ function MarketItem( stage, gameState, x, y, cost, mouseOutImg, mouseOverImg ){
 	return {
 		tick: function(){}
 	}
-
 }
 
 function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg ){

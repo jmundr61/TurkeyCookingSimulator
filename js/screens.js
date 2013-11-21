@@ -48,22 +48,6 @@ function MainScreen( stage, gameState ){
     this.background = new createjs.Bitmap( "res/Main.png" );
     stage.addChild( this.background );
 
-    //createjs.Sound.addEventListener("fileload", createjs.proxy(loadHandler, this));
-    createjs.Sound.registerSound("res/sound/turkey_in_the_straw.mp3", "sound");
-
-	var instance = createjs.Sound.createInstance("sound");  // play using id.  Could also use full sourcepath or event.src.
-	instance.setPosition(5650);
-	instance.volume = 0.5;
-
-	instance.play();
-
-	// loop-de-loop
- 	instance.addEventListener("complete", playAgain);
- 	function playAgain(event) {
- 		instance.setPosition(5650);
-     	instance.play();
- 	}
-
 	// buttons info/credits/start
  	stage.addChild( new Button( stage, gameState, 13, 445, 222, 65, "SwitchScreen", "InfoHelpScreen" ) );
  	stage.addChild( new Button( stage, gameState, 13, 515, 222, 65, "SwitchScreen", "CreditsScreen" ) );
@@ -92,8 +76,8 @@ function DifficultyScreen( stage, gameState ){
     stage.addChild( this.background );
 
  	// Easy/Hard Button
- 	stage.addChild( new Button( stage, gameState, 170, 40, 450, 105, "SwitchScreen", "MarketScreen" ) );
- 	stage.addChild( new Button( stage, gameState, 170, 150, 450, 105, "SwitchScreen", "MarketScreen" ) );
+ 	stage.addChild( new Button( stage, gameState, 170, 40, 450, 105, "SwitchScreen", "KitchenScreen" ) );
+ 	stage.addChild( new Button( stage, gameState, 170, 150, 450, 105, "SwitchScreen", "KitchenScreen" ) );
 
 	return {
 		blit : function(){
@@ -113,10 +97,17 @@ function KitchenScreen( stage, gameState ){
 
 	this.uiElems = [];
 
+
+	for(var i in gameState.purchasedItems){
+		console.log(gameState.purchasedItems);
+		gameState.purchasedItems[i].draw( stage, 403+100*i, 350 );
+	}
+
 	this.uiElems.push( new OvenUI( stage, gameState ) );
 	this.uiElems.push( new ClockUI( stage, gameState ) );
 	this.uiElems.push( new WindowUI( stage, gameState ) )
 	this.uiElems.push( new DialogUI( stage ) );
+
 
 	return {
 		blit : function(){
@@ -134,25 +125,14 @@ function MarketScreen( stage, gameState ){
 
     this.background = new createjs.Bitmap( "res/Store-Screen-Clean.png" );
     stage.addChild( this.background );
-    stage.addChild( new Button( stage, gameState, 13, 445, 222, 65, "SwitchScreen", "KitchenScreen" ) );
-
     this.uiElems = [];
-    this.uiElems.push( new MarketItem( stage, gameState, 275,195, 100, "res/items/Alarm.png", "res/items/AlarmGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 200,200, 100, "res/items/Bottle1.png", "res/items/Bottle1.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 456,123, 100, "res/items/Bottle2.png", "res/items/Bottle2.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 312,222, 100, "res/items/Bottle3.png", "res/items/Bottle3.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 300,400, 100, "res/items/Cookbook1.png", "res/items/Cookbook1Glow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 12,11, 100, "res/items/FrillsBox.png", "res/items/FrillsBoxGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 44,222, 100, "res/items/OvenLightBox.png", "res/items/OvenLightBoxGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 66,444, 100, "res/items/StuffingExquisite.png", "res/items/StuffingExquisiteGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState,  293,12, 100, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposedGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 438,200, 100, "res/items/StuffingSpecial.png", "res/items/StuffingSpecialGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 444,334, 100, "res/items/TempProbe.png", "res/items/TempProbeGlow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 555,33, 100, "res/items/Turkey1.png", "res/items/Turkey1Glow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 200,200, 100, "res/items/Turkey2.png", "res/items/Turkey2Glow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 100,100, 100, "res/items/Turkey3.png", "res/items/Turkey3Glow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 122,349, 100, "res/items/Turkey4.png", "res/items/Turkey4Glow.png" ) );
-    this.uiElems.push( new MarketItem( stage, gameState, 96,406, 100, "res/items/Turkey5.png", "res/items/Turkey5Glow.png" ) );
+    this.uiElems.push( new ImgButton( stage, gameState, 690,0, "res/items/ExitSign.png", "res/items/ExitGlow.png","SwitchScreen", "KitchenScreen"  ) );
+    var marketItemKeys = Object.keys(gameState.marketItems);
+    for (var index in marketItemKeys ) {
+    	gameState.marketItems[marketItemKeys[index]].draw( stage );
+    }
+	this.topground = new createjs.Bitmap( "res/TopShelf.png" );
+	stage.addChild( this.topground );
 
     return {
 		blit : function(){
