@@ -218,6 +218,9 @@ UtilityFunctions = {
 	},
 	lbs2kgs: function(){
 		return pounds * 0.453592
+	},
+	randRange: function(lowVal,highVal) {
+	     return Math.floor(Math.random()*(highVal-lowVal+1))+lowVal;
 	}
 }
 

@@ -6,13 +6,19 @@ function GameState(){
 	this.currentTime = new Date().getTime();
 	this.oldTime = new Date().getTime();
 
+	this.name = "";
+	this.gender = "";
+	this.wallet = 1000;
+
     // Load all our resources:
     var queue = new createjs.LoadQueue(true);
     queue.installPlugin(createjs.Sound);
+
     //queue.addEventListener("fileload", handleFileComplete);
     queue.loadFile( {id: "TitleMusicFile", src:"res/sound/turkey_in_the_straw.mp3"} );
     queue.loadFile( {id: "MarketBackgroundSoundFile", src:"res/sound/supermarket.mp3"} );
     queue.loadFile( {id: "MarketBackgroundSoundFile", src:"res/items/FrillsBox.png"} );
+    queue.loadFile( {id: "TurkeySpriteFile", src:"res/TurkeySprite.png"} );
 
     this.screenState = 0;
     this.newScreen = "";
@@ -21,15 +27,15 @@ function GameState(){
     // Game State flags
     this.turkeyBought = false;
 	this.marketItems = {
-		"FrillsBox" : new MarketItem( this, "FrillsBox", 133,92, 100, "res/items/FrillsBox.png", "res/items/FrillsBoxGlow.png" ),
+		"FrillsBox" : new MarketItem( this, "FrillsBox", 133,92, 2000, "res/items/FrillsBox.png", "res/items/FrillsBoxGlow.png" ),
 	    "TuTempProberkey" : new MarketItem( this, "TuTempProberkey", 200, 57, 100, "res/items/TempProbe.png", "res/items/TempProbeGlow.png" ),
-	    "OvenLightBox" : new MarketItem( this, "OvenLightBox", 131,222, 100, "res/items/OvenLightBox.png", "res/items/OvenLightBoxGlow.png" ),
+	    "OvenLightBox" : new MarketItem( this, "OvenLightBox", 131,222, 300, "res/items/OvenLightBox.png", "res/items/OvenLightBoxGlow.png" ),
 
-	    "Alarm" : new MarketItem( this, "Alarm", 173,248, 100, "res/items/Alarm.png", "res/items/AlarmGlow.png" ),
-		"Cookbook" : new MarketItem( this, "Cookbook", 283,203, 100, "res/items/Cookbook1.png", "res/items/Cookbook1Glow.png" ),
-	    "StuffingRepurposed" : new MarketItem( this, "StuffingRepurposed",  510,197, 100, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposedGlow.png" ),
-	    "StuffingExquisite" : new MarketItem( this, "StuffingExquisite", 458,210, 100, "res/items/StuffingExquisite.png", "res/items/StuffingExquisiteGlow.png" ),
-	    "StuffingSpecial" : new MarketItem( this, "StuffingSpecial", 390,220, 100, "res/items/StuffingSpecial.png", "res/items/StuffingSpecialGlow.png" ),
+	    "Alarm" : new MarketItem( this, "Alarm", 173,248, 500, "res/items/Alarm.png", "res/items/AlarmGlow.png" ),
+		"Cookbook" : new MarketItem( this, "Cookbook", 283,203, 400, "res/items/Cookbook1.png", "res/items/Cookbook1Glow.png" ),
+	    "StuffingRepurposed" : new MarketItem( this, "StuffingRepurposed",  510,197, 200, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposedGlow.png" ),
+	    "StuffingExquisite" : new MarketItem( this, "StuffingExquisite", 458,210, 300, "res/items/StuffingExquisite.png", "res/items/StuffingExquisiteGlow.png" ),
+	    "StuffingSpecial" : new MarketItem( this, "StuffingSpecial", 390,220, 500, "res/items/StuffingSpecial.png", "res/items/StuffingSpecialGlow.png" ),
 
 	    "Turkey1" : new MarketItem( this, "Turkey1", 170,350, 100, "res/items/Turkey5.png", "res/items/Turkey5Glow.png" ),
 	    "Turkey2": new MarketItem( this, "Turkey2", 540,320, 100, "res/items/Turkey4.png", "res/items/Turkey4Glow.png" ),
@@ -39,12 +45,29 @@ function GameState(){
 	};
 
 	this.purchasedItems = [];
-	
+
 	// did we already show the player the kitchen intro?
 	this.kitchenIntro = false;
 
 	this.mainUI = new GameUI( "demoCanvas", this );
     createjs.Ticker.addEventListener( "tick", gameLoop );
+
+    function addHighScore(name, turkeyPoundage, cookTime, score){
+    	var scores = {};
+    	var now = new Date();
+    	if( !localStorage.getItem("highScores") ){
+    		scores = JSON.parse( localStorage.getItem("highScores") );
+    	}
+
+    	scores[now.getYear()+"/"+now.getMonth()+"/"+now.getDay()] = {
+    			"name" : name,
+    			"weight" : turkeyPoundage,
+    			"cookTime" : cookTime,
+    			"score" : score
+    	};
+
+    	localStorage.setItem("highScores", JSON.stringfy(scores));
+    }
 
 	function gameLoop(){
 		that.mainUI.draw();
@@ -104,7 +127,9 @@ function GameUI( canvasElem, gameState ){
 		"CreditsScreen"		 : CreditsScreen
 	}
 
-	this.activeScreenObj = new MarketScreen( this.stage, gameState );
+	var soundManager = new SoundManager( gameState );
+
+	this.activeScreenObj = new MainScreen( this.stage, gameState );
 	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
 	textContent.x = 750;
 	textContent.y = 30;
@@ -114,12 +139,12 @@ function GameUI( canvasElem, gameState ){
  	overlay.alpha = 0;
 	this.stage.addChild(overlay);
 
-	var soundManager = new SoundManager( gameState );
+	var dialogManager = new DialogUI( this.stage, gameState );
 
 	// delay for fade in and fade-out
 	this.switchScreen = function( screenName ){
 		gameState.screenState = SCREEN_OUT;
-		gameState.pubsub.publish( "FadeOut", "" );
+		dialogManager.minDialog();
 		console.log("Switch screen called with" + screenName);
 		gameState.newScreen = screenName;
 	};
@@ -128,6 +153,7 @@ function GameUI( canvasElem, gameState ){
 		that.activeScreenObj = new that.screens[ screenName ]( that.stage, gameState );
 		that.stage.addChild( textContent );
 		that.stage.addChild( overlay );
+		dialogManager.render();
 	};
 
 	gameState.pubsub.subscribe( "SwitchScreen", this.switchScreen );
@@ -159,114 +185,14 @@ function GameUI( canvasElem, gameState ){
 			}
 			soundManager.tick();
 			that.activeScreenObj.blit();
+			dialogManager.tick();
 			textContent.text = createjs.Ticker.getMeasuredFPS().toFixed(1);
 			that.stage.update();
 		}
 	}
 }
 
-function DialogUI( stage ){
-	var that = this;
-	// Dialog States
-	var DIALOG_RECEDING = 0;
-	var DIALOG_SHOWING = 1;
-	var DIALOG_PAUSING = 2;
-	var MILLIS_PER_CHAR = 100;
 
-	this.dialogSpeed = 30;
-	this.dialogState = DIALOG_PAUSING;
-
-	this.dialogMotionQueue = [DIALOG_SHOWING];
-	this.currDialogueSeq = new DialogueSequence();
-	dialogQueue = [];
-
-	this.dialogBox = new createjs.Bitmap("res/DialogueBox.png");
-	this.dialogBox.x = 10;
-	this.dialogBox.y = 675;
-
-	this.textContent = new createjs.Text( "Hey there kids!", "24px Arial", "#00000000" );
-	this.textContent.x = 205;
-	this.textContent.y = 705;
-	this.textContent.lineWidth = 565;
-	this.textContent.lineHeight = 30;
-	this.textContent.textBaseline = "alphabetic";
-
-	this.dialogBox.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
- 	this.dialogBox.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
- 	this.dialogBox.addEventListener( "click",  function(){ setTimeout( clickEvent, 100); });
-
-	this.textContent.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
- 	this.textContent.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
- 	this.textContent.addEventListener( "click", function(){ setTimeout( clickEvent, 100); });
-
-
- 	// negate double setTimeout if clicked
- 	var oldTime = new Date().getTime();
- 	var delayCounter = 0;
- 	var clickEvent = function( timer ){
-
- 		// if there is more dialogue text, then keep going, otherwise, recede
- 		if( that.currDialogueSeq.more() ){
- 			setTimeout( function(){ that.dialogMotionQueue.push(DIALOG_SHOWING) }, 1000);
- 			that.textContent.text=that.currDialogueSeq.next();
- 			delayCounter = 0;
- 			oldTime = new Date().getTime()
- 		}else{
- 			// pause and close dialog
- 			setTimeout( function(){that.dialogMotionQueue.push(DIALOG_RECEDING)}, 1000 );
- 		}
- 	}
-	stage.addChild( this.dialogBox );
-	stage.addChild( this.textContent );
-
-    return {
-    	tick: function(){
-    		delayCounter = new Date().getTime() - oldTime;
-
-    		if(that.dialogBox.y ==435 && delayCounter > ( that.textContent.text.length * MILLIS_PER_CHAR ) ){
-    			clickEvent();
-    		}
-    		if( that.dialogState == DIALOG_RECEDING ){
-	    		that.dialogBox.y+=that.dialogSpeed;
-	    		that.textContent.y +=that.dialogSpeed;
-	    		console.log( "Receding" + that.dialogBox.y );
-    		}
-    		if( that.dialogState == DIALOG_SHOWING ){
-    			that.dialogBox.y-=that.dialogSpeed;
-    			that.textContent.y -=that.dialogSpeed;
-    			console.log( "Advancing" + that.dialogBox.y );
-    		}
-
-    		// toggle states
-    		if( that.dialogBox.y > 675 && that.dialogState == DIALOG_RECEDING ){
-    			that.dialogBox.y = 675;
-    			that.textContent.y = 705;
-    			that.dialogState = DIALOG_PAUSING;
-    			console.log( "Pausing on recede" + that.dialogBox.y );
-
-    		}
-    		if( that.dialogBox.y < 435 && that.dialogState == DIALOG_SHOWING ){
-    			that.dialogBox.y = 435;
-    			that.textContent.y = 480;
-    			that.dialogState = DIALOG_PAUSING;
-    			console.log( "Pausing on showing" + that.dialogBox.y );
-    		}
-
-    		/* next states if there are any on the queue */
-    		if( that.dialogMotionQueue.length > 0 && that.dialogState == DIALOG_PAUSING ){
-    			that.dialogState = that.dialogMotionQueue.shift();
-    		}
-    	},
-
-    	minDialog: function(){
-    		that.dialogMotionQueue.push( DIALOG_RECEDING );
-    	},
-
-    	maxDialog: function(){
-    		that.dialogMotionQueue.push( DIALOG_SHOWING );
-    	},
-	}
-}
 
 function Dialogue( character, text ){
 	var that = this;

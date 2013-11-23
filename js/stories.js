@@ -1,4 +1,10 @@
-var story = ["Brother: Hey Grandpa, I've got a funny story about that primer you gave me",
+var story = {
+	"Null":["Me: "],
+	"KitchenInitial" : ["Me: I need to buy a turkey..."],
+	"CannotBuyTurkey" : ["Me: I've barely have time for ONE turkey, let alone TWO!"],
+	"NoMoney" : ["Me: I can't afford this!"],
+	"BuyTurkeyFirst" : ["Me: You should buy a turkey first!"],
+	"PaintStory" : ["Brother: Hey Grandpa, I've got a funny story about that primer you gave me",
 "Grandpa: You'll have to remind me, again, my memory isn't too good in my old age",
 "Brother: Well, you gave me some primer to redo my room.",
 "Mom: How is that going? Last I heard you had the priming done",
@@ -9,4 +15,5 @@ var story = ["Brother: Hey Grandpa, I've got a funny story about that primer you
 "Brother: Well yes, but I was also cutting the edges, like you taught me. And that was easier with the paint bucket in my hand. Or so I thought...",
 "Brother: Right. Well, umm so I quickly put the paint can down in the roller pan, seee, that I had nearby, and as I turned around to go clean myself off with some paper towels, I noticed a drip line all the way from the garage.",
 "Brother: That's not good. So I dashed for the towels, and tried to soak up as much as possible. And well.. yeah  So, in the future, I probably won't go for your primer Grandpa.",
-"Grandpa: ..."];
+"Grandpa: ..."]
+};

@@ -143,24 +143,41 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg ){
 		var mouseOut = new createjs.Bitmap( mouseOutImg );
 		mouseOver.x = mouseOut.x = x;
 		mouseOver.y = mouseOut.y = y;
-	 	mouseOut.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
- 		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
- 		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
- 		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
+	 	mouseOut.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false; gameState.pubsub.publish("ShowPrice", cost ); } );
+ 		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; gameState.pubsub.publish("ShowPrice", "" ); } );
+ 		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  gameState.pubsub.publish("ShowPrice", cost ); } );
+ 		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; gameState.pubsub.publish("ShowPrice", "" );} );
  		mouseOver.addEventListener( "click", function(){
- 			if(!that.bought){
+ 			if(!that.bought && cost <= gameState.wallet ){
 	 			if( that.name.indexOf("Turkey") == 0 && gameState.turkeyBought != true){
 	 				gameState.turkeyBought = true;
 				    gameState.marketItems[ that.name ].delete();
+				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
+				    gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost))
 	 			}
-
 	 			// can we buy this? Only possible if you already bought a turkey
-	 			if( !that.name.indexOf("Turkey") ==  0 && gameState.turkeyBought == true ){
+	 			else if( !that.name.indexOf("Turkey") ==  0 && gameState.turkeyBought == true ){
 		 			gameState.purchasedItems.push( objReturn );
 		 			gameState.marketItems[ that.name ].delete();
 		 			that.bought = true;
+		 			gameState.pubsub.publish("Play", {name:"Buy", volume:0.7});
+		 			gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost));
+		 		}
+		 		// One turkey only
+		 		else if( that.name.indexOf("Turkey") == 0 && gameState.turkeyBought == true ){
+		 			gameState.pubsub.publish( "ShowDialog", {seq:"CannotBuyTurkey", autoAdvance:false} );
+		 			gameState.pubsub.publish( "Play", "Error" );
+		 		}
+		 		// Buy turkey first
+		 		else{
+		 			gameState.pubsub.publish( "ShowDialog", {seq:"BuyTurkeyFirst", autoAdvance:false} );
+		 			gameState.pubsub.publish( "Play", "Error" );
 		 		}
  			}
+ 			else{
+ 				gameState.pubsub.publish( "ShowDialog", {seq:"NoMoney", autoAdvance:false} );
+	 			gameState.pubsub.publish( "Play", "Error" );
+	 		}
  		});
 
  		mouseOver.visible = false;
@@ -184,7 +201,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg ){
 
 
 
-function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd, arg ){
+function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd, arg, sound ){
 		var mouseOver = new createjs.Bitmap( mouseOverImg );
 		var mouseOut = new createjs.Bitmap( mouseOutImg );
 		mouseOver.x = mouseOut.x = x;
@@ -193,7 +210,12 @@ function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd,
  		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
  		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  } );
  		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; } );
- 		mouseOver.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
+ 		mouseOver.addEventListener( "click", function(){
+ 			if( sound ){
+ 				gameState.pubsub.publish("Play", sound );
+ 			}
+ 			gameState.pubsub.publish( eventCmd, arg )
+ 		} );
  		mouseOver.visible = false;
     	stage.addChild( mouseOut );
     	stage.addChild( mouseOver );
@@ -212,7 +234,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
  	button.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
  	button.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
  	button.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
-
+ 	gameState.pubsub.publish( "Play", "Click" );
 	return button;
 
 }
