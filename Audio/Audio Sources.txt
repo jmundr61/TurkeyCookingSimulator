@@ -1,3 +1,7 @@
+Unless Otherwise noted, all sounds and music are in the public Domain.
+
+---------------------------
+
 <Turkey in the Straw>
 
 turkey_in_the_straw
@@ -12,8 +16,20 @@ Information presented on the United States Air Force Band site is considered pub
 
 UPLOADED by Sookietex
 
-
+---------------------------
 <Clicks>
 
 Freesound.org
 file name references the author name and file number.
+
+
+---------------------------
+
+Title:	Improved Ice Cream Truck
+Artist:	Kevin MacLeod
+Genre:	Folk
+Length:	0:51
+Bitrate:	320 kbps
+Size:	1.93MB
+
+An improved version of a traditional Ice Cream Truck melody… whose actual title I forget.

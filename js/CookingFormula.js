@@ -3,13 +3,15 @@
 // http://web.cecs.pdx.edu/~gerry/epub/pdf/transientConductionSphere.pdf
 // http://web.cecs.pdx.edu/~gerry/epub/
 //http://highered.mcgraw-hill.com/sites/dl/free/0073129305/314124/cen29305_ch04.pdf
+//http://www.nt.ntnu.no/users/skoge/prost/proceedings/aiche-2005/topical/pdffiles/T9/papers/554a.pdf
+//http://www.rohanliston.com/portfolio/just-for-fun?id=23
 
 //Global Variables for Turkey
-density = 996; // kg/m3 Assuming Density of Water 1000 kg/m3
-cp = 2810 // J/kg K for Turkey
-heatConvection = 5; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 0.412 // W/m K // Chicken
-globalTime = 1;
+density = 1050; // kg/m3 Assuming Density of Water 1000 kg/m3
+cp = 3100 // J/kg K for Turkey
+heatConvection = 4; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
+thermalConduct = 0.380 // W/m K // Chicken
+globalTime = 0;
 
 function celsiusToFarenheit(celsius) {
 farenheit = (celsius*(9/5)) + 32;
@@ -36,7 +38,7 @@ depth = 1/(ratioLvG /length);
 height = 1/(ratioLvH /length);
 simpleRadius = length/2; //Doesn't take into account equal Volume
 
-rectangleVolume = depth*height*length*(1/3); //m^3  Multiple by 1/3 to account for triangular shape and empty Space
+rectangleVolume = depth*height*length*(1/4); //m^3  Multiple by 1/3 to account for triangular shape and empty Space
 complexRadius = Math.pow(rectangleVolume/((4/3)*Math.PI), 1/3); //Volume of 3D Box = 3D Sphere
 
 console.log("Simple Radius  " + simpleRadius + " Meters")
@@ -102,8 +104,10 @@ return(result)
 function oven() {
 this.tempInfini=20; //C
 this.setTemp = 20;
-var proportional = 0.1; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
-var errorTolerance = 5; //Stove is accurate to 1 degree Celcius Should hopefully oscillate below that value.
+this.steadyTemp = 20;
+this.steadyTimer = 0;
+var proportional = 0.004; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
+var errorTolerance = 25; //Stove is accurate to 25 degree Celcius Should hopefully oscillate below that value.
 
 	this.changeTemp = function(setTemp) {
 		this.setTemp = setTemp;
@@ -120,6 +124,9 @@ var errorTolerance = 5; //Stove is accurate to 1 degree Celcius Should hopefully
 		if (error>errorTolerance) {
 			return (true) //Need to run the Heat Calculations again next cycle
 		}
+		else {
+		this.steadyTemp = this.tempInfini;
+		}
 	}
 }
 
@@ -128,7 +135,7 @@ function layerModel(name,radiusPercent) {
 	this.radiusPercent=radiusPercent;
 	this.initialTemp = 20;
 	this.waterContent =100000;
-	this.heat = 0;
+	this.heatLost = 0;
 	this.finalTemperature = 20;
 }
  
@@ -141,13 +148,13 @@ this.body = new layerModel("Body",0.45)
 this.core = new layerModel("Core",0.01)
 
 	this.updateLayerTemps = function() {
-		this.skin.finalTemperature = transientSphereSeries (this.skin.radiusPercent*this.totalRadius,this.totalRadius,this.skin.initialTemp,ovenObject.tempInfini,globalTime)
+		this.skin.finalTemperature = transientSphereSeries (this.skin.radiusPercent*this.totalRadius,this.totalRadius,this.skin.initialTemp,ovenObject.steadyTemp,globalTime)
 		this.skin.initialTemp = this.skin.finalTemperature;
 
-		this.body.finalTemperature = transientSphereSeries (this.body.radiusPercent*this.totalRadius,this.totalRadius,this.body.initialTemp,ovenObject.tempInfini,globalTime)
+		this.body.finalTemperature = transientSphereSeries (this.body.radiusPercent*this.totalRadius,this.totalRadius,this.body.initialTemp,ovenObject.steadyTemp,globalTime)
 		this.body.initialTemp = this.body.finalTemperature;
 
-		this.core.finalTemperature = transientSphereSeries (this.core.radiusPercent*this.totalRadius,this.totalRadius,this.core.initialTemp,ovenObject.tempInfini,globalTime)
+		this.core.finalTemperature = transientSphereSeries (this.core.radiusPercent*this.totalRadius,this.totalRadius,this.core.initialTemp,ovenObject.steadyTemp,globalTime)
 		this.core.initialTemp = this.core.finalTemperature;
 	}
 }
@@ -157,7 +164,7 @@ var oldBiot=null;
 function transientSphereSeries (rPosition,rTotal,tempInitial,tempInfini,t) {
 var min = 0;
 var max = 1000; // This are for setting Lambda boundries and nothing else
-
+//thermalConduct = ((tempInitial-20)*(0.13/60)) + 0.32;
 var sum=0;
 var alpha = thermalConduct/(density*cp)
 console.log("Alpha is " + alpha)
@@ -194,14 +201,26 @@ return(tempAtTimeAndRadius)
 ovenObject = new oven ();
 turkey = new turkeyModel(8);
 
-setInterval(function(){time()},20);
-
+setInterval(function(){time()},10);
+//setTimeout(function(){alert(ovenObject.steadyTemp)},150000) 
+totalCookTime = 0;
 function time() {
 	console.clear()
-	if (ovenObject.equalizeTemp() ) {
+	var equalized = ovenObject.equalizeTemp()
+	if (ovenObject.steadyTimer>=60 && equalized) {
+		ovenObject.steadyTimer = 0;
+		ovenObject.steadyTemp = ovenObject.tempInfini
 		globalTime = 0; //Reset the model's time calculation if there are major changes in the tolerance of the temperature
 	}
-		else {globalTime = globalTime +60 }
+		else {
+		globalTime = globalTime + 1;
+		ovenObject.steadyTimer = ovenObject.steadyTimer + 1;
+		totalCookTime = totalCookTime +1;
+		}
+		
 	console.log(ovenObject.tempInfini)
+	console.log(ovenObject.steadyTemp)
+	console.log(ovenObject.steadyTimer)
+	console.log(totalCookTime +" seconds")
 	turkey.updateLayerTemps();
 }
