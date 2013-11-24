@@ -89,7 +89,7 @@ function MainScreen( stage, gameState ){
 
     var turkeyAnimations = { peck:[14,24,"peck"], ruffle:[0,13,"ruffle"], stare:[25,35,"stare"] };
 	var data = {
-    	images: ["res/TurkeySprite.png"],
+    	images: ["res/screens/MainScreen/TurkeySprite.png"],
      	frames: { width:400, height:350 },
      	animations: turkeyAnimations
  	};
