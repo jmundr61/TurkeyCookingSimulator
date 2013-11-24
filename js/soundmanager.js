@@ -13,7 +13,7 @@ function SoundManager( gameState ){
 
 	// Register all sounds loaded in gameState
 	createjs.Sound.registerSound("res/sound/turkey_in_the_straw.mp3", "TitleMusic");
-	createjs.Sound.registerSound("res/sound/supermarket.mp3", "MarketBackgroundSound");
+	createjs.Sound.registerSound("res/sound/Store/supermarket.mp3", "MarketBackgroundSound");
 	createjs.Sound.registerSound("res/sound/Music/Waterford.mp3", "MarketMusic");
 	createjs.Sound.registerSound("res/sound/GUI/pop.mp3", "Pop");
 	createjs.Sound.registerSound("res/sound/GUI/lowclick.mp3", "LowClick");
@@ -21,7 +21,6 @@ function SoundManager( gameState ){
 	createjs.Sound.registerSound("res/sound/GUI/buzz.mp3", "Error");
 	createjs.Sound.registerSound("res/sound/Store/buy.mp3", "Buy");
 	createjs.Sound.registerSound("res/sound/Store/entrance.mp3", "Entrance");
-	createjs.Sound.registerSound("res/sound/Store/backgroundSound.mp3", "MarketSound");
 
 
 	this.backgroundSounds = [];
@@ -51,14 +50,14 @@ function SoundManager( gameState ){
 		else{
 			newBackgroundSound = soundCache[soundName.name] ? soundCache[soundName.name] : soundCache[soundName.name] = createjs.Sound.createInstance( soundName.name );
 			newBackgroundSound.setPosition(soundName.pos || 0);
-			newBackgroundSound.volume = soundName.volume || 1;
+			newBackgroundSound.volume = newBackgroundSound.desiredVolume = soundName.volume || 1;
 			newBackgroundSound.play();
 
 			// loop-de-loop
 		 	newBackgroundSound.addEventListener("complete", function(){
 		 		if( newBackgroundSound.volume == 0 ){ newBackgroundSound.stop(); return; }
 		 		newBackgroundSound.setPosition(soundName.pos || 0);
-		 		newBackgroundSound.volume = soundName.volume || 1;
+		 		newBackgroundSound.volume = newBackgroundSound.desiredVolume = soundName.volume || 1;
      			newBackgroundSound.play();
      		});
 		}
@@ -78,8 +77,8 @@ function SoundManager( gameState ){
 				if( that.backgroundSounds[i].audioState == AUDIO_IN ){
 					that.backgroundSounds[i].volume +=0.03;
 				}
-				if( that.backgroundSounds[i].volume >= 1.0 ){
-					that.backgroundSounds[i].volume = 1;
+				if( that.backgroundSounds[i].volume >= that.backgroundSounds[i].desiredVolume ){
+					that.backgroundSounds[i].volume = that.backgroundSounds[i].desiredVolume;
 				}
 				if( that.backgroundSounds[i].volume <= 0.0 ){
 					that.backgroundSounds[i].volume = 0;

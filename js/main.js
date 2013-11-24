@@ -12,13 +12,88 @@ function GameState(){
 
     // Load all our resources:
     var queue = new createjs.LoadQueue(true);
+    queue.addEventListener("progress", function(event){
+    	that.pubsub.publish("Load", (event.progress*100/25));
+    });
+
+    that.mainUI = new GameUI( "demoCanvas", that );
+    createjs.Ticker.addEventListener( "tick", gameLoop );
+    queue.addEventListener("complete", function(event){
+    	// Finished loading
+    });
     queue.installPlugin(createjs.Sound);
 
+    //
+    queue.loadFile( {id: "DialogueBoxFile", src:"res/screens/GUI/DialogueBox.png"} );
+    /*queue.loadFile( {id:"res/screens/LoadingScreen/Turkey0.png", src: "res/screens/LoadingScreen/Turkey0.png"} );
+    queue.loadFile( {id:"res/screens/LoadingScreen/Turkey25.png", src: "res/screens/LoadingScreen/Turkey25.png"} );
+    queue.loadFile( {id:"res/screens/LoadingScreen/Turkey50.png", src: "res/screens/LoadingScreen/Turkey50.png"} );
+    queue.loadFile( {id:"res/screens/LoadingScreen/Turkey75.png", src: "res/screens/LoadingScreen/Turkey75.png"} );
+    queue.loadFile( {id:"res/screens/LoadingScreen/TurkeyDone.png", src: "res/screens/LoadingScreen/TurkeyDone.png"} );*/
+
     //queue.addEventListener("fileload", handleFileComplete);
+    // Load image assets
+    queue.loadFile( {id: "TurkeySpriteFile", src:"res/screens/MainScreen/TurkeySprite.png"} );
+    queue.loadFile( {id: "MainBackgroundFile", src:"res/screens/MainScreen/Main-Screen.png"} );
+    queue.loadFile( {id: "OverlayGrassFile", src:"res/screens/MainScreen/Grass.png"} );
+    queue.loadFile( {id: "StartButtonFile", src:"res/screens/MainScreen/ButtonStart.png"} );
+    queue.loadFile( {id: "HelpButtonFile", src:"res/screens/MainScreen/ButtonHelp.png"} );
+    queue.loadFile( {id: "CreditsButtonFile", src:"res/screens/MainScreen/ButtonCredits.png"} );
+
+    queue.loadFile( {id: "MarketScreenfile", src:"res/screens/MarketScreen/MarketScreen.png"} );
+
+    // Load sound assets
     queue.loadFile( {id: "TitleMusicFile", src:"res/sound/turkey_in_the_straw.mp3"} );
-    queue.loadFile( {id: "MarketBackgroundSoundFile", src:"res/sound/supermarket.mp3"} );
-    queue.loadFile( {id: "MarketBackgroundSoundFile", src:"res/items/FrillsBox.png"} );
-    queue.loadFile( {id: "TurkeySpriteFile", src:"res/TurkeySprite.png"} );
+    queue.loadFile( {id: "MarketBackgroundSoundFile", src:"res/sound/Store/supermarket.mp3"} );
+	queue.loadFile( {id: "MarketSoundFile", src:"res/sound/Store/Waterford.mp3"} );
+
+	// UI sounds
+    queue.loadFile( {id: "UIPopFile", src:"res/sound/GUI/pop.mp3"} );
+    queue.loadFile( {id: "UILowClickFile", src:"res/sound/GUI/lowclick.mp3"} );
+    queue.loadFile( {id: "UIClickFile", src:"res/sound/GUI/click.mp3"} );
+    queue.loadFile( {id: "UIBuzzFile", src:"res/sound/GUI/buzz.mp3"} );
+
+    
+    // Market Items
+    queue.loadFile( {id: "FrillsBox.png", src:"res/items/FrillsBox.png"} );
+    queue.loadFile( {id: "res/items/FrillsBox.png", src:"res/items/FrillsBox.png"});
+    queue.loadFile( {id: "res/items/FrillsBoxGlow.png", src:"res/items/FrillsBoxGlow.png"});
+    queue.loadFile( {id: "res/items/TempProbe.png", src:"res/items/TempProbe.png"});
+    queue.loadFile( {id: "res/items/TempProbeGlow.png", src:"res/items/TempProbeGlow.png"});
+
+	queue.loadFile( {id: "res/items/OvenLightBox.png", src:"res/items/OvenLightBox.png"});
+    queue.loadFile( {id: "res/items/OvenLightBoxGlow.png", src:"res/items/OvenLightBoxGlow.png"});
+
+	queue.loadFile( {id: "res/items/Alarm.png", src:"res/items/Alarm.png"});
+    queue.loadFile( {id: "res/items/AlarmGlow.png", src:"res/items/AlarmGlow.png"});
+
+	queue.loadFile( {id: "res/items/Cookbook1.png", src:"res/items/Cookbook1.png"});
+    queue.loadFile( {id: "res/items/Cookbook1Glow.png", src:"res/items/Cookbook1Glow.png"});
+
+	queue.loadFile( {id: "res/items/StuffingRepurposed.png", src:"res/items/StuffingRepurposed.png"});
+    queue.loadFile( {id: "res/items/StuffingRepurposedGlow.png", src:"res/items/StuffingRepurposedGlow.png"});
+
+	queue.loadFile( {id: "res/items/StuffingExquisite.png", src:"res/items/StuffingExquisite.png"});
+    queue.loadFile( {id: "res/items/StuffingExquisiteGlow.png", src:"res/items/StuffingExquisiteGlow.png"});
+
+	queue.loadFile( {id: "res/items/StuffingSpecial.png", src:"res/items/StuffingSpecial.png"});
+    queue.loadFile( {id: "res/items/StuffingSpecialGlow.png", src:"res/items/StuffingSpecialGlow.png"});
+
+	queue.loadFile( {id: "res/items/Turkey5.png", src:"res/items/Turkey5.png"});
+    queue.loadFile( {id: "res/items/Turkey5Glow.png", src:"res/items/Turkey5Glow.png"});
+
+    queue.loadFile( {id: "res/items/Turkey4.png", src:"res/items/Turkey4.png"});
+    queue.loadFile( {id: "res/items/Turkey4Glow.png", src:"res/items/Turkey4Glow.png"});
+
+	queue.loadFile( {id: "res/items/Turkey3.png", src:"res/items/Turkey3.png"});
+    queue.loadFile( {id: "res/items/Turkey3Glow.png", src:"res/items/Turkey3Glow.png"});
+
+	queue.loadFile( {id: "res/items/Turkey2.png", src:"res/items/Turkey2.png"});
+    queue.loadFile( {id: "res/items/Turkey2Glow.png", src:"res/items/Turkey2Glow.png"});
+
+	queue.loadFile( {id: "res/items/Turkey1.png", src:"res/items/Turkey1.png"});
+    queue.loadFile( {id: "res/items/Turkey1Glow.png", src:"res/items/Turkey1Glow.png"});
+
 
     this.screenState = 0;
     this.newScreen = "";
@@ -49,9 +124,6 @@ function GameState(){
 	// did we already show the player the kitchen intro?
 	this.kitchenIntro = false;
 
-	this.mainUI = new GameUI( "demoCanvas", this );
-    createjs.Ticker.addEventListener( "tick", gameLoop );
-
     function addHighScore(name, turkeyPoundage, cookTime, score){
     	var scores = {};
     	var now = new Date();
@@ -77,28 +149,6 @@ function GameState(){
 	//	"main": this
 	}
 }
-/*
-	createjs.Sound.registerSound("res/sound/supermarket.mp3", "TitleMusic");
-	var backgroundSound = createjs.Sound.createInstance("TitleMusic");  // play using id.  Could also use full sourcepath or event.src.
-	var backgroundSounds = createjs.Sound.createInstance("TitleMusic");
-	backgroundSound.setPosition(0);
-	backgroundSound.volume = 1;
-	setTimeout(function(){ backgroundSounds.play();},2000);
-
-	backgroundSound.play();
-
-	// loop-de-loop
- 	backgroundSound.addEventListener("complete", playAgain);
- 	backgroundSound.addEventListener("complete", playAgainMe);
- 	function playAgain(event) {
- 		backgroundSound.setPosition(0);
-     	backgroundSound.play();
-     	
- 	}
- 	function playAgainMe(event){
- 		setTimeout(function(){ backgroundSounds.play();},1000);
- 	}
-*/
 
 function GameUI( canvasElem, gameState ){
 	var that = this;
@@ -115,7 +165,7 @@ function GameUI( canvasElem, gameState ){
 
 	/* Initialize All Screens */
 	this.screens = {
-		"LoadingTitleScreen" : LoadingTitleScreen,
+		"LoadingScreen" 	 : LoadingScreen,
 		"InfoHelpScreen" 	 : InfoHelpScreen,
 		"MainScreen" 	 	 : MainScreen,
 		"DifficultyScreen" 	 : DifficultyScreen,
@@ -129,7 +179,7 @@ function GameUI( canvasElem, gameState ){
 
 	var soundManager = new SoundManager( gameState );
 
-	this.activeScreenObj = new MainScreen( this.stage, gameState );
+	this.activeScreenObj = new LoadingScreen( this.stage, gameState );
 	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
 	textContent.x = 750;
 	textContent.y = 30;

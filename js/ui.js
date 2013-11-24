@@ -75,12 +75,7 @@ function OvenUI( stage, gameState ){
     this.circle.x = 0;
     this.circle.y = 0;
 
-    //Set position of Shape instance.
-    stage.addChild( this.circle );
-    stage.addChild( ovenLight );
-    stage.addChild( new Button( stage, gameState, 45, 163, 41, 17, "ChangeTemperature", "Up" ) );
-    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
-    stage.addChild( temperatureText );
+
 
 	this.changeTemperature = function( direction ){
 
@@ -125,6 +120,15 @@ function OvenUI( stage, gameState ){
 
         	// Will cause the circle to wrap back
         	if ( that.circle.x > stage.canvas.width ) { that.circle.x = 0; }
+    	},
+    	render: function(){
+		    //Set position of Shape instance.
+		    stage.addChild( that.circle );
+		    stage.addChild( ovenLight );
+		    stage.addChild( new Button( stage, gameState, 45, 163, 41, 17, "ChangeTemperature", "Up" ) );
+		    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
+		    stage.addChild( temperatureText );
+    		return this;
     	}
 	}
 }

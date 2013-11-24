@@ -3,7 +3,7 @@ var story = {
 	"KitchenInitial" : ["Me: I need to buy a turkey..."],
 	"CannotBuyTurkey" : ["Me: I've barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
-	"BuyTurkeyFirst" : ["Me: You should buy a turkey first!"],
+	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
 	"PaintStory" : ["Brother: Hey Grandpa, I've got a funny story about that primer you gave me",
 "Grandpa: You'll have to remind me, again, my memory isn't too good in my old age",
 "Brother: Well, you gave me some primer to redo my room.",

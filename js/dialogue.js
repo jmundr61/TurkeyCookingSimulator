@@ -27,7 +27,7 @@ function DialogUI( stage, gameState ){
 	this.currDialogueSeq = new DialogueSequence("Null");
 	dialogQueue = [];
 
-	this.dialogBox = new createjs.Bitmap("res/DialogueBox.png");
+	this.dialogBox = new createjs.Bitmap("res/screens/GUI/DialogueBox.png");
 	this.dialogBox.x = 10;
 	this.dialogBox.y = 675;
 
