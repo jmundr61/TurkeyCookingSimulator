@@ -179,6 +179,47 @@ function DifficultyScreen( stage, gameState ){
  	this.femaleSelection.alpha = 0;
  	stage.addChild( this.femaleSelection );
 
+ 	var nameInput = new createjs.Text( "", "48px Arial", "#00000000" );
+   		nameInput.x = 47;
+	 	nameInput.y = 85;
+	 	nameInput.lineWidth = 175;
+
+	stage.addChild( nameInput );
+
+	// handle keyboard typing 
+    document.onkeyup = function(event){
+    	// keycode
+    	var keynum = 0;
+    	  if(window.event){ // IE
+            	keynum = event.keyCode;
+            }
+           else{
+              	if(event.which){ // Netscape/Firefox/Opera
+            		keynum = event.which;
+                }
+            }
+
+            if( keynum != 8  && nameInput.text.length < 22 )
+            	nameInput.text += String.fromCharCode(keynum);
+    };
+
+
+    // Backspace gets special treatment
+    document.onkeydown = function(event){
+    	    	var keynum = 0;
+    	  if(window.event){ // IE
+            	keynum = event.keyCode;
+            }
+           else{
+              	if(event.which){ // Netscape/Firefox/Opera
+            		keynum = event.which;
+                }
+            }
+
+            if(keynum == 8 && nameInput.text.length > 0 )
+            	nameInput.text = nameInput.text.substr(0, nameInput.text.length-1);
+    }
+
  	// Easy/Hard Button
  	stage.addChild( new Button( stage, gameState, 500, 235, 100, 55, "ChangeGender", "Male" ) );
  	stage.addChild( new Button( stage, gameState, 500, 300, 100, 55, "ChangeGender", "Female" ) );
@@ -278,7 +319,7 @@ function MarketScreen( stage, gameState ){
 	var clipboardText = new createjs.Text( "Turkey", "16px Arial", "#00000000" );
    		clipboardText.x = 23;
 	 	clipboardText.y = 425;
-	 	clipboardText.lineWidth = 175;
+	 	clipboardText.lineWidth = 173;
 
 	var clipboardWeight = new createjs.Text( "", "16px Arial", "#00000000" );
    		clipboardWeight.x = 120;

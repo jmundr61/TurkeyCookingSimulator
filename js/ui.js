@@ -146,8 +146,10 @@ function OvenUI( stage, gameState ){
 			doorPeekLightOff.alpha = doorClosedLightOff.alpha = 0;
 			doorOpen.alpha = 1;
 			handleBar.y = 330;
+			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
 		}else if (that.ovenDoor == OVEN_OPEN ){
 			that.ovenDoor = OVEN_PEEK;
+			gameState.pubsub.publish( "Play", "Oven_Door_Full_Close" );
 			ovenPeek();
 		}
 	}
@@ -155,13 +157,15 @@ function OvenUI( stage, gameState ){
 	handleBar.addEventListener( "click", ovenPeek );
 
 	function ovenPeek(){
-		if( that.ovenDoor == OVEN_CLOSED || that.ovenDoor == OVEN_OPEN ){
+		if( that.ovenDoor == OVEN_CLOSED && that.ovenDoor != OVEN_OPEN ){
+			gameState.pubsub.publish( "Play", "Oven_Door_Peek_Open" );
 			doorPeekLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
 			doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
 			doorClosedLightOn.alpha = 0;
 			doorClosedLightOff.alpha = 0;
 			doorOpen.alpha = 0;
 			that.ovenDoor = OVEN_PEEK;
+
 			handleBar.y = 48;
 		}
 		else if (that.ovenDoor == OVEN_PEEK){
@@ -170,6 +174,7 @@ function OvenUI( stage, gameState ){
 			doorPeekLightOn.alpha = 0;
 			doorPeekLightOff.alpha = 0;
 			that.ovenDoor = OVEN_CLOSED;
+			gameState.pubsub.publish( "Play", "Oven_Door_Peek_Close" );
 			doorOpen.alpha = 0;
 			handleBar.y = 0;
 		}
@@ -185,28 +190,29 @@ function OvenUI( stage, gameState ){
 
     setInterval(this.secondTick, 1000);
 
-    stage.addChild( this.text );
-    stage.addChild(lightPressedImg);
-	// Turkey goes here
-
-	stage.addChild(doorPeekLightOn);
-    stage.addChild(doorPeekLightOff);
-
-    stage.addChild(doorClosedLightOn);
-    stage.addChild(doorClosedLightOff);
-
-    stage.addChild(doorOpen);
-	stage.addChild(handleBar);
 
     return {
     	tick: function(){},
     	render: function(){
-		    //Set position of Shape instance.
+
 		    stage.addChild( ovenLight );
+		    stage.addChild( temperatureText );
+
+		    stage.addChild( this.text );
+		    stage.addChild( lightPressedImg);
+			// Turkey goes here
+
+			stage.addChild( doorPeekLightOn);
+		    stage.addChild( doorPeekLightOff);
+
+		    stage.addChild( doorClosedLightOn);
+		    stage.addChild( doorClosedLightOff);
+
+		    stage.addChild( doorOpen);
 		    stage.addChild( new Button( stage, gameState, 45, 163, 41, 17, "ChangeTemperature", "Up" ) );
 		    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
 		    stage.addChild( new Button( stage, gameState, 145, 163, 41, 17, "OvenLightToggle", "" ) );
-		    stage.addChild( temperatureText );
+			stage.addChild( handleBar);
     		return this;
     	}
 	}
@@ -263,7 +269,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, fun
 				    gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost))
 	 			}
 	 			// can we buy this? Only possible if you already bought a turkey
-	 			else if( !that.name.indexOf("Turkey") != -1 && gameState.turkeyBought == true ){
+	 			else if( that.name.indexOf("Turkey") == -1 && gameState.turkeyBought == true ){
 		 			gameState.purchasedItems.push( objReturn );
 		 			gameState.marketItems[ that.name ].delete();
 		 			that.bought = true;
@@ -341,7 +347,9 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
  	button.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
  	button.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
  	button.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
- 	gameState.pubsub.publish( "Play", "Click" );
-	return button;
+ 	button.addEventListener( "click", function(){
+	 	gameState.pubsub.publish( "Play", "Click" );
+	});
 
+	return button;
 }

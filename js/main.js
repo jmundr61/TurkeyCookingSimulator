@@ -98,8 +98,15 @@ function GameState(){
 	queue.loadFile( {id: "res/screens/KitchenScreen/OvenTurnRedState.png", src:"res/screens/KitchenScreen/OvenTurnRedState.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/LightButtonDepressed.png", src:"res/screens/KitchenScreen/LightButtonDepressed.png"});
 
-    // Market Items
 
+	// Kitchen Sounds
+	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Full_Open.mp3", src:"res/sound/Kitchen/Oven_Door_Full_Open.mp3"});
+	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Full_Close.mp3", src:"res/sound/Kitchen/Oven_Door_Full_Close.mp3"});
+	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Peek_Close.mp3", src:"res/sound/Kitchen/Oven_Door_Peek_Close.mp3"});
+	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Peek_Open.mp3", src:"res/sound/Kitchen/Oven_Door_Peek_Open.mp3"});
+
+
+    // Market Items
     queue.loadFile( {id: "res/screens/MarketScreen/MarketTopShelf.png", src:"res/screens/MarketScreen/MarketTopShelf.png"});
 
 	queue.loadFile( {id: "res/items/Clipboard.png", src:"res/items/Clipboard.png"});

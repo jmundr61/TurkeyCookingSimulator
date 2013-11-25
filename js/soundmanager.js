@@ -3,7 +3,7 @@ function SoundInstance( soundObj, loop ){
 }
 function SoundManager( gameState ){
 	var that = this;
-	var soundCache = [];
+	var soundCache = {};
 
 	var AUDIO_OUT = 1;
 	var AUDIO_IN  = 2;
@@ -14,13 +14,19 @@ function SoundManager( gameState ){
 	// Register all sounds loaded in gameState
 	createjs.Sound.registerSound("res/sound/turkey_in_the_straw.mp3", "TitleMusic");
 	createjs.Sound.registerSound("res/sound/Store/supermarket.mp3", "MarketBackgroundSound");
-	createjs.Sound.registerSound("res/sound/Music/Waterford.mp3", "MarketMusic");
+	createjs.Sound.registerSound("res/sound/Store/Waterford.mp3", "MarketMusic");
 	createjs.Sound.registerSound("res/sound/GUI/pop.mp3", "Pop");
 	createjs.Sound.registerSound("res/sound/GUI/lowclick.mp3", "LowClick");
 	createjs.Sound.registerSound("res/sound/GUI/click.mp3", "Click");
 	createjs.Sound.registerSound("res/sound/GUI/buzz.mp3", "Error");
 	createjs.Sound.registerSound("res/sound/Store/buy.mp3", "Buy");
 	createjs.Sound.registerSound("res/sound/Store/entrance.mp3", "Entrance");
+
+	// Kitchen sound
+	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Full_Open.mp3", "Oven_Door_Full_Open");
+	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Full_Close.mp3", "Oven_Door_Full_Close");
+	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Peek_Close.mp3", "Oven_Door_Peek_Close");
+	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Peek_Open.mp3", "Oven_Door_Peek_Open");
 
 
 	this.backgroundSounds = [];
@@ -33,10 +39,12 @@ function SoundManager( gameState ){
 	this.play = function( soundName ){
 		var channel = createjs.Sound.createInstance("Pop");
 		if( typeof soundName != "object" ){
-			channel = soundCache[soundName] ? soundCache[soundName] : soundCache[soundName] = createjs.Sound.createInstance(soundName);
+
+			channel = ( soundCache[soundName] ? soundCache[soundName] : soundCache[soundName] = createjs.Sound.createInstance(soundName) );
+			channel.volume = 1;
 		}
 		else{
-			channel = soundCache[soundName.name] ? soundCache[soundName.name] : soundCache[soundName.name] = createjs.Sound.createInstance(soundName.name);
+			channel = ( soundCache[soundName.name] ? soundCache[soundName.name] : soundCache[soundName.name] = createjs.Sound.createInstance(soundName.name) );
 			channel.volume = soundName.volume;
 		}
 		channel.play();
