@@ -46,6 +46,11 @@ function ClockUI( stage, gameState ){
 
 function OvenUI( stage, gameState ){
 	var that = this;
+	var OVEN_CLOSED = 0;
+	var OVEN_PEEK = 1;
+	var OVEN_OPEN = 2;
+
+	this.ovenDoor = OVEN_CLOSED;
 
 	// Important Model
 	var ovenModel = new OvenModel( 8, gameState );
@@ -69,13 +74,23 @@ function OvenUI( stage, gameState ){
 	temperatureText.y = 147;
 	temperatureText.textBaseline = "alphabetic";
 
-    //Create a Shape DisplayObject.
-    this.circle = new createjs.Shape();
-    this.circle.graphics.beginFill( "red" ).drawCircle( 0, 0, 40 );
-    this.circle.x = 0;
-    this.circle.y = 0;
+	var lightPressedImg = new createjs.Bitmap( "res/screens/KitchenScreen/LightButtonDepressed.png" );
+	lightPressedImg.alpha = 0;
 
+	var doorClosedLightOff = new createjs.Bitmap( "res/screens/KitchenScreen/DoorClosedLightOff.png" );
+	doorClosedLightOff.alpha = 1;
 
+	var doorClosedLightOn = new createjs.Bitmap( "res/screens/KitchenScreen/DoorClosedLightOn.png" );
+	doorClosedLightOn.alpha = 0;
+
+	var doorPeekLightOff = new createjs.Bitmap( "res/screens/KitchenScreen/DoorPeekLightOff.png" );
+	doorPeekLightOff.alpha = 0;
+
+	var doorPeekLightOn = new createjs.Bitmap( "res/screens/KitchenScreen/DoorPeekLightOn.png" );
+	doorPeekLightOn.alpha = 0;
+
+	var doorOpen = new createjs.Bitmap( "res/screens/KitchenScreen/DoorOpen.png" );
+	doorOpen.alpha = 0;
 
 	this.changeTemperature = function( direction ){
 
@@ -101,8 +116,67 @@ function OvenUI( stage, gameState ){
 		 ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 125 : parseInt( temperatureText.text ) ) );
 	}
 
-    // change temperature, this one's for the UI
+	this.ovenLightToggle = function(){
+
+		lightPressedImg.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+		if( that.ovenDoor == OVEN_CLOSED){
+			doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
+			doorClosedLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+			doorOpen.alpha = 0;
+		}
+		else if( that.ovenDoor == OVEN_PEEK ){
+			doorPeekLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
+			doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+			doorOpen.alpha = 0;
+		}
+	}
+
+	var handleBar = new createjs.Shape();
+ 	handleBar.graphics.beginFill("#ffffff").drawRect(20, 190, 300, 20);
+ 	handleBar.alpha = 0.5;
+ 	handleBar.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
+ 	handleBar.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
+ 	handleBar.addEventListener( "pressup", handlePress );
+
+	// Look for a drag event
+	function handlePress(event) {
+		if( event.stageY > 300 && that.ovenDoor != OVEN_OPEN ){
+			that.ovenDoor = OVEN_OPEN;
+			doorPeekLightOn.alpha = doorClosedLightOn.alpha = 0;
+			doorPeekLightOff.alpha = doorClosedLightOff.alpha = 0;
+			doorOpen.alpha = 1;
+			handleBar.y = 330;
+		}else if (that.ovenDoor == OVEN_OPEN ){
+			that.ovenDoor = OVEN_PEEK;
+			ovenPeek();
+		}
+	}
+
+	handleBar.addEventListener( "click", ovenPeek );
+
+	function ovenPeek(){
+		if( that.ovenDoor == OVEN_CLOSED || that.ovenDoor == OVEN_OPEN ){
+			doorPeekLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
+			doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+			doorClosedLightOn.alpha = 0;
+			doorClosedLightOff.alpha = 0;
+			doorOpen.alpha = 0;
+			that.ovenDoor = OVEN_PEEK;
+			handleBar.y = 48;
+		}
+		else if (that.ovenDoor == OVEN_PEEK){
+			doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
+			doorClosedLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+			doorPeekLightOn.alpha = 0;
+			doorPeekLightOff.alpha = 0;
+			that.ovenDoor = OVEN_CLOSED;
+			doorOpen.alpha = 0;
+			handleBar.y = 0;
+		}
+	}
+	// change temperature, this one's for the UI
     gameState.pubsub.subscribe( "ChangeTemperature", this.changeTemperature );
+    gameState.pubsub.subscribe( "OvenLightToggle", this.ovenLightToggle );
 
     this.secondTick = function(){
     		ovenModel.secondTick();
@@ -112,21 +186,26 @@ function OvenUI( stage, gameState ){
     setInterval(this.secondTick, 1000);
 
     stage.addChild( this.text );
+    stage.addChild(lightPressedImg);
+	// Turkey goes here
+
+	stage.addChild(doorPeekLightOn);
+    stage.addChild(doorPeekLightOff);
+
+    stage.addChild(doorClosedLightOn);
+    stage.addChild(doorClosedLightOff);
+
+    stage.addChild(doorOpen);
+	stage.addChild(handleBar);
 
     return {
-    	tick: function(){
-    		// Circle will move 10 units to the right.
-        	that.circle.x += 1;
-
-        	// Will cause the circle to wrap back
-        	if ( that.circle.x > stage.canvas.width ) { that.circle.x = 0; }
-    	},
+    	tick: function(){},
     	render: function(){
 		    //Set position of Shape instance.
-		    stage.addChild( that.circle );
 		    stage.addChild( ovenLight );
 		    stage.addChild( new Button( stage, gameState, 45, 163, 41, 17, "ChangeTemperature", "Up" ) );
 		    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
+		    stage.addChild( new Button( stage, gameState, 145, 163, 41, 17, "OvenLightToggle", "" ) );
 		    stage.addChild( temperatureText );
     		return this;
     	}
@@ -139,28 +218,52 @@ return {
 }
 }
 
-function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg ){
+function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, funnyDescription, weight ){
 	var that = this;
+	console.log("Loading market item" + name);
 		this.name = name;
 		this.bought = false;
 		var mouseOver = new createjs.Bitmap( mouseOverImg );
 		var mouseOut = new createjs.Bitmap( mouseOutImg );
 		mouseOver.x = mouseOut.x = x;
 		mouseOver.y = mouseOut.y = y;
-	 	mouseOut.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false; gameState.pubsub.publish("ShowPrice", cost ); } );
- 		mouseOut.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; gameState.pubsub.publish("ShowPrice", "" ); } );
- 		mouseOver.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; mouseOver.visible = true; mouseOut.visible = false;  gameState.pubsub.publish("ShowPrice", cost ); } );
- 		mouseOver.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; mouseOver.visible = false; mouseOut.visible = true; gameState.pubsub.publish("ShowPrice", "" );} );
+	 	mouseOut.addEventListener( "mouseover", function(){
+	 		document.body.style.cursor='pointer';
+	 		mouseOver.visible = true;
+	 		mouseOut.visible = false;
+	 		gameState.pubsub.publish("ShowPrice", cost );
+	 		gameState.pubsub.publish("ShowDesc", {title:that.name, desc:funnyDescription, weight:weight} );
+	 	});
+ 		mouseOut.addEventListener( "mouseout", function(){
+ 			document.body.style.cursor='default';
+ 			mouseOver.visible = false;
+ 			mouseOut.visible = true;
+ 			gameState.pubsub.publish("ClearClipboard", {});
+ 		} );
+ 		mouseOver.addEventListener( "mouseover", function(){
+ 			document.body.style.cursor='pointer';
+ 			mouseOver.visible = true;
+ 			mouseOut.visible = false;
+ 			gameState.pubsub.publish("ShowPrice", cost );
+ 			gameState.pubsub.publish("ShowDesc", {title:that.name, desc:funnyDescription, weight:weight} );
+ 		});
+ 		mouseOver.addEventListener( "mouseout", function(){
+ 			document.body.style.cursor='default';
+ 			mouseOver.visible = false;
+ 			mouseOut.visible = true;
+ 			gameState.pubsub.publish("ClearClipboard", {});
+ 	} );
  		mouseOver.addEventListener( "click", function(){
  			if(!that.bought && cost <= gameState.wallet ){
-	 			if( that.name.indexOf("Turkey") == 0 && gameState.turkeyBought != true){
+ 				console.log(that.name);
+	 			if( that.name.indexOf("Turkey") != -1 && gameState.turkeyBought != true){
 	 				gameState.turkeyBought = true;
 				    gameState.marketItems[ that.name ].delete();
 				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
 				    gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost))
 	 			}
 	 			// can we buy this? Only possible if you already bought a turkey
-	 			else if( !that.name.indexOf("Turkey") ==  0 && gameState.turkeyBought == true ){
+	 			else if( !that.name.indexOf("Turkey") != -1 && gameState.turkeyBought == true ){
 		 			gameState.purchasedItems.push( objReturn );
 		 			gameState.marketItems[ that.name ].delete();
 		 			that.bought = true;
@@ -168,7 +271,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg ){
 		 			gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost));
 		 		}
 		 		// One turkey only
-		 		else if( that.name.indexOf("Turkey") == 0 && gameState.turkeyBought == true ){
+		 		else if( that.name.indexOf("Turkey") != -1 && gameState.turkeyBought == true ){
 		 			gameState.pubsub.publish( "ShowDialog", {seq:"CannotBuyTurkey", autoAdvance:false} );
 		 			gameState.pubsub.publish( "Play", "Error" );
 		 		}

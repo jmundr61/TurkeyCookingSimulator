@@ -7,8 +7,8 @@ function GameState(){
 	this.oldTime = new Date().getTime();
 
 	this.name = "";
-	this.gender = "";
-	this.wallet = 1000;
+	this.gender = "Male";
+	this.wallet = 40.00;
 
     // Load all our resources:
     var queue = new createjs.LoadQueue(true);
@@ -30,6 +30,11 @@ function GameState(){
     queue.loadFile( {id:"res/screens/LoadingScreen/Turkey50.png", src: "res/screens/LoadingScreen/Turkey50.png"} );
     queue.loadFile( {id:"res/screens/LoadingScreen/Turkey75.png", src: "res/screens/LoadingScreen/Turkey75.png"} );
     queue.loadFile( {id:"res/screens/LoadingScreen/TurkeyDone.png", src: "res/screens/LoadingScreen/TurkeyDone.png"} );*/
+
+    // Screens
+    queue.loadFile( {id: "res/screens/DifficultyScreen/Difficulty-Selection.png", src:"res/screens/DifficultyScreen/Difficulty-Selection.png"} );
+	queue.loadFile( {id: "res/screens/DifficultyScreen/ButtonMale.png", src:"res/screens/DifficultyScreen/ButtonMale.png"} );
+    queue.loadFile( {id: "res/screens/DifficultyScreen/ButtonFemale.png", src:"res/screens/DifficultyScreen/ButtonFemale.png"} );
 
     //queue.addEventListener("fileload", handleFileComplete);
     // Load image assets
@@ -53,11 +58,59 @@ function GameState(){
     queue.loadFile( {id: "UIClickFile", src:"res/sound/GUI/click.mp3"} );
     queue.loadFile( {id: "UIBuzzFile", src:"res/sound/GUI/buzz.mp3"} );
 
-    
+    // Kitchen Items
+	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState1.svg", src:"res/screens/KitchenScreen/TurkeyState1.svg"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState2.svg", src:"res/screens/KitchenScreen/TurkeyState2.svg"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState3.svg", src:"res/screens/KitchenScreen/TurkeyState3.svg"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState4.svg", src:"res/screens/KitchenScreen/TurkeyState4.svg"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState5.svg", src:"res/screens/KitchenScreen/TurkeyState5.svg"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/TempProbeKitchenGlow.png", src:"res/screens/KitchenScreen/TempProbeKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/TempProbeKitchen.png", src:"res/screens/KitchenScreen/TempProbeKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/StuffingSpecialKitchenGlow.png", src:"res/screens/KitchenScreen/StuffingSpecialKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/StuffingSpecialKitchen.png", src:"res/screens/KitchenScreen/StuffingSpecialKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/StuffingRepurposedKitchenGlow.png", src:"res/screens/KitchenScreen/StuffingRepurposedKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/StuffingRepurposedKitchen.png", src:"res/screens/KitchenScreen/StuffingRepurposedKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/StuffingExquisiteKitchenGlow.png", src:"res/screens/KitchenScreen/StuffingExquisiteKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/StuffingExquisiteKitchen.png", src:"res/screens/KitchenScreen/StuffingExquisiteKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/StoreBrochureGlow.png", src:"res/screens/KitchenScreen/StoreBrochureGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/StoreBrochure.png", src:"res/screens/KitchenScreen/StoreBrochure.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/FrillsBoxKitchenGlow.png", src:"res/screens/KitchenScreen/FrillsBoxKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/FrillsBoxKitchen.png", src:"res/screens/KitchenScreen/FrillsBoxKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/DoorPeekLightOn.png", src:"res/screens/KitchenScreen/DoorPeekLightOn.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/DoorPeekLightOff.png", src:"res/screens/KitchenScreen/DoorPeekLightOff.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/DoorOpen.png", src:"res/screens/KitchenScreen/DoorOpen.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/DoorClosedLightOn.png", src:"res/screens/KitchenScreen/DoorClosedLightOn.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/DoorClosedLightOff.png", src:"res/screens/KitchenScreen/DoorClosedLightOff.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/CookbookKitchenGlow.png", src:"res/screens/KitchenScreen/CookbookKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/CookbookKitchen.png", src:"res/screens/KitchenScreen/CookbookKitchen.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/AlarmKitchenGlow.png", src:"res/screens/KitchenScreen/AlarmKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/AlarmKitchen.png", src:"res/screens/KitchenScreen/AlarmKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/PanFront.png", src:"res/screens/KitchenScreen/PanFront.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/OvenTurnRedState.png", src:"res/screens/KitchenScreen/OvenTurnRedState.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/LightButtonDepressed.png", src:"res/screens/KitchenScreen/LightButtonDepressed.png"});
+
     // Market Items
-    queue.loadFile( {id: "FrillsBox.png", src:"res/items/FrillsBox.png"} );
+
+    queue.loadFile( {id: "res/screens/MarketScreen/MarketTopShelf.png", src:"res/screens/MarketScreen/MarketTopShelf.png"});
+
+	queue.loadFile( {id: "res/items/Clipboard.png", src:"res/items/Clipboard.png"});
+    queue.loadFile( {id: "res/items/Wallet.png", src:"res/items/Wallet.png"});
+
+    queue.loadFile( {id: "res/items/FrillsBox.png", src:"res/items/ExitSign.png"});
+    queue.loadFile( {id: "res/items/FrillsBoxGlow.png", src:"res/items/ExitGlow.png"});
+
     queue.loadFile( {id: "res/items/FrillsBox.png", src:"res/items/FrillsBox.png"});
     queue.loadFile( {id: "res/items/FrillsBoxGlow.png", src:"res/items/FrillsBoxGlow.png"});
+
     queue.loadFile( {id: "res/items/TempProbe.png", src:"res/items/TempProbe.png"});
     queue.loadFile( {id: "res/items/TempProbeGlow.png", src:"res/items/TempProbeGlow.png"});
 
@@ -101,22 +154,30 @@ function GameState(){
 
     // Game State flags
     this.turkeyBought = false;
+    this.ovenLightBought = false;
+    var randomWeight = [ (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99))
+    				    ];
+
 	this.marketItems = {
-		"FrillsBox" : new MarketItem( this, "FrillsBox", 133,92, 2000, "res/items/FrillsBox.png", "res/items/FrillsBoxGlow.png" ),
-	    "TuTempProberkey" : new MarketItem( this, "TuTempProberkey", 200, 57, 100, "res/items/TempProbe.png", "res/items/TempProbeGlow.png" ),
-	    "OvenLightBox" : new MarketItem( this, "OvenLightBox", 131,222, 300, "res/items/OvenLightBox.png", "res/items/OvenLightBoxGlow.png" ),
+		"Frills Box" : new MarketItem( this, "Frills Box", 133,92, 3.00, "res/items/FrillsBox.png", "res/items/FrillsBoxGlow.png", "Some people dress up their dogs. Others dress up their house. Why not dress up your turkey?" ),
+	    "Temperature Probe" : new MarketItem( this, "Temperature Probe", 200, 57, 9.00, "res/items/TempProbe.png", "res/items/TempProbeGlow.png", "Ensure your food is cooked with this handy thermometer. Now with easy to read LED display" ),
+	    "Oven Light in a Box" : new MarketItem( this, "Oven Light in a Box", 131,222, 15.00, "res/items/OvenLightBox.png", "res/items/OvenLightBoxGlow.png", "This will allow checking on your turkey without letting the heat out." ),
 
-	    "Alarm" : new MarketItem( this, "Alarm", 173,248, 500, "res/items/Alarm.png", "res/items/AlarmGlow.png" ),
-		"Cookbook" : new MarketItem( this, "Cookbook", 283,203, 400, "res/items/Cookbook1.png", "res/items/Cookbook1Glow.png" ),
-	    "StuffingRepurposed" : new MarketItem( this, "StuffingRepurposed",  510,197, 200, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposedGlow.png" ),
-	    "StuffingExquisite" : new MarketItem( this, "StuffingExquisite", 458,210, 300, "res/items/StuffingExquisite.png", "res/items/StuffingExquisiteGlow.png" ),
-	    "StuffingSpecial" : new MarketItem( this, "StuffingSpecial", 390,220, 500, "res/items/StuffingSpecial.png", "res/items/StuffingSpecialGlow.png" ),
+	    "Alarm Clock" : new MarketItem( this, "Alarm Clock", 173,248, 6.00, "res/items/Alarm.png", "res/items/AlarmGlow.png", "Have you ever wanted to control time? Now you can. Digital readout counts down until time of choice. Audible alarm" ),
+		"Cookbook" : new MarketItem( this, "Cookbook", 283,203, 3.00, "res/items/Cookbook1.png", "res/items/Cookbook1Glow.png", "How do I cook turkey? Handy note space included for writing down temperature measurements" ),
+	    "Repurposed Stuffing" : new MarketItem( this, "Repurposed Stuffing",  510,197, 2.00, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposedGlow.png","At least 80% original breadcrumb. Guaranteed to contain no avian products" ),
+	    "Exquisite Stuffing" : new MarketItem( this, "Exquisite Stuffing", 458,210, 3.00, "res/items/StuffingExquisite.png", "res/items/StuffingExquisiteGlow.png", "Colonial merchants once traveled the four reaches of the Earth to bring back the ingredients contained in this very box" ),
+	    "Special Stuffing" : new MarketItem( this, "Special Stuffing", 390,220, 6.00, "res/items/StuffingSpecial.png", "res/items/StuffingSpecialGlow.png", "Once rated as the most handsome man in the universe. Scott and his patented special stuffing will set you on the path to food heaven" ),
 
-	    "Turkey1" : new MarketItem( this, "Turkey1", 170,350, 100, "res/items/Turkey5.png", "res/items/Turkey5Glow.png" ),
-	    "Turkey2": new MarketItem( this, "Turkey2", 540,320, 100, "res/items/Turkey4.png", "res/items/Turkey4Glow.png" ),
-	    "Turkey3" : new MarketItem( this, "Turkey3", 265,415, 100, "res/items/Turkey3.png", "res/items/Turkey3Glow.png" ),
-	    "Turkey4": new MarketItem( this, "Turkey4", 474,357, 100, "res/items/Turkey2.png", "res/items/Turkey2Glow.png" ),
-		"Turkey5": new MarketItem( this, "Turkey5", 368,426, 100, "res/items/Turkey1.png", "res/items/Turkey1Glow.png" )
+	    "Organic Turkey" : new MarketItem( this, "Organic Turkey", 180,360, randomWeight[0]*2.00, "res/items/Turkey5.png", "res/items/Turkey5Glow.png", "All natural. No hormones. No antibiotics. Free Range. Lead Free", parseFloat(randomWeight[0]) ),
+	    "Free Range Turkey": new MarketItem( this, "Free Range Turkey", 540,320, randomWeight[1]*1.25, "res/items/Turkey4.png", "res/items/Turkey4Glow.png", "Our turkeys have wide open spaces to roam and are fed with only the highest quality feed.", parseFloat(randomWeight[1]) ),
+	    "Sunny Farms Turkey" : new MarketItem( this, "Sunny Farms Turkey", 265,415, randomWeight[2]*0.85, "res/items/Turkey3.png", "res/items/Turkey3Glow.png", "100% Turkey product from Sunny Farms Heavy Industries, Ltd.", parseFloat(randomWeight[2]) ),
+	    "Pastured Turkey": new MarketItem( this, "Pastured Turkey", 474,357, randomWeight[3]*1.75, "res/items/Turkey2.png", "res/items/Turkey2Glow.png", "Grassy fields and natural ingredients allow our turkeys to have a better life, and taste great.", parseFloat(randomWeight[3]) ),
+		"General Turkey": new MarketItem( this, "General Turkey", 378,426, randomWeight[4]*1.00, "res/items/Turkey1.png", "res/items/Turkey1Glow.png", "100% General Satisfaction Guaranteed", parseFloat(randomWeight[4]) )
 	};
 
 	this.purchasedItems = [];
@@ -179,7 +240,7 @@ function GameUI( canvasElem, gameState ){
 
 	var soundManager = new SoundManager( gameState );
 
-	this.activeScreenObj = new LoadingScreen( this.stage, gameState );
+	this.activeScreenObj = new KitchenScreen( this.stage, gameState );
 	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
 	textContent.x = 750;
 	textContent.y = 30;

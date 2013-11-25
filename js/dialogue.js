@@ -86,12 +86,12 @@ function DialogUI( stage, gameState ){
     		if( that.dialogState == DIALOG_RECEDING ){
 	    		that.dialogBox.y+=that.dialogSpeed;
 	    		that.textContent.y +=that.dialogSpeed;
-	    		console.log( "Receding" + that.dialogBox.y );
+	    		//console.log( "Receding" + that.dialogBox.y );
     		}
     		if( that.dialogState == DIALOG_SHOWING ){
     			that.dialogBox.y-=that.dialogSpeed;
     			that.textContent.y -=that.dialogSpeed;
-    			console.log( "Advancing" + that.dialogBox.y );
+    			//console.log( "Advancing" + that.dialogBox.y );
     		}
 
     		// toggle states
@@ -99,14 +99,14 @@ function DialogUI( stage, gameState ){
     			that.dialogBox.y = 675;
     			that.textContent.y = 735;
     			that.dialogState = DIALOG_PAUSING;
-    			console.log( "Pausing on recede" + that.dialogBox.y );
+    			//console.log( "Pausing on recede" + that.dialogBox.y );
 
     		}
     		if( that.dialogBox.y < 435 && that.dialogState == DIALOG_SHOWING ){
     			that.dialogBox.y = 435;
     			that.textContent.y = 480;
     			that.dialogState = DIALOG_PAUSING;
-    			console.log( "Pausing on showing" + that.dialogBox.y );
+    			//console.log( "Pausing on showing" + that.dialogBox.y );
     		}
 
     		/* next states if there are any on the queue */

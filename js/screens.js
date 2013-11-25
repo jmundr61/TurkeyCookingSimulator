@@ -13,7 +13,6 @@ function LoadingScreen( stage, gameState ){
     					 new createjs.Bitmap( "res/screens/LoadingScreen/TurkeyDone.png" ) ];
 
 	this.done.alpha= 0;
-
 	stage.addChild( this.picture );
 	stage.addChild( this.cooking );
 	stage.addChild( this.done );
@@ -96,7 +95,7 @@ function MainScreen( stage, gameState ){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
  	var animation = new createjs.Sprite(spriteSheet, "stare");
- 	animation.x = 200;
+ 	animation.x = 140;
  	animation.y = 210;
 
  	animation.addEventListener("tick", handleTick);
@@ -109,6 +108,7 @@ function MainScreen( stage, gameState ){
  	stage.addChild(animation);
 
  	this.grassLayer = new createjs.Bitmap( "res/screens/MainScreen/Grass.png" );
+ 	this.grassLayer.x = -60;
  	stage.addChild( this.grassLayer );
 
 	// buttons info/credits/start
@@ -135,21 +135,74 @@ function MainScreen( stage, gameState ){
 	}
 
 //start button
-
 }
 
 function DifficultyScreen( stage, gameState ){
 	var that = this;
 
-	this.background = new createjs.Bitmap( "res/Difficulty-Selection.png" );
+    this.background = new createjs.Bitmap( "res/screens/DifficultyScreen/Difficulty-Selection.png" );
     stage.addChild( this.background );
 
- 	// Easy/Hard Button
- 	stage.addChild( new Button( stage, gameState, 170, 40, 450, 105, "SwitchScreen", "KitchenScreen" ) );
- 	stage.addChild( new Button( stage, gameState, 170, 150, 450, 105, "SwitchScreen", "KitchenScreen" ) );
+    var turkeyAnimations = { peck:[14,24,"peck"], ruffle:[0,13,"ruffle"], stare:[25,35,"stare"] };
+	var data = {
+    	images: ["res/screens/MainScreen/TurkeySprite.png"],
+     	frames: { width:400, height:350 },
+     	animations: turkeyAnimations
+ 	};
 
+	var spriteSheet = new createjs.SpriteSheet(data);
+ 	var animation = new createjs.Sprite(spriteSheet, "stare");
+ 	animation.x = 140;
+ 	animation.y = 210;
+
+ 	animation.addEventListener("tick", handleTick);
+ 	function handleTick(event) {
+ 		if ( turkeyAnimations[event.currentTarget.currentAnimation][1] == event.currentTarget.currentFrame ){
+ 			event.currentTarget.paused = true;
+ 		}
+	    // Click happened.
+ 	}
+ 	stage.addChild(animation);
+
+ 	this.grassLayer = new createjs.Bitmap( "res/screens/MainScreen/Grass.png" );
+ 	this.grassLayer.x = -60;
+ 	stage.addChild( this.grassLayer );
+
+ 	// Difficulty selection UI
+ 	this.buttonsAndText = new createjs.Bitmap( "res/screens/DifficultyScreen/ButtonsandText.png" );
+ 	stage.addChild( this.buttonsAndText );
+
+ 	this.maleSelection = new createjs.Bitmap( "res/screens/DifficultyScreen/ButtonMale.png" );
+ 	stage.addChild( this.maleSelection );
+
+ 	this.femaleSelection = new createjs.Bitmap( "res/screens/DifficultyScreen/ButtonFemale.png" );
+ 	this.femaleSelection.alpha = 0;
+ 	stage.addChild( this.femaleSelection );
+
+ 	// Easy/Hard Button
+ 	stage.addChild( new Button( stage, gameState, 500, 235, 100, 55, "ChangeGender", "Male" ) );
+ 	stage.addChild( new Button( stage, gameState, 500, 300, 100, 55, "ChangeGender", "Female" ) );
+
+ 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, "SwitchScreen", "KitchenScreen" ) );
+ 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, "SwitchScreen", "KitchenScreen" ) );
+
+ 	stage.addChild( new Button( stage, gameState, 35, 495, 85, 55, "SwitchScreen", "MainScreen" ) );
+
+ 	gameState.pubsub.subscribe("ChangeGender", function(gender){
+ 		gameState.gender=gender;
+ 		if( gender == "Male" ){
+ 			that.maleSelection.alpha = 1;
+ 			that.femaleSelection.alpha = 0;
+ 		}else{
+ 			that.maleSelection.alpha = 0;
+ 			that.femaleSelection.alpha = 1;
+ 		}
+ 	})
 	return {
 		blit : function(){
+			if( createjs.Ticker.getTicks() %50 == 0 ){
+				animation.gotoAndPlay(["peck", "ruffle", "stare"][UtilityFunctions.randRange(0,2)]);
+			}
 
 			// Draw all the uiElements
 	        for( var index in that.uiElems ){
@@ -165,7 +218,7 @@ function KitchenScreen( stage, gameState ){
 	// Fade out any other sounds
 	gameState.pubsub.publish( "FadeOut", "" );
 
-	this.background = new createjs.Bitmap( "res/kitchen.png" );
+	this.background = new createjs.Bitmap( "res/screens/KitchenScreen/KitchenScreen.png" );
     stage.addChild( this.background );
 
 	this.uiElems = [];
@@ -179,6 +232,7 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems.push( new ClockUI( stage, gameState ) );
 	this.uiElems.push( new WindowUI( stage, gameState ) )
 	stage.addChild( new Button( stage, gameState, 500, 40, 450, 105, "SwitchScreen", "MarketScreen" ) );
+	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, "SwitchScreen", "HelpScreen" ) );
 
 	// If player did not buy a turkey, tell them
 	if( !gameState.turkeyBought ){
@@ -200,22 +254,52 @@ function MarketScreen( stage, gameState ){
 	var that = this;
 
     this.background = new createjs.Bitmap( "res/screens/MarketScreen/MarketScreen.png" );
-    var price = new createjs.Text( "100", "24px Arial", "#00000000" );
-    	price.x = 725;
-	 	price.y = 500;
+    var price = new createjs.Text( "", "16px Arial", "#00000000" );
+    	price.x = 120;
+	 	price.y = 560;
 
-	var wallet = new createjs.Text( gameState.wallet, "24px Arial", "#00000000" );
+	var wallet = new createjs.Text( "$" + parseFloat(gameState.wallet).toFixed(2), "20px Arial", "#00000000" );
    		wallet.x = 725;
 	 	wallet.y = 550;
+
+ 	var walletTag = new createjs.Bitmap("res/items/Wallet.png");
+		walletTag.x = 670;
+		walletTag.y = 535;
+
+	var clipboardImg = new createjs.Bitmap("res/items/Clipboard.png");
+		clipboardImg.x = 5;
+		clipboardImg.y = 315;
+
+	var clipboardTitle = new createjs.Text( "Shopping List", "18px Arial", "#00000000" );
+   		clipboardTitle.x = 25;
+	 	clipboardTitle.y = 385;
+	 	clipboardTitle.lineWidth = 175;
+
+	var clipboardText = new createjs.Text( "Turkey", "16px Arial", "#00000000" );
+   		clipboardText.x = 23;
+	 	clipboardText.y = 425;
+	 	clipboardText.lineWidth = 175;
+
+	var clipboardWeight = new createjs.Text( "", "16px Arial", "#00000000" );
+   		clipboardWeight.x = 120;
+	 	clipboardWeight.y = 540;
+	 	clipboardWeight.lineWidth = 175;
 
 	// Play soundz
 	gameState.pubsub.publish( "Play", {name:"Entrance", volume:0.3} );
 	gameState.pubsub.publish( "BackgroundLoop", {name:"MarketMusic", volume:1} );
 	gameState.pubsub.publish( "BackgroundLoop", {name:"MarketBackgroundSound", volume:0.4} );
 
-    stage.addChild( this.background );
-    stage.addChild(price);
+    stage.addChild(this.background);
+
     stage.addChild(wallet);
+    stage.addChild(walletTag);
+    stage.addChild(clipboardImg);
+
+    stage.addChild(clipboardTitle);
+    stage.addChild(clipboardText);
+    stage.addChild(clipboardWeight);
+    stage.addChild(price);
 
     this.uiElems = [];
     this.uiElems.push( new ImgButton( stage, gameState, 690,0, "res/items/ExitSign.png", "res/items/ExitGlow.png","SwitchScreen", "KitchenScreen", "Click"  ) );
@@ -223,20 +307,38 @@ function MarketScreen( stage, gameState ){
     for (var index in marketItemKeys ) {
     	gameState.marketItems[marketItemKeys[index]].draw( stage );
     }
-	this.topground = new createjs.Bitmap( "res/screens/MarketTopShelf.png" );
+
+	this.topground = new createjs.Bitmap( "res/screens/MarketScreen/MarketTopShelf.png" );
 	stage.addChild( this.topground );
 
-	 this.showPrice = function( cost ){
-	 	price.text = cost;
-	 }
-	 gameState.pubsub.subscribe( "ShowPrice", this.showPrice );
-    this.setWalletAmount = function(newAmount){
-    	wallet.text=gameState.wallet=newAmount;
 
+	this.showPrice = function( cost ){
+		price.text = "$ " + ( cost == NaN ? "" : parseFloat(cost).toFixed(2) );
+	}
+
+	this.clearClipboard = function(){
+		price.text = "";
+		clipboardTitle.text = "";
+		clipboardText.text = "";
+		clipboardWeight.text = "";
+	}
+
+	this.showDesc = function( desc ){
+	 	clipboardTitle.text = desc.title;
+	 	clipboardText.text = desc.desc;
+	 	if( desc.weight ){
+	 		clipboardWeight.text = desc.weight.toFixed(2) + " lbs.";
+	 	}
+	}
+
+    this.setWalletAmount = function(newAmount){
+    	wallet.text="$" + ( gameState.wallet=newAmount.toFixed(2) );
     }
 
+    gameState.pubsub.subscribe("ShowDesc", this.showDesc);
+	gameState.pubsub.subscribe("ShowPrice", this.showPrice );
     gameState.pubsub.subscribe("WalletAmount", this.setWalletAmount);
-
+    gameState.pubsub.subscribe("ClearClipboard", this.clearClipboard);
 
     return {
 		blit : function(){
