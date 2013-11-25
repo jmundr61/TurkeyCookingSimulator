@@ -8,9 +8,9 @@
 
 //Global Variables for Turkey
 density = 1050; // kg/m3 Assuming Density of Water 1000 kg/m3
-cp = 6200 // J/kg K for Turkey
+cp = 7000 // J/kg K for Turkey
 heatConvection = 4; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 0.150 // W/m K // Chicken
+thermalConduct = 0.07 // W/m K // Chicken
 globalTime = 0;
 
 function celsiusToFarenheit(celsius) {
@@ -136,6 +136,7 @@ function layerModel(name,RadiusPercent) {
 	this.initialTemp = 20;
 	this.waterLost = 0;
 	this.finalTemperature = 20;
+	this.volume = null;
 }
  
 
@@ -146,25 +147,28 @@ this.totalRadius = calculateRadius(weight)
 this.skin = new layerModel("Skin",0.85)
 this.body = new layerModel("Body",0.45)
 this.core = new layerModel("Core",0.01)
-this.skin.waterLost = (sphereVolume(this.totalRadius) - sphereVolume(this.skin.radiusPercent*this.totalRadius))*waterMultiplier
-this.body.waterLost = (sphereVolume(this.skin.radiusPercent*this.totalRadius) - sphereVolume(this.body.radiusPercent*this.totalRadius))*waterMultiplier
-this.core.waterLost = (sphereVolume(this.body.radiusPercent*this.totalRadius) - 0)*waterMultiplier
+this.skin.volume = sphereVolume(this.totalRadius) - sphereVolume(this.skin.radiusPercent*this.totalRadius);
+this.body.volume = sphereVolume(this.skin.radiusPercent*this.totalRadius) - sphereVolume(this.body.radiusPercent*this.totalRadius);
+this.core.volume = sphereVolume(this.body.radiusPercent*this.totalRadius) - 0;
+this.skin.waterLost = this.skin.volume*waterMultiplier
+this.body.waterLost = this.body.volume*waterMultiplier
+this.core.waterLost = this.core.volume*waterMultiplier
 
-	this.cookCondition = function(cookValue) {
-		var multiplier = 10;
-			if (cookValue>=multiplier*1000) {
+	this.cookCondition = function(cookValue,volume) {
+		var multiplier = 1;
+			if (cookValue>=multiplier*200000) {
 				return("House Fire")
 			}
-			else if(cookValue>=multiplier*500) {
+			else if(cookValue>=multiplier*140000) {
 				return("Charcoal")
 			}
-			else if (cookValue>=multiplier*100) {
+			else if (cookValue>=multiplier*110000) {
 				return("Dry")
 			}
-			else if (cookValue>=multiplier*4) {
+			else if (cookValue>=multiplier*20000) {
 				return("Cooked")
 			}			
-			else if (cookValue>=multiplier*2) {
+			else if (cookValue>=multiplier*10000) {
 				return("Undercooked")
 			}		
 			else {
@@ -185,27 +189,27 @@ this.core.waterLost = (sphereVolume(this.body.radiusPercent*this.totalRadius) - 
 		
 	//Water Loss Calculations
 		//Skin
-		tempLoss = waterLoss(this.skin.initialTemp,this.totalRadius,this.skin.radiusPercent*this.totalRadius,this.totalRadius)
+		tempLoss = waterLoss(this.skin.initialTemp,this.skin.volume,this.totalRadius)
 		this.skin.waterLost = this.skin.waterLost - (tempLoss);
 			//Distribute Water
 		//this.body.waterLost = this.body.waterLost + surfaceExchange(this.body.radiusPercent*this.totalRadius,this.totalRadius)*(tempLoss);
 		
 		//Body
-		tempLoss = waterLoss(this.body.initialTemp,this.skin.radiusPercent*this.totalRadius,this.body.radiusPercent*this.totalRadius,this.totalRadius)
+		tempLoss = waterLoss(this.body.initialTemp,this.body.volume,this.totalRadius)
 		this.body.waterLost = this.body.waterLost - (tempLoss);
 			//Distribute Water
 		//this.skin.waterLost = this.skin.waterLost + surfaceExchange(this.skin.radiusPercent*this.totalRadius,this.body.radiusPercent*this.totalRadius)*(tempLoss);
 		//this.core.waterLost = this.core.waterLost + surfaceExchange(this.body.radiusPercent*this.totalRadius,this.skin.radiusPercent*this.totalRadius)*(tempLoss);
 		
 		//Core
-		tempLoss = waterLoss(this.core.initialTemp,this.body.radiusPercent*this.totalRadius,0,this.totalRadius)
+		tempLoss = waterLoss(this.core.initialTemp,this.core.volume,this.totalRadius)
 		this.core.waterLost = this.core.waterLost - (tempLoss);
 			//Distribute Water
 		//this.body.waterLost = this.body.waterLost + (tempLoss);
 			
-		console.log("Skin: "+ this.skin.waterLost + " " + turkey.cookCondition(Math.abs(this.skin.waterLost)));
-		console.log("Body: "+ this.body.waterLost + " " + turkey.cookCondition(Math.abs(this.body.waterLost)));
-		console.log("Core: "+ this.core.waterLost + " " + turkey.cookCondition(Math.abs(this.core.waterLost)));
+		console.log("Skin: "+ this.skin.waterLost + " " + turkey.cookCondition(Math.abs(this.skin.waterLost),this.skin.volume));
+		console.log("Body: "+ this.body.waterLost + " " + turkey.cookCondition(Math.abs(this.body.waterLost),this.body.volume));
+		console.log("Core: "+ this.core.waterLost + " " + turkey.cookCondition(Math.abs(this.core.waterLost),this.core.volume));
 	}
 }
 
@@ -221,10 +225,9 @@ function surfaceExchange(outerRadius,innerRadius) {
 var denominator = (sphereSurfaceArea(innerRadius) + sphereSurfaceArea(outerRadius) )
 return(sphereSurfaceArea(outerRadius)/denominator )
 }
-function waterLoss(temperature,outerRadius,innerRadius,totalRadius) {
-totalVolume =sphereVolume(totalRadius)
-volume = sphereVolume(outerRadius) - sphereVolume(innerRadius)
-loss = (volume) * Math.pow(10,(temperature-20)/176)
+function waterLoss(temperature,volume,totalRadius) {
+totalVolume = sphereVolume(totalRadius)
+loss = (1) * Math.pow(7,(temperature-20)/176)
 return (loss)
 }
 
@@ -270,7 +273,7 @@ ovenObject = new oven ();
 turkey = new turkeyModel(8);
 
 setInterval(function(){time()},15.625);
-setTimeout(function(){alert(ovenObject.steadyTemp)},360000) 
+//setTimeout(function(){alert(ovenObject.steadyTemp)},360000) 
 totalCookTime = 0;
 scale = 1
 function time() {
