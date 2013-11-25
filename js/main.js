@@ -240,7 +240,7 @@ function GameUI( canvasElem, gameState ){
 
 	var soundManager = new SoundManager( gameState );
 
-	this.activeScreenObj = new KitchenScreen( this.stage, gameState );
+	this.activeScreenObj = new LoadingScreen( this.stage, gameState );
 	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
 	textContent.x = 750;
 	textContent.y = 30;
