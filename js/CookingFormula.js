@@ -8,9 +8,9 @@
 
 //Global Variables for Turkey
 density = 1050; // kg/m3 Assuming Density of Water 1000 kg/m3
-cp = 3100 // J/kg K for Turkey
+cp = 6200 // J/kg K for Turkey
 heatConvection = 4; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
-thermalConduct = 0.380 // W/m K // Chicken
+thermalConduct = 0.150 // W/m K // Chicken
 globalTime = 0;
 
 function celsiusToFarenheit(celsius) {
@@ -134,31 +134,72 @@ function layerModel(name,radiusPercent) {
 	this.name = name;
 	this.radiusPercent=radiusPercent;
 	this.initialTemp = 20;
-	this.waterContent =100000;
-	this.heatLost = 0;
+	this.waterLost = 0;
 	this.finalTemperature = 20;
 }
  
 
 function turkeyModel(weight) {
-
+var tempLoss = 0;
+var waterMultiplier = 10000
 this.totalRadius = calculateRadius(weight)
 this.skin = new layerModel("Skin",0.85)
 this.body = new layerModel("Body",0.45)
 this.core = new layerModel("Core",0.01)
+this.skin.waterLost = (sphereVolume(this.skin.radiusPercent*this.totalRadius) - sphereVolume(this.body.radiusPercent*this.totalRadius))*waterMultiplier
+this.body.waterLost = (sphereVolume(this.body.radiusPercent*this.totalRadius) - sphereVolume(this.core.radiusPercent*this.totalRadius))*waterMultiplier
+this.core.waterLost = (sphereVolume(this.core.radiusPercent*this.totalRadius))*waterMultiplier
 
 	this.updateLayerTemps = function() {
 		this.skin.finalTemperature = transientSphereSeries (this.skin.radiusPercent*this.totalRadius,this.totalRadius,this.skin.initialTemp,ovenObject.steadyTemp,globalTime)
 		this.skin.initialTemp = this.skin.finalTemperature;
+		tempLoss = waterLoss(this.skin.initialTemp,this.skin.radiusPercent*this.totalRadius,this.body.radiusPercent*this.totalRadius,this.totalRadius)
+		this.skin.waterLost = this.skin.waterLost - (tempLoss);
+		this.body.waterLost = this.body.waterLost + surfaceExchange(this.body.radiusPercent*this.totalRadius,this.skin.radiusPercent*this.totalRadius)*(tempLoss);
+		
 
 		this.body.finalTemperature = transientSphereSeries (this.body.radiusPercent*this.totalRadius,this.totalRadius,this.body.initialTemp,ovenObject.steadyTemp,globalTime)
 		this.body.initialTemp = this.body.finalTemperature;
+		
+		tempLoss = waterLoss(this.body.initialTemp,this.body.radiusPercent*this.totalRadius,this.core.radiusPercent*this.totalRadius,this.totalRadius)
+		this.body.waterLost = this.body.waterLost - (tempLoss);
+		
+		this.skin.waterLost = this.skin.waterLost + surfaceExchange(this.body.radiusPercent*this.totalRadius,this.core.radiusPercent*this.totalRadius)*(tempLoss);
+		this.core.waterLost = this.core.waterLost + surfaceExchange(this.core.radiusPercent*this.totalRadius,this.body.radiusPercent*this.totalRadius)*(tempLoss);
+
 
 		this.core.finalTemperature = transientSphereSeries (this.core.radiusPercent*this.totalRadius,this.totalRadius,this.core.initialTemp,ovenObject.steadyTemp,globalTime)
 		this.core.initialTemp = this.core.finalTemperature;
+		
+		tempLoss = waterLoss(this.core.initialTemp,this.core.radiusPercent*this.totalRadius,0,this.totalRadius)
+		this.core.waterLost = this.core.waterLost - (tempLoss);
+		this.body.waterLost = this.body.waterLost + (tempLoss);
+		
+		console.log("Water Content From Skin: "+ this.skin.waterLost);
+		console.log("Water Content From Body: "+ this.body.waterLost);
+		console.log("Water Content From Core: "+ this.core.waterLost);
+		
 	}
 }
 
+function sphereVolume (radius) {
+return((4/3)*Math.PI*Math.pow(radius,3))
+}
+
+function sphereSurfaceArea(radius) {
+return (4*Math.PI*Math.pow(radius,2))
+}
+
+function surfaceExchange(outerRadius,innerRadius) {
+var denominator = (sphereSurfaceArea(innerRadius) + sphereSurfaceArea(outerRadius) )
+return(sphereSurfaceArea(outerRadius)/denominator )
+}
+function waterLoss(temperature,outerRadius,innerRadius,totalRadius) {
+totalVolume =sphereVolume(totalRadius)
+volume = sphereVolume(outerRadius) - sphereVolume(innerRadius)
+loss = (volume) * Math.pow(1.20,temperature/100)
+return (loss)
+}
 
 var oldBiot=null;
 function transientSphereSeries (rPosition,rTotal,tempInitial,tempInfini,t) {
@@ -201,8 +242,8 @@ return(tempAtTimeAndRadius)
 ovenObject = new oven ();
 turkey = new turkeyModel(8);
 
-setInterval(function(){time()},10);
-//setTimeout(function(){alert(ovenObject.steadyTemp)},150000) 
+setInterval(function(){time()},1000);
+setTimeout(function(){alert(ovenObject.steadyTemp)},360000) 
 totalCookTime = 0;
 function time() {
 	console.clear()
@@ -213,9 +254,9 @@ function time() {
 		globalTime = 0; //Reset the model's time calculation if there are major changes in the tolerance of the temperature
 	}
 		else {
-		globalTime = globalTime + 1;
+		globalTime = globalTime + 60;
 		ovenObject.steadyTimer = ovenObject.steadyTimer + 1;
-		totalCookTime = totalCookTime +1;
+		totalCookTime = totalCookTime + 60;
 		}
 		
 	console.log(ovenObject.tempInfini)
