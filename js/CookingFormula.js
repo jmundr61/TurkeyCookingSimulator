@@ -8,7 +8,7 @@
 
 //Global Variables for Turkey
 density = 1050; // kg/m3 Assuming Density of Water 1000 kg/m3
-cp = 2810 // J/kg K for Turkey 
+cp = 4300 // 2810 J/kg K for Turkey 
 heatConvection = 5; // W/m2 K Some Reasonable estimate for natural Convection. Change as needed. 5-25
 thermalConduct = 0.412 // W/m K // Chicken
 globalTime = 0;
@@ -107,7 +107,7 @@ this.setTemp = 20;
 this.steadyTemp = 20;
 this.steadyTimer = 0;
 var proportional = 0.004; // This value is arbitrary to how fast you want the temperatures to converge. (Or oscillate, which could be realistic as well)
-var errorTolerance = 25; //Stove is accurate to 25 degree Celcius Should hopefully oscillate below that value.
+var errorTolerance = 10; //Stove is accurate to 25 degree Celcius Should hopefully oscillate below that value.
 
 	this.changeTemp = function(setTemp) {
 		this.setTemp = setTemp;
@@ -155,19 +155,19 @@ this.core.waterLost = this.core.volume*waterMultiplier
 
 	this.cookCondition = function(cookValue,volume) {
 		var multiplier = 1;
-			if (cookValue>=multiplier*80000) {
+			if (cookValue>=multiplier*250000) {
 				return("House Fire")
 			}
-			else if(cookValue>=multiplier*55000) {
+			else if(cookValue>=multiplier*150000) {
 				return("Charcoal")
 			}
-			else if (cookValue>=multiplier*40000) {
+			else if (cookValue>=multiplier*80000) {
 				return("Dry")
 			}
-			else if (cookValue>=multiplier*16500) {
+			else if (cookValue>=multiplier*18000) {
 				return("Cooked")
 			}			
-			else if (cookValue>=multiplier*8000) {
+			else if (cookValue>=multiplier*5000) {
 				return("Undercooked")
 			}		
 			else {
@@ -224,7 +224,7 @@ var denominator = (sphereSurfaceArea(innerRadius) + sphereSurfaceArea(outerRadiu
 return(sphereSurfaceArea(outerRadius)/denominator )
 }
 function waterLoss(temperature) {
-loss = (1) * Math.pow(7,(temperature-20)/156)-1
+loss = (1) * Math.pow(10,(temperature-20)/80)-1
 return (loss)
 }
 
@@ -267,16 +267,16 @@ return(tempAtTimeAndRadius)
 //Running the Program Stuff
 
 ovenObject = new oven ();
-turkey = new turkeyModel(8);
+turkey = new turkeyModel(poundsToKilograms(7.26));
 
-setInterval(function(){time()},15.625);
+setInterval(function(){time()},10);
 //setTimeout(function(){alert(ovenObject.steadyTemp)},360000) 
 totalCookTime = 0;
 scale = 1
 function time() {
 	console.clear()
 	var equalized = ovenObject.equalizeTemp()
-	if (ovenObject.steadyTimer>=60*scale && equalized) {
+	if (ovenObject.steadyTimer>=80*scale && equalized) {
 		ovenObject.steadyTimer = 0;
 		ovenObject.steadyTemp = ovenObject.tempInfini
 		turkey.resetLayerTemps();
@@ -291,6 +291,6 @@ function time() {
 	console.log(ovenObject.tempInfini)
 	console.log(ovenObject.steadyTemp)
 	console.log(ovenObject.steadyTimer)
-	console.log(totalCookTime +" seconds")
+	console.log(totalCookTime/60/60 +" hours")
 	turkey.updateLayerTemps();
 }
