@@ -9,6 +9,7 @@ function GameState(){
 	this.name = "";
 	this.gender = "Male";
 	this.wallet = 40.00;
+	this.hard = false;
 
     // Load all our resources:
     var queue = new createjs.LoadQueue(true);
@@ -65,6 +66,12 @@ function GameState(){
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState4.svg", src:"res/screens/KitchenScreen/TurkeyState4.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState5.svg", src:"res/screens/KitchenScreen/TurkeyState5.svg"});
 
+	queue.loadFile( {id: "res/screens/KitchenScreen/CookbookKitchenGlow.png", src:"res/screens/KitchenScreen/CookbookKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/CookbookKitchen.png", src:"res/screens/KitchenScreen/CookbookKitchen.png"});
+
+	queue.loadFile( {id: "res/screens/KitchenScreen/AlarmKitchenGlow.png", src:"res/screens/KitchenScreen/AlarmKitchenGlow.png"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/AlarmKitchen.png", src:"res/screens/KitchenScreen/AlarmKitchen.png"});
+
 	queue.loadFile( {id: "res/screens/KitchenScreen/TempProbeKitchenGlow.png", src:"res/screens/KitchenScreen/TempProbeKitchenGlow.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TempProbeKitchen.png", src:"res/screens/KitchenScreen/TempProbeKitchen.png"});
 
@@ -89,10 +96,6 @@ function GameState(){
 	queue.loadFile( {id: "res/screens/KitchenScreen/DoorOpen.png", src:"res/screens/KitchenScreen/DoorOpen.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/DoorClosedLightOn.png", src:"res/screens/KitchenScreen/DoorClosedLightOn.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/DoorClosedLightOff.png", src:"res/screens/KitchenScreen/DoorClosedLightOff.png"});
-	queue.loadFile( {id: "res/screens/KitchenScreen/CookbookKitchenGlow.png", src:"res/screens/KitchenScreen/CookbookKitchenGlow.png"});
-	queue.loadFile( {id: "res/screens/KitchenScreen/CookbookKitchen.png", src:"res/screens/KitchenScreen/CookbookKitchen.png"});
-	queue.loadFile( {id: "res/screens/KitchenScreen/AlarmKitchenGlow.png", src:"res/screens/KitchenScreen/AlarmKitchenGlow.png"});
-	queue.loadFile( {id: "res/screens/KitchenScreen/AlarmKitchen.png", src:"res/screens/KitchenScreen/AlarmKitchen.png"});
 
 	queue.loadFile( {id: "res/screens/KitchenScreen/PanFront.png", src:"res/screens/KitchenScreen/PanFront.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/OvenTurnRedState.png", src:"res/screens/KitchenScreen/OvenTurnRedState.png"});

@@ -186,10 +186,10 @@ function DifficultyScreen( stage, gameState ){
 
 	stage.addChild( nameInput );
 
-	// handle keyboard typing 
+	// handle keyboard typing
     document.onkeyup = function(event){
     	// keycode
-    	var keynum = 0;
+    	var keynum = 48;
     	  if(window.event){ // IE
             	keynum = event.keyCode;
             }
@@ -199,7 +199,7 @@ function DifficultyScreen( stage, gameState ){
                 }
             }
 
-            if( keynum != 8  && nameInput.text.length < 22 )
+            if( keynum != 8 && keynum < 91 && keynum > 47 && nameInput.text.length < 22 )
             	nameInput.text += String.fromCharCode(keynum);
     };
 
@@ -220,16 +220,18 @@ function DifficultyScreen( stage, gameState ){
             	nameInput.text = nameInput.text.substr(0, nameInput.text.length-1);
     }
 
+    gameState.name = nameInput.text;
+
  	// Easy/Hard Button
  	stage.addChild( new Button( stage, gameState, 500, 235, 100, 55, "ChangeGender", "Male" ) );
  	stage.addChild( new Button( stage, gameState, 500, 300, 100, 55, "ChangeGender", "Female" ) );
 
- 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, "SwitchScreen", "KitchenScreen" ) );
- 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, "SwitchScreen", "KitchenScreen" ) );
+ 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, null, null, function(){ gameState.hard = false; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
+ 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, null, null, function(){ gameState.hard = true; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
 
  	stage.addChild( new Button( stage, gameState, 35, 495, 85, 55, "SwitchScreen", "MainScreen" ) );
 
- 	gameState.pubsub.subscribe("ChangeGender", function(gender){
+ 	gameState.pubsub.subscribe( "ChangeGender", function(gender){
  		gameState.gender=gender;
  		if( gender == "Male" ){
  			that.maleSelection.alpha = 1;
@@ -274,6 +276,7 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems.push( new WindowUI( stage, gameState ) )
 	stage.addChild( new Button( stage, gameState, 500, 40, 450, 105, "SwitchScreen", "MarketScreen" ) );
 	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, "SwitchScreen", "HelpScreen" ) );
+	new ImgButton( stage, gameState, 571,527, "res/screens/KitchenScreen/StoreBrochure.png", "res/screens/KitchenScreen/StoreBrochureGlow.png", "SwitchScreen", "MarketScreen", "Click"  );
 
 	// If player did not buy a turkey, tell them
 	if( !gameState.turkeyBought ){

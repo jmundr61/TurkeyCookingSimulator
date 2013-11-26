@@ -67,7 +67,17 @@ function OvenUI( stage, gameState ){
 		}
 	}
 
-	gameState.pubsub.subscribe( "OvenLight", this.changeOvenLight );
+	var turkeyStates = [
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState3.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5.svg" )
+	];
+
+	for (i in turkeyStates){
+		turkeyStates[i].alpha = 0;
+	}
 
 	var temperatureText = new createjs.Text( "OFF", "40px Arial", "#ff7700" );
 	temperatureText.x = 50;
@@ -91,6 +101,11 @@ function OvenUI( stage, gameState ){
 
 	var doorOpen = new createjs.Bitmap( "res/screens/KitchenScreen/DoorOpen.png" );
 	doorOpen.alpha = 0;
+
+	var redState = new createjs.Bitmap( "res/screens/KitchenScreen/OvenTurnRedState.png" );
+	redState.alpha = 0;
+
+	var panFront = new createjs.Bitmap( "res/screens/KitchenScreen/PanFront.png" );
 
 	this.changeTemperature = function( direction ){
 
@@ -182,6 +197,8 @@ function OvenUI( stage, gameState ){
 	// change temperature, this one's for the UI
     gameState.pubsub.subscribe( "ChangeTemperature", this.changeTemperature );
     gameState.pubsub.subscribe( "OvenLightToggle", this.ovenLightToggle );
+	gameState.pubsub.subscribe( "OvenLight", this.changeOvenLight );
+
 
     this.secondTick = function(){
     		ovenModel.secondTick();
@@ -201,7 +218,12 @@ function OvenUI( stage, gameState ){
 		    stage.addChild( this.text );
 		    stage.addChild( lightPressedImg);
 			// Turkey goes here
-
+				// did the player actually buy a turkey? if so, determine its cooked state
+				if( gameState.turkeyBought ){
+					turkeyStates[0].alpha = 1;
+				}
+			// Pan front goes here
+			stage.addChild( panFront );
 			stage.addChild( doorPeekLightOn);
 		    stage.addChild( doorPeekLightOff);
 
@@ -226,7 +248,6 @@ return {
 
 function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, funnyDescription, weight ){
 	var that = this;
-	console.log("Loading market item" + name);
 		this.name = name;
 		this.bought = false;
 		var mouseOver = new createjs.Bitmap( mouseOverImg );
@@ -314,7 +335,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, fun
 
 
 
-function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd, arg, sound ){
+function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd, arg, sound, altfunc ){
 		var mouseOver = new createjs.Bitmap( mouseOverImg );
 		var mouseOut = new createjs.Bitmap( mouseOutImg );
 		mouseOver.x = mouseOut.x = x;
@@ -327,7 +348,11 @@ function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd,
  			if( sound ){
  				gameState.pubsub.publish("Play", sound );
  			}
- 			gameState.pubsub.publish( eventCmd, arg )
+ 			if( !altfunc){
+ 				gameState.pubsub.publish( eventCmd, arg );
+ 				return;
+ 			}
+ 			altfunc();
  		} );
  		mouseOver.visible = false;
     	stage.addChild( mouseOut );
@@ -338,18 +363,23 @@ function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd,
 	}
 }
 
-function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg ){
+function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg, altfunc ){
 	var that = this;
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
  	button.alpha = 0.5;
- 	button.addEventListener( "click", function(){ gameState.pubsub.publish( eventCmd, arg ) } );
+ 	button.addEventListener( "click", function(){ 
+ 		gameState.pubsub.publish( "Play", "Click" );
+		if( !altfunc ){
+			gameState.pubsub.publish( eventCmd, arg );
+			return;
+		}
+		console.log(altfunc);
+		altfunc();
+ 		gameState.pubsub.publish( eventCmd, arg );
+	 } );
  	button.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
  	button.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
- 	button.addEventListener( "click", function(){
-	 	gameState.pubsub.publish( "Play", "Click" );
-	});
-
 	return button;
 }

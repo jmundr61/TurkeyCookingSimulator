@@ -76,7 +76,7 @@ function OvenModel( turkeyWeight, gameState ) {
 	    	if ( that.equalizeTemp() ) {
 
 	    		// Turn on oven light
-				gameState.pubsub.publish( "OvenLight", "On" );
+				//gameState.pubsub.publish( "OvenLight", "On" );
 
 				//Reset the model's time calculation if there are major changes in the tolerance of the temperature
 			    that.globalTime = 0;
@@ -84,12 +84,15 @@ function OvenModel( turkeyWeight, gameState ) {
 			else {
 
 				// Turn off oven light
-				gameState.pubsub.publish( "OvenLight", "Off" );
+				//gameState.pubsub.publish( "OvenLight", "Off" );
 
 				that.globalTime = that.globalTime + 60;
 			}
 				console.log( that.tempInfini )
 				turkey.updateLayerTemps();
+	    },
+	    getTurkeyState: function(){
+
 	    }
 	}
 }
@@ -230,8 +233,8 @@ var ovenObject = new OvenModel();
 var turkey = new TurkeyModel( 8, ovenObject );
 
 globalTime=0;
-setInterval(function(){time()},100);
-
+setInterval(function(){ovenObject.secondTick()},100);
+ovenObject.changeTemp(100)
 function time() {
     console.clear()
     if (ovenObject.equalizeTemp() ) {
