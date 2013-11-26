@@ -74,9 +74,12 @@ function OvenUI( stage, gameState ){
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4.svg" ),
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5.svg" )
 	];
-
+	// place turkeys in oven
 	for (i in turkeyStates){
 		turkeyStates[i].alpha = 0;
+		turkeyStates[i].scaleX = turkeyStates[i].scaleY = 0.2;
+		turkeyStates[i].x = 75;
+		turkeyStates[i].y = 258;
 	}
 
 	var temperatureText = new createjs.Text( "OFF", "40px Arial", "#ff7700" );
@@ -106,6 +109,7 @@ function OvenUI( stage, gameState ){
 	redState.alpha = 0;
 
 	var panFront = new createjs.Bitmap( "res/screens/KitchenScreen/PanFront.png" );
+	panFront.alpha = 0;
 
 	this.changeTemperature = function( direction ){
 
@@ -221,6 +225,11 @@ function OvenUI( stage, gameState ){
 				// did the player actually buy a turkey? if so, determine its cooked state
 				if( gameState.turkeyBought ){
 					turkeyStates[0].alpha = 1;
+					panFront.alpha = 1;
+					for(i in turkeyStates){
+						stage.addChild(turkeyStates[i]);
+					}
+					stage.addChild(panFront);
 				}
 			// Pan front goes here
 			stage.addChild( panFront );
