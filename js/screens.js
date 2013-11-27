@@ -218,6 +218,7 @@ function DifficultyScreen( stage, gameState ){
 
             if(keynum == 8 && nameInput.text.length > 0 )
             	nameInput.text = nameInput.text.substr(0, nameInput.text.length-1);
+        event.preventDefault();
     }
 
     gameState.name = nameInput.text;
@@ -268,7 +269,7 @@ function KitchenScreen( stage, gameState ){
 
 	for(var i in gameState.purchasedItems ){
 		console.log(gameState.purchasedItems);
-		gameState.purchasedItems[i].draw( stage, 403+100*i, 350 );
+		gameState.purchasedItems[i].draw( stage );
 	}
 
 	this.uiElems.push( gameState.ovenUI ? gameState.ovenUI.render() : ( gameState.ovenUI = new OvenUI( stage, gameState ) ).render() );
@@ -276,7 +277,8 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems.push( new WindowUI( stage, gameState ) )
 	stage.addChild( new Button( stage, gameState, 500, 40, 450, 105, "SwitchScreen", "MarketScreen" ) );
 	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, "SwitchScreen", "HelpScreen" ) );
-	new ImgButton( stage, gameState, 571,527, "res/screens/KitchenScreen/StoreBrochure.png", "res/screens/KitchenScreen/StoreBrochureGlow.png", "SwitchScreen", "MarketScreen", "Click"  );
+
+	new ImgButton( stage, gameState, 0,0, "res/screens/KitchenScreen/StoreBrochure.png", "res/screens/KitchenScreen/StoreBrochureGlow.png", "SwitchScreen", "MarketScreen", "Click"  );
 
 	// If player did not buy a turkey, tell them
 	if( !gameState.turkeyBought ){
@@ -349,6 +351,7 @@ function MarketScreen( stage, gameState ){
     this.uiElems.push( new ImgButton( stage, gameState, 690,0, "res/items/ExitSign.png", "res/items/ExitGlow.png","SwitchScreen", "KitchenScreen", "Click"  ) );
     var marketItemKeys = Object.keys(gameState.marketItems);
     for (var index in marketItemKeys ) {
+    	console.log("drawing"+gameState.marketItems[marketItemKeys[index]].name + " on screen " + gameState.currentScreen );
     	gameState.marketItems[marketItemKeys[index]].draw( stage );
     }
 

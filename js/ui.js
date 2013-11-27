@@ -255,12 +255,17 @@ return {
 }
 }
 
-function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, funnyDescription, weight ){
+function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mouseOutKitchenImg, mouseOverKitchenImg, funnyDescription, weight ){
 	var that = this;
 		this.name = name;
 		this.bought = false;
+
+		var mouseOverKitchen = new createjs.Bitmap( mouseOverKitchenImg );
+		var mouseOutKitchen = new createjs.Bitmap( mouseOutKitchenImg );
+
 		var mouseOver = new createjs.Bitmap( mouseOverImg );
 		var mouseOut = new createjs.Bitmap( mouseOutImg );
+
 		mouseOver.x = mouseOut.x = x;
 		mouseOver.y = mouseOut.y = y;
 	 	mouseOut.addEventListener( "mouseover", function(){
@@ -289,6 +294,8 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, fun
  			mouseOut.visible = true;
  			gameState.pubsub.publish("ClearClipboard", {});
  	} );
+
+
  		mouseOver.addEventListener( "click", function(){
  			if(!that.bought && cost <= gameState.wallet ){
  				console.log(that.name);
@@ -329,12 +336,23 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, fun
 		getName: function(){return that.name;},
 		delete: function( stage ){
 			gameState.pubsub.publish("RemoveItems", [mouseOut, mouseOver]);
+
+			// replace image with transparency
+			
 		},
 		draw: function( stage, newx, newy ){
 			if( newx && newy ){
 				mouseOut.x = mouseOver.x = newx;
 				mouseOut.y = mouseOver.y = newy;
 			}
+
+			if( gameState.newScreen == "KitchenScreen" ){
+				console.log("In the kitchen");
+				stage.addChild( mouseOutKitchen );
+	    		stage.addChild( mouseOverKitchen );
+	    		return;
+			}
+
 			stage.addChild( mouseOut );
 	    	stage.addChild( mouseOver );
 		}
