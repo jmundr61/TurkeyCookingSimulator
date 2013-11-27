@@ -10,6 +10,8 @@ function GameState(){
 	this.gender = "Male";
 	this.wallet = 40.00;
 	this.hard = false;
+	this.boughtOvenLight = false;
+	this.turkeyWeight = 8;
 
     // Load all our resources:
     var queue = new createjs.LoadQueue(true);
@@ -36,8 +38,6 @@ function GameState(){
     queue.loadFile( {id: "res/screens/DifficultyScreen/Difficulty-Selection.png", src:"res/screens/DifficultyScreen/Difficulty-Selection.png"} );
 	queue.loadFile( {id: "res/screens/DifficultyScreen/ButtonMale.png", src:"res/screens/DifficultyScreen/ButtonMale.png"} );
     queue.loadFile( {id: "res/screens/DifficultyScreen/ButtonFemale.png", src:"res/screens/DifficultyScreen/ButtonFemale.png"} );
-
-    //queue.addEventListener("fileload", handleFileComplete);
     // Load image assets
     queue.loadFile( {id: "TurkeySpriteFile", src:"res/screens/MainScreen/TurkeySprite.png"} );
     queue.loadFile( {id: "MainBackgroundFile", src:"res/screens/MainScreen/Main-Screen.png"} );
@@ -157,6 +157,9 @@ function GameState(){
 	queue.loadFile( {id: "res/items/Turkey1.png", src:"res/items/Turkey1.png"});
     queue.loadFile( {id: "res/items/Turkey1Glow.png", src:"res/items/Turkey1Glow.png"});
 
+    // People photos
+   	//queue.loadFile( {id: "res/people/Turkey1.png", src:"res/items/Turkey1.png"});
+    //queue.loadFile( {id: "res/people/Turkey1Glow.png", src:"res/items/Turkey1Glow.png"});
 
     this.screenState = 0;
     this.newScreen = "";

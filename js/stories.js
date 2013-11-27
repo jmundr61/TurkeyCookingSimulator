@@ -4,6 +4,8 @@ var story = {
 	"CannotBuyTurkey" : ["Me: I've barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
 	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
+	"BrokenLight" : ["Me: The oven light appears to be broken..."],
+	"EmptyOven" : ["Me: The oven is already preheated..."],
 	"PaintStory" : ["Brother: Hey Grandpa, I've got a funny story about that primer you gave me",
 "Grandpa: You'll have to remind me, again, my memory isn't too good in my old age",
 "Brother: Well, you gave me some primer to redo my room.",

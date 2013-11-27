@@ -47,6 +47,10 @@ function DialogUI( stage, gameState ){
  	this.textContent.addEventListener( "click", function(){ setTimeout( clickEvent, 100); });
 
  	this.showDialog= function( textSeq ){
+ 		if( textSeq.seq == "custom" ){
+ 			story["custom"] = ["Me: " + textSeq.customText ];
+ 		}
+
  		that.currDialogueSeq = new DialogueSequence( textSeq.seq );
  		that.textContent.text=that.currDialogueSeq.next();
  		that.autoAdvance = textSeq.autoAdvance;

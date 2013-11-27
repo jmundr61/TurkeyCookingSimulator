@@ -52,8 +52,8 @@ function OvenUI( stage, gameState ){
 
 	this.ovenDoor = OVEN_CLOSED;
 
-	// Important Model
-	var ovenModel = new OvenModel( 8, gameState );
+	// Important Model, dummy placeholder
+	var ovenModel = { secondTick:function(){} };
 
 	var ovenLight = new createjs.Shape();
 	ovenLight.graphics.beginFill( "black" ).drawCircle( 181, 126, 2 );
@@ -113,41 +113,57 @@ function OvenUI( stage, gameState ){
 
 	this.changeTemperature = function( direction ){
 
-		if( temperatureText.text == "OFF" && direction == "Up" ) temperatureText.text = "125";
-		if( !( temperatureText.text == "OFF" && direction == "Down" ) ){
+		if( gameState.turkeyBought ){
+			if( temperatureText.text == "OFF" && direction == "Up" ) temperatureText.text = "125";
+			if( !( temperatureText.text == "OFF" && direction == "Down" ) ){
 
-			var temp = ( direction == "Up" ? parseInt(temperatureText.text)+25 : parseInt(temperatureText.text)-25);
+				var temp = ( direction == "Up" ? parseInt(temperatureText.text)+25 : parseInt(temperatureText.text)-25);
 
-			 // Check lower bound for OFF
-			 temp = temp < 150 ? temp = "OFF" : temp;
+				 // Check lower bound for OFF
+				 temp = temp < 150 ? temp = "OFF" : temp;
 
-			 // Check upper bound
-			 // if over 1100 F, burn house down
-			 if( temp > 1100 ){
-			 	console.log("You have died in a fire");
-			 	return;
-			 }
+				 // Check upper bound
+				 // if over 1100 F, burn house down
+				 if( temp > 1100 ){
+				 	console.log("You have died in a fire");
+				 	return;
+				 }
 
-			 temperatureText.text = temp;
+				 temperatureText.text = temp;
+			}
+
+			 // Tell our model to set the actual temperature
+			 ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 125 : parseInt( temperatureText.text ) ) );
 		}
-
-		 // Tell our model to set the actual temperature
-		 ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 125 : parseInt( temperatureText.text ) ) );
+		else{
+			gameState.pubsub.publish("ShowDialog",{seq:"EmptyOven", autoAdvance: true});
+		}
 	}
 
 	this.ovenLightToggle = function(){
 
 		lightPressedImg.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
-		if( that.ovenDoor == OVEN_CLOSED){
-			doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
-			doorClosedLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
-			doorOpen.alpha = 0;
+
+		// Only work if the user bought an oven light
+		if( gameState.boughtOvenLight ){
+			if( that.ovenDoor == OVEN_CLOSED){
+				doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
+				doorClosedLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+				doorOpen.alpha = 0;
+			}
+			else if( that.ovenDoor == OVEN_PEEK ){
+				doorPeekLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
+				doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+				doorOpen.alpha = 0;
+			}
+		}else{
+			gameState.pubsub.publish( "ShowDialog", {seq:"BrokenLight", autoAdvance:true} );
 		}
-		else if( that.ovenDoor == OVEN_PEEK ){
-			doorPeekLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
-			doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
-			doorOpen.alpha = 0;
-		}
+	}
+
+	this.startTurkeyModel = function(){
+		console.log("weight is" + gameState.turkeyWeight)
+		ovenModel = new OvenModel( gameState.turkeyWeight, gameState );
 	}
 
 	var handleBar = new createjs.Shape();
@@ -164,11 +180,17 @@ function OvenUI( stage, gameState ){
 			doorPeekLightOn.alpha = doorClosedLightOn.alpha = 0;
 			doorPeekLightOff.alpha = doorClosedLightOff.alpha = 0;
 			doorOpen.alpha = 1;
-			handleBar.y = 330;
+			handleBar.graphics.clear();
+			handleBar.graphics.beginFill("#ffffff").drawRect(5, 450, 400, 60);
+			handleBar.alpha = 0.5;
+
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
 		}else if (that.ovenDoor == OVEN_OPEN ){
 			that.ovenDoor = OVEN_PEEK;
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Close" );
+			handleBar.graphics.clear();
+		 	handleBar.graphics.beginFill("#ffffff").drawRect(20, 190, 300, 20);
+ 			handleBar.alpha = 0.5;
 			ovenPeek();
 		}
 	}
@@ -198,10 +220,19 @@ function OvenUI( stage, gameState ){
 			handleBar.y = 0;
 		}
 	}
+
+	// Show core temperature
+	this.showTempDialog = function(){
+		state = ovenModel.getTurkeyState();
+		gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm.. the core temperature of the turkey is " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
+	}
+
 	// change temperature, this one's for the UI
     gameState.pubsub.subscribe( "ChangeTemperature", this.changeTemperature );
+    gameState.pubsub.subscribe( "ShowTempDialog", this.showTempDialog );
     gameState.pubsub.subscribe( "OvenLightToggle", this.ovenLightToggle );
 	gameState.pubsub.subscribe( "OvenLight", this.changeOvenLight );
+	gameState.pubsub.subscribe( "StartTurkeyModel", this.startTurkeyModel );
 
 
     this.secondTick = function(){
@@ -228,6 +259,7 @@ function OvenUI( stage, gameState ){
 					panFront.alpha = 1;
 					for(i in turkeyStates){
 						stage.addChild(turkeyStates[i]);
+
 					}
 					stage.addChild(panFront);
 				}
@@ -243,6 +275,8 @@ function OvenUI( stage, gameState ){
 		    stage.addChild( new Button( stage, gameState, 45, 163, 41, 17, "ChangeTemperature", "Up" ) );
 		    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
 		    stage.addChild( new Button( stage, gameState, 145, 163, 41, 17, "OvenLightToggle", "" ) );
+		    if( gameState.hard == false )
+		    	stage.addChild( new Button( stage, gameState, 220, 120, 50, 50, "SkipTime", "" ) );
 			stage.addChild( handleBar);
     		return this;
     	}
@@ -293,7 +327,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  			mouseOver.visible = false;
  			mouseOut.visible = true;
  			gameState.pubsub.publish("ClearClipboard", {});
- 	} );
+ 		} );
 
 
 	 	mouseOutKitchen.addEventListener( "mouseover", function(){
@@ -317,17 +351,30 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  			mouseOutKitchen.visible = true;
  		} );
 
+ 		// We've bought the item, now we click it in the Kitchen
+ 		mouseOverKitchen.addEventListener("click",function(){
+ 			if ( that.name.indexOf("Temperature") != -1 ){
+ 				gameState.pubsub.publish( "ShowTempDialog", "" );
+ 			}
+ 		});
+
  		mouseOver.addEventListener( "click", function(){
  			if(!that.bought && cost <= gameState.wallet ){
- 				console.log(that.name);
+
 	 			if( that.name.indexOf("Turkey") != -1 && gameState.turkeyBought != true){
 	 				gameState.turkeyBought = true;
+	 				gameState.turkeyWeight = weight;
 				    gameState.marketItems[ that.name ].delete();
 				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
 				    gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost))
+				    gameState.pubsub.publish("StartTurkeyModel","");
 	 			}
 	 			// can we buy this? Only possible if you already bought a turkey
 	 			else if( that.name.indexOf("Turkey") == -1 && gameState.turkeyBought == true ){
+
+	 				// if we bought an oven light, enable it!
+	 				if( that.name.indexOf("Light") != -1 ) gameState.boughtOvenLight = true;
+
 		 			gameState.purchasedItems.push( objReturn );
 		 			gameState.marketItems[ that.name ].delete();
 		 			that.bought = true;
@@ -336,17 +383,17 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 		 		}
 		 		// One turkey only
 		 		else if( that.name.indexOf("Turkey") != -1 && gameState.turkeyBought == true ){
-		 			gameState.pubsub.publish( "ShowDialog", {seq:"CannotBuyTurkey", autoAdvance:false} );
+		 			gameState.pubsub.publish( "ShowDialog", {seq:"CannotBuyTurkey", autoAdvance:true} );
 		 			gameState.pubsub.publish( "Play", "Error" );
 		 		}
 		 		// Buy turkey first
 		 		else{
-		 			gameState.pubsub.publish( "ShowDialog", {seq:"BuyTurkeyFirst", autoAdvance:false} );
+		 			gameState.pubsub.publish( "ShowDialog", {seq:"BuyTurkeyFirst", autoAdvance:true} );
 		 			gameState.pubsub.publish( "Play", "Error" );
 		 		}
  			}
  			else{
- 				gameState.pubsub.publish( "ShowDialog", {seq:"NoMoney", autoAdvance:false} );
+ 				gameState.pubsub.publish( "ShowDialog", {seq:"NoMoney", autoAdvance:true} );
 	 			gameState.pubsub.publish( "Play", "Error" );
 	 		}
  		});
@@ -358,8 +405,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 		delete: function( stage ){
 			gameState.pubsub.publish("RemoveItems", [mouseOut, mouseOver]);
 
-			// replace image with transparency
-
+			delete gameState.marketItems[that.name];
 		},
 		draw: function( stage, newx, newy ){
 			if( newx && newy ){
@@ -369,6 +415,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 
 			if( gameState.newScreen == "KitchenScreen" ){
 				stage.addChild( mouseOutKitchen );
+				mouseOverKitchen.visible = false;
 	    		stage.addChild( mouseOverKitchen );
 	    		return;
 			}
@@ -415,7 +462,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	button.alpha = 0.5;
+ 	button.alpha = 0.1;
  	button.addEventListener( "click", function(){ 
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){
