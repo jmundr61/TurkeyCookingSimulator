@@ -296,6 +296,27 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  	} );
 
 
+	 	mouseOutKitchen.addEventListener( "mouseover", function(){
+	 		document.body.style.cursor='pointer';
+	 		mouseOverKitchen.visible = true;
+	 		mouseOutKitchen.visible = false;
+	 	});
+ 		mouseOutKitchen.addEventListener( "mouseout", function(){
+ 			document.body.style.cursor='default';
+ 			mouseOverKitchen.visible = false;
+ 			mouseOverKitchen.visible = true;
+ 		} );
+ 		mouseOverKitchen.addEventListener( "mouseover", function(){
+ 			document.body.style.cursor='pointer';
+ 			mouseOverKitchen.visible = true;
+ 			mouseOutKitchen.visible = false;
+ 		});
+ 		mouseOverKitchen.addEventListener( "mouseout", function(){
+ 			document.body.style.cursor='default';
+ 			mouseOverKitchen.visible = false;
+ 			mouseOutKitchen.visible = true;
+ 		} );
+
  		mouseOver.addEventListener( "click", function(){
  			if(!that.bought && cost <= gameState.wallet ){
  				console.log(that.name);
@@ -338,7 +359,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 			gameState.pubsub.publish("RemoveItems", [mouseOut, mouseOver]);
 
 			// replace image with transparency
-			
+
 		},
 		draw: function( stage, newx, newy ){
 			if( newx && newy ){
@@ -347,7 +368,6 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 			}
 
 			if( gameState.newScreen == "KitchenScreen" ){
-				console.log("In the kitchen");
 				stage.addChild( mouseOutKitchen );
 	    		stage.addChild( mouseOverKitchen );
 	    		return;

@@ -351,7 +351,6 @@ function MarketScreen( stage, gameState ){
     this.uiElems.push( new ImgButton( stage, gameState, 690,0, "res/items/ExitSign.png", "res/items/ExitGlow.png","SwitchScreen", "KitchenScreen", "Click"  ) );
     var marketItemKeys = Object.keys(gameState.marketItems);
     for (var index in marketItemKeys ) {
-    	console.log("drawing"+gameState.marketItems[marketItemKeys[index]].name + " on screen " + gameState.currentScreen );
     	gameState.marketItems[marketItemKeys[index]].draw( stage );
     }
 
