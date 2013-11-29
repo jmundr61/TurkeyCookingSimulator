@@ -122,7 +122,6 @@ function OvenModel( turkeyWeight, gameState ) {
             that.setTemp = setTemp;
     	},
 	    secondTick: function(){
-			console.clear();
 			that.globalTime = that.globalTime + 1;
 			that.steadyTimer = that.steadyTimer + 1;
 	    	if ( that.equalizeTemp() ) {

@@ -61,9 +61,9 @@ function LoadingScreen( stage, gameState ){
 }
 
 function InfoHelpScreen( stage, gameState ){
-		var that = this;
+	var that = this;
 
-    this.background = new createjs.Bitmap( "res/Main.png" );
+    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/Help.png" );
     stage.addChild( this.background );
 
     this.uiElems = [];
@@ -262,10 +262,12 @@ function KitchenScreen( stage, gameState ){
 	// Fade out any other sounds
 	gameState.pubsub.publish( "FadeOut", "" );
 
+	this.uiElems = [];
+	
+	this.uiElems.push( new WindowUI( stage, gameState ) );
+
 	this.background = new createjs.Bitmap( "res/screens/KitchenScreen/KitchenScreen.png" );
     stage.addChild( this.background );
-
-	this.uiElems = [];
 
 	for(var i in gameState.purchasedItems ){
 		console.log(gameState.purchasedItems);
@@ -274,15 +276,15 @@ function KitchenScreen( stage, gameState ){
 
 	this.uiElems.push( gameState.ovenUI ? gameState.ovenUI.render() : ( gameState.ovenUI = new OvenUI( stage, gameState ) ).render() );
 	this.uiElems.push( new ClockUI( stage, gameState ) );
-	this.uiElems.push( new WindowUI( stage, gameState ) )
-	stage.addChild( new Button( stage, gameState, 500, 40, 450, 105, "SwitchScreen", "MarketScreen" ) );
+
+
 	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, "SwitchScreen", "HelpScreen" ) );
 
 	new ImgButton( stage, gameState, 0,0, "res/screens/KitchenScreen/StoreBrochure.png", "res/screens/KitchenScreen/StoreBrochureGlow.png", "SwitchScreen", "MarketScreen", "Click"  );
 
 	// If player did not buy a turkey, tell them
 	if( !gameState.turkeyBought ){
-		gameState.pubsub.publish( "ShowDialog", {seq:"KitchenInitial", autoAdvance:false} );
+		gameState.pubsub.publish( "ShowDialog", {seq:"PaintStory", autoAdvance:true} );
 	}
 
 	return {
@@ -462,7 +464,7 @@ function ScoreScreen( stage, gameState ){
 function CreditsScreen( stage, gameState ){
 		var that = this;
 
-    this.background = new createjs.Bitmap( "res/Main.png" );
+    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/Help.png" );
     stage.addChild( this.background );
 
     this.uiElems = [];

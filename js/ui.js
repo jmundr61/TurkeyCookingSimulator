@@ -44,6 +44,54 @@ function ClockUI( stage, gameState ){
 
 }
 
+function CookbookUI( stage, gameState ){
+	var that = this;
+	this.showingCookbook = false;
+
+	var cookbookImg = new createjs.Bitmap("res/screens/KitchenScreen/Cookbook-Open.png");
+	var closeButton = new Button( stage, gameState, 710, 10, 100, 50, null, null, function(){that.hideCookbook();} );
+	var logEntries = [];
+	this.hideCookbook = function(){
+		console.log("hide cookbook");
+		stage.removeChild( closeButton );
+		stage.removeChild( cookbookImg );
+		for( i in logEntries ){
+			stage.removeChild(logEntries[i]);
+		}
+		that.showingCookbook = false;
+	}
+
+	// Show core temperature
+	this.showCookbook = function(){
+		if( !that.showingCookbook ){
+			console.log("show cookbook---" + gameState.peekRecords );
+			stage.addChild( cookbookImg );
+			stage.addChild( closeButton );
+
+			for( i in gameState.peekRecords ){
+				var record = gameState.peekRecords[i];
+				gameState.peekRecords[i].getTime();
+
+				var logLine = new createjs.Text( "OFF", "12px Arial", "#ffffffff" );
+
+				logLine.x = 520;
+				logLine.y = 50 * i+ 165;
+				logLine.textBaseline = "alphabetic";
+				logLine.text = record.getContent();
+
+				logEntries.push(logLine);
+				stage.addChild(logLine);
+			}
+
+			that.showingCookbook = true;
+		}
+	}
+
+	// change temperature, this one's for the UI
+    gameState.pubsub.subscribe( "ShowCookbook", this.showCookbook );
+
+}
+
 function OvenUI( stage, gameState ){
 	var that = this;
 	var OVEN_CLOSED = 0;
@@ -157,7 +205,9 @@ function OvenUI( stage, gameState ){
 				doorOpen.alpha = 0;
 			}
 		}else{
-			gameState.pubsub.publish( "ShowDialog", {seq:"BrokenLight", autoAdvance:true} );
+			// say it only once
+			if( lightPressedImg.alpha == 1)
+				gameState.pubsub.publish( "ShowDialog", {seq:"BrokenLight", autoAdvance:true} );
 		}
 	}
 
@@ -225,7 +275,10 @@ function OvenUI( stage, gameState ){
 	this.showTempDialog = function(){
 		state = ovenModel.getTurkeyState();
 		gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm.. the core temperature of the turkey is " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
+		gameState.pubsub.publish( "AddRecord", "Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" );
 	}
+
+	new CookbookUI( stage, gameState );
 
 	// change temperature, this one's for the UI
     gameState.pubsub.subscribe( "ChangeTemperature", this.changeTemperature );
@@ -241,7 +294,6 @@ function OvenUI( stage, gameState ){
 	}
 
     setInterval(this.secondTick, 1000);
-
 
     return {
     	tick: function(){},
@@ -284,8 +336,58 @@ function OvenUI( stage, gameState ){
 }
 
 function WindowUI( stage, gameState ){
+
+	var dayNight = new createjs.Bitmap("res/Test4-217.svg");
+	dayNight.y=30;
+	//dayNight.x = gameState.currentTime
+
+	var ground = new createjs.Bitmap( "res/screens/Window/Ground.png" );
+	var houses = new createjs.Bitmap( "res/screens/Window/Housefar.png" );
+	var streetLight = new createjs.Bitmap( "res/screens/Window/StreetlightGlow.png" );
+	streetLight.alpha = 0;
+
+	var treeAnimations = { rustle:[0,17,"rustle"], still:[0,0,"still"] };
+	var data = {
+    	images: ["res/screens/Window/Tree_Animation.png"],
+     	frames: { width:386, height:287 },
+     	animations: treeAnimations
+ 	};
+	var spriteSheet = new createjs.SpriteSheet(data);
+ 	var animation = new createjs.Sprite(spriteSheet, "treeAnimations");
+ 	animation.x = 415;
+ 	animation.y = 30;
+
+
+    stage.addChild( dayNight );
+    stage.addChild( ground );
+    stage.addChild( houses );
+    stage.addChild( streetLight );
+    stage.addChild( animation );
 return {
-	tick: function(){}
+
+	tick: function(){
+
+		// move the sky
+		dayNight.x-=25;
+
+		// move the overlay
+		//console.log(dayNight.x);
+		if( dayNight.x < -15583 )
+			dayNight.x = 0;
+
+		// turn on lights
+		if( dayNight.x < 0 && dayNight.x > -4545 ){
+			// turn on random window lights
+			streetLight.alpha = 1;
+		}
+		else if( dayNight.x < -11687 ){
+			streetLight.alpha = 1;
+		}
+		else
+			streetLight.alpha = 0;
+
+
+	}
 }
 }
 
@@ -355,6 +457,11 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  		mouseOverKitchen.addEventListener("click",function(){
  			if ( that.name.indexOf("Temperature") != -1 ){
  				gameState.pubsub.publish( "ShowTempDialog", "" );
+ 			}
+
+ 			if ( that.name.indexOf("Cookbook") != -1 ){
+ 				console.log("click, show cookbook");
+ 				gameState.pubsub.publish("ShowCookbook","");
  			}
  		});
 
@@ -459,6 +566,7 @@ function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd,
 
 function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg, altfunc ){
 	var that = this;
+	console.log("button clicked with "+ altfunc);
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);

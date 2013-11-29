@@ -12,6 +12,15 @@ function GameState(){
 	this.hard = false;
 	this.boughtOvenLight = false;
 	this.turkeyWeight = 8;
+    this.peekRecords = [];
+// Game State flags
+    this.turkeyBought = false;
+    var randomWeight = [ (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+                         (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+                         (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+                         (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
+                         (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99))
+                        ];
 
     // Load all our resources:
     var queue = new createjs.LoadQueue(true);
@@ -45,6 +54,8 @@ function GameState(){
     queue.loadFile( {id: "StartButtonFile", src:"res/screens/MainScreen/ButtonStart.png"} );
     queue.loadFile( {id: "HelpButtonFile", src:"res/screens/MainScreen/ButtonHelp.png"} );
     queue.loadFile( {id: "CreditsButtonFile", src:"res/screens/MainScreen/ButtonCredits.png"} );
+
+    queue.loadFile( {id: "HelpCreditsScreen", src:"res/screens/HelpCreditsScreen/Help.png"} );
 
     queue.loadFile( {id: "MarketScreenfile", src:"res/screens/MarketScreen/MarketScreen.png"} );
 
@@ -100,6 +111,7 @@ function GameState(){
 	queue.loadFile( {id: "res/screens/KitchenScreen/PanFront.png", src:"res/screens/KitchenScreen/PanFront.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/OvenTurnRedState.png", src:"res/screens/KitchenScreen/OvenTurnRedState.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/LightButtonDepressed.png", src:"res/screens/KitchenScreen/LightButtonDepressed.png"});
+    queue.loadFile( {id: "res/screens/KitchenScreen/Cookbook-Open.png", src:"res/screens/KitchenScreen/Cookbook-Open.png"});
 
 
 	// Kitchen Sounds
@@ -158,22 +170,46 @@ function GameState(){
     queue.loadFile( {id: "res/items/Turkey1Glow.png", src:"res/items/Turkey1Glow.png"});
 
     // People photos
-   	//queue.loadFile( {id: "res/people/Turkey1.png", src:"res/items/Turkey1.png"});
-    //queue.loadFile( {id: "res/people/Turkey1Glow.png", src:"res/items/Turkey1Glow.png"});
+   	queue.loadFile( {id: "res/people/Boyfriend.png", src:"res/people/Boyfriend.png"});
+   	queue.loadFile( {id: "res/people/Brother.png", src:"res/people/Brother.png"});
+   	queue.loadFile( {id: "res/people/Cat.png", src:"res/people/Cat.png"});
+   	queue.loadFile( {id: "res/people/Dad.png", src:"res/people/Dad.png"});
+   	queue.loadFile( {id: "res/people/Girlfriend.png", src:"res/people/Girlfriend.png"});
+   	queue.loadFile( {id: "res/people/Grandma.png", src:"res/people/Grandma.png"});
+   	queue.loadFile( {id: "res/people/Grandpa.png", src:"res/people/Grandpa.png"});
+   	queue.loadFile( {id: "res/people/Mom.png", src:"res/people/Mom.png"});
+   	queue.loadFile( {id: "res/people/PlayerFemale.png", src:"res/people/PlayerFemale.png"});
+   	queue.loadFile( {id: "res/people/PlayerMale.png", src:"res/people/PlayerMale.png"});
+
+    // Load Window elements
+    queue.loadFile( {id: "res/screens/Window/Door1.png", src:"res/screens/Window/Door1.png"});
+    queue.loadFile( {id: "res/screens/Window/Door2.png", src:"res/screens/Window/Door2.png"});
+    queue.loadFile( {id: "res/screens/Window/Ground.png", src:"res/screens/Window/Ground.png"});
+    queue.loadFile( {id: "res/screens/Window/Housefar.png", src:"res/screens/Window/Housefar.png"});
+    queue.loadFile( {id: "res/screens/Window/Small1.png", src:"res/screens/Window/Small1.png"});
+    queue.loadFile( {id: "res/screens/Window/Small2.png", src:"res/screens/Window/Small2.png"});
+    queue.loadFile( {id: "res/screens/Window/Small3.png", src:"res/screens/Window/Small3.png"});
+    queue.loadFile( {id: "res/screens/Window/Small4.png", src:"res/screens/Window/Small4.png"});
+    queue.loadFile( {id: "res/screens/Window/Small5.png", src:"res/screens/Window/Small5.png"});
+    queue.loadFile( {id: "res/screens/Window/StreetlightGlow.png", src:"res/screens/Window/StreetlightGlow.png"});
+    queue.loadFile( {id: "res/screens/Window/Win1.png", src:"res/screens/Window/Win1.png"});
+    queue.loadFile( {id: "res/screens/Window/Win2.png", src:"res/screens/Window/Win2.png"});
+    queue.loadFile( {id: "res/screens/Window/Win3.png", src:"res/screens/Window/Win3.png"});
+    queue.loadFile( {id: "res/screens/Window/Win4.png", src:"res/screens/Window/Win4.png"});
+    queue.loadFile( {id: "res/screens/Window/Win5.png", src:"res/screens/Window/Win5.png"});
+    queue.loadFile( {id: "res/screens/Window/Win6.png", src:"res/screens/Window/Win6.png"});
+    queue.loadFile( {id: "res/screens/Window/Win7.png", src:"res/screens/Window/Win7.png"});
+    queue.loadFile( {id: "res/screens/Window/Win8.png", src:"res/screens/Window/Win8.png"});
+    queue.loadFile( {id: "res/screens/Window/Win9.png", src:"res/screens/Window/Win9.png"});
+    queue.loadFile( {id: "res/screens/Window/Win10.png", src:"res/screens/Window/Win10.png"});
+    queue.loadFile( {id: "res/screens/Window/Win11.png", src:"res/screens/Window/Win11.png"});
+    queue.loadFile( {id: "res/screens/Window/Tree_Animation.png", src:"res/screens/Window/Tree_Animation.png"});
+    queue.loadFile( {id: "res/screens/Window/Test4-217.png", src:"res/screens/Window/Test4-217.png"});
+    queue.loadFile( {id: "res/screens/Window/Test4-217.png", src:"res/screens/Window/Test4TransparencyFull.png"});
+
 
     this.screenState = 0;
     this.newScreen = "";
-
-
-    // Game State flags
-    this.turkeyBought = false;
-    this.ovenLightBought = false;
-    var randomWeight = [ (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
-    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
-    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
-    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
-    					 (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99))
-    				    ];
 
 	this.marketItems = {
 		"Frills Box" : new MarketItem( this, "Frills Box", 133,92, 3.00, "res/items/FrillsBox.png", "res/items/FrillsBoxGlow.png", "res/screens/KitchenScreen/FrillsBoxKitchen.png", "res/screens/KitchenScreen/FrillsBoxKitchenGlow.png",
@@ -203,6 +239,12 @@ function GameState(){
 
 	// did we already show the player the kitchen intro?
 	this.kitchenIntro = false;
+
+    this.addRecord = function( record ){
+        that.peekRecords.push( new Record( new Date(), record ) );
+    }
+    that.pubsub.subscribe( "AddRecord", this.addRecord );
+
 
     function addHighScore(name, turkeyPoundage, cookTime, score){
     	var scores = {};
@@ -322,29 +364,21 @@ function GameUI( canvasElem, gameState ){
 	}
 }
 
-
-
-function Dialogue( character, text ){
-	var that = this;
-	this.text = text;
-	this.character = character;
-
-	return {
-		getText: function(){
-			return that.text;
-		},
-
-		getCharacter: function(){
-			return that.character;
-		},
-
-		getDuration: function(){
-
-		// length of text, for each dialog
-		},
-	}
-	// Render one character at a time
+function Record( dateTime, record ){
+    return {
+        getTime: function(){
+            return dateTime;
+        },
+        getContent: function(){
+            return record;
+        }
+    }
 }
+
+    //"Turkey weight, "
+    //"Opened oven for X seconds"
+    //"Core temperature measured at "
+
 
 function BindPubSub( obj ){
 	(function(q) {
