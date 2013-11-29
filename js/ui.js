@@ -300,6 +300,7 @@ function OvenUI( stage, gameState ){
 	}
 
 	gameState.pubsub.subscribe( "SkipTime", function(){
+		console.log("Skipping time");
 		for(var i = 0; i < 1200; i++){
 			that.secondTick( 1000 );
 		}
@@ -388,7 +389,8 @@ function WindowUI( stage, gameState ){
 
 	var dayNight = new createjs.Bitmap("res/Test4-217.svg");
 	dayNight.y=30;
-	//dayNight.x = gameState.currentTime
+	var secondCounter = 0;
+	dayNight.x = -(new Date().getHours()*682.625);
 
 	var ground = new createjs.Bitmap( "res/screens/Window/Ground.png" );
 	var houses = new createjs.Bitmap( "res/screens/Window/Housefar.png" );
@@ -405,7 +407,11 @@ function WindowUI( stage, gameState ){
  	var animation = new createjs.Sprite(spriteSheet, "treeAnimations");
  	animation.x = 415;
  	animation.y = 30;
-
+	
+	// Fast forward, move sky
+	gameState.pubsub.subscribe( "SkipTime", function(){
+		dayNight.x -=  dayNight.x < -15583 ? 0 : (11.38 * 20);
+	});
 
     stage.addChild( dayNight );
     stage.addChild( ground );
@@ -417,7 +423,11 @@ return {
 	tick: function(){
 
 		// move the sky
-		dayNight.x-=25;
+		secondCounter++;
+		if( secondCounter > 60 ){
+			dayNight.x-=11.38;
+			secondCounter = 0;
+		}
 
 		// move the overlay
 		//console.log(dayNight.x);
