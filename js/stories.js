@@ -4,8 +4,9 @@ var messages = {
 	"CannotBuyTurkey" : ["Me: I've barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
 	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
-	"BrokenLight" : ["Me: The oven light appears to be broken..."],
-	"EmptyOven" : ["Me: The oven is already preheated..."]
+	"BrokenLight" : ["Me: Hmm... the oven light appears to be broken..."],
+	"EmptyOven" : ["Me: Ah, the oven is already preheated..."],
+	"OpenDoor" :["Me: Hmm... I should probably try opening the oven door to measure the turkey's temperature"]
 }
 
 var story = {

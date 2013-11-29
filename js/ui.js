@@ -274,9 +274,14 @@ function OvenUI( stage, gameState ){
 
 	// Show core temperature
 	this.showTempDialog = function(){
-		state = ovenModel.getTurkeyState();
-		gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm.. the core temperature of the turkey is " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
-		gameState.pubsub.publish( "AddRecord", "Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" );
+		if( that.ovenDoor == OVEN_CLOSED ){
+			gameState.pubsub.publish("ShowDialog", {seq:"OpenDoor", autoAdvance:true});
+		}
+		else{
+			state = ovenModel.getTurkeyState();
+			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm.. the core temperature of the turkey is " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
+			gameState.pubsub.publish( "AddRecord", "Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" );
+		}
 	}
 
 	new CookbookUI( stage, gameState );
