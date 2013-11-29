@@ -28,6 +28,9 @@ function SoundManager( gameState ){
 	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Peek_Close.mp3", "Oven_Door_Peek_Close");
 	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Peek_Open.mp3", "Oven_Door_Peek_Open");
 
+	createjs.Sound.registerSound("res/sound/Kitchen/Open_Cookbook.mp3", "Open_Cookbook");
+	createjs.Sound.registerSound("res/sound/Kitchen/Close_Cookbook.mp3", "Close_Cookbook");
+
 
 	this.backgroundSounds = [];
 	this.backgroundSoundsQueue = [];

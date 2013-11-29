@@ -119,7 +119,8 @@ function GameState(){
 	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Full_Close.mp3", src:"res/sound/Kitchen/Oven_Door_Full_Close.mp3"});
 	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Peek_Close.mp3", src:"res/sound/Kitchen/Oven_Door_Peek_Close.mp3"});
 	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Peek_Open.mp3", src:"res/sound/Kitchen/Oven_Door_Peek_Open.mp3"});
-
+    queue.loadFile( {id: "res/sound/Kitchen/Close_Cookbook.mp3", src:"res/sound/Kitchen/Close_Cookbook.mp3"});
+    queue.loadFile( {id: "res/sound/Kitchen/Open_Cookbook.mp3", src:"res/sound/Kitchen/Open_Cookbook.mp3"});
 
     // Market Items
     queue.loadFile( {id: "res/screens/MarketScreen/MarketTopShelf.png", src:"res/screens/MarketScreen/MarketTopShelf.png"});
@@ -206,6 +207,7 @@ function GameState(){
     queue.loadFile( {id: "res/screens/Window/Tree_Animation.png", src:"res/screens/Window/Tree_Animation.png"});
     queue.loadFile( {id: "res/screens/Window/Test4-217.png", src:"res/screens/Window/Test4-217.png"});
     queue.loadFile( {id: "res/screens/Window/Test4-217.png", src:"res/screens/Window/Test4TransparencyFull.png"});
+
 
 
     this.screenState = 0;

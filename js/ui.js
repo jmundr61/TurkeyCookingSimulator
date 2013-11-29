@@ -52,13 +52,14 @@ function CookbookUI( stage, gameState ){
 	var closeButton = new Button( stage, gameState, 710, 10, 100, 50, null, null, function(){that.hideCookbook();} );
 	var logEntries = [];
 	this.hideCookbook = function(){
-		console.log("hide cookbook");
+
 		stage.removeChild( closeButton );
 		stage.removeChild( cookbookImg );
 		for( i in logEntries ){
 			stage.removeChild(logEntries[i]);
 		}
 		that.showingCookbook = false;
+		gameState.pubsub.publish("Play", "Close_Cookbook");
 	}
 
 	// Show core temperature
@@ -288,15 +289,27 @@ function OvenUI( stage, gameState ){
 	gameState.pubsub.subscribe( "StartTurkeyModel", this.startTurkeyModel );
 
 
-    this.secondTick = function(){
+    this.secondTick = function(diff){
     		ovenModel.secondTick();
-    		gameState.currentTime += 1000;
+    		gameState.currentTime += diff;
 	}
 
-    setInterval(this.secondTick, 1000);
+	gameState.pubsub.subscribe( "SkipTime", function(){
+		for(var i = 0; i < 1200; i++){
+			that.secondTick( 1000 );
+		}
+	});
+
 
     return {
-    	tick: function(){},
+    	tick: function(){
+    		var diff = Date.now() - gameState.oldTime;
+			if( diff > 1000 ){
+				gameState.oldTime = Date.now();
+    			that.secondTick( diff );
+    			console.log(new Date( gameState.currentTime) );
+    		}
+    	},
     	render: function(){
 
 		    stage.addChild( ovenLight );
@@ -462,6 +475,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  			if ( that.name.indexOf("Cookbook") != -1 ){
  				console.log("click, show cookbook");
  				gameState.pubsub.publish("ShowCookbook","");
+ 				gameState.pubsub.publish("Play", "Open_Cookbook");
  			}
  		});
 
@@ -566,7 +580,7 @@ function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd,
 
 function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg, altfunc ){
 	var that = this;
-	console.log("button clicked with "+ altfunc);
+	console.log("button clicked with "+ arg);
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
