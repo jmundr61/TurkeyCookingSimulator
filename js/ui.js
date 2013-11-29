@@ -300,15 +300,32 @@ function OvenUI( stage, gameState ){
 		}
 	});
 
-
     return {
     	tick: function(){
+    		// IMPORTANT: SECOND TIMER
     		var diff = Date.now() - gameState.oldTime;
 			if( diff > 1000 ){
 				gameState.oldTime = Date.now();
     			that.secondTick( diff );
     			console.log(new Date( gameState.currentTime) );
-    		}
+
+    		if( gameState.turkeyBought ){
+
+				// what's the state of the turkey
+				turkeyState = ovenModel.getTurkeyState();
+				turkeyStates[0].alpha = 1;
+				if( turkeyState["skin"]["cond"][0] == "Undercooked" )
+					turkeyStates[1].alpha = turkeyState["skin"]["cond"][1];
+				if( turkeyState["skin"]["cond"][0] == "Cooked" )
+					turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
+				if( turkeyState["skin"]["cond"][0] == "Dry" )
+					turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
+				if( turkeyState["skin"]["cond"][0] == "Charcoal" )
+					turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
+				if( turkeyState["skin"]["cond"][0] == "House Fire" )
+					turkeyStates[4].alpha = 1;
+			}
+			}
     	},
     	render: function(){
 
@@ -320,7 +337,21 @@ function OvenUI( stage, gameState ){
 			// Turkey goes here
 				// did the player actually buy a turkey? if so, determine its cooked state
 				if( gameState.turkeyBought ){
+
+					// what's the state of the turkey
+					turkeyState = ovenModel.getTurkeyState();
 					turkeyStates[0].alpha = 1;
+					if( turkeyState["skin"]["cond"] == "Undercooked" )
+						turkeyStates[1].alpha = turkeyState["skin"]["cond"][1];
+					if( turkeyState["skin"]["cond"] == "Cooked" )
+						turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
+					if( turkeyState["skin"]["cond"] == "Dry" )
+						turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
+					if( turkeyState["skin"]["cond"] == "Charcoal" )
+						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
+					if( turkeyState["skin"]["cond"] == "House Fire" )
+						turkeyStates[4].alpha = 1;
+
 					panFront.alpha = 1;
 					for(i in turkeyStates){
 						stage.addChild(turkeyStates[i]);
@@ -398,8 +429,6 @@ return {
 		}
 		else
 			streetLight.alpha = 0;
-
-
 	}
 }
 }

@@ -282,22 +282,22 @@ UtilityFunctions = {
 	cookCondition: function(cookValue,volume){
 		var multiplier = 1;
 		if (cookValue>=multiplier*600000) {
-			return("House Fire")
+			return ["House Fire", (cookValue-600000)/(multiplier*600000)];
 		}
 		else if(cookValue>=multiplier*250000) {
-			return("Charcoal")
+			return ["Charcoal", (cookValue-250000)/(multiplier*600000)];
 		}
 		else if (cookValue>=multiplier*150000) {
-			return("Dry")
+			return ["Dry", (cookValue-150000)/(multiplier*250000)];
 		}
 		else if (cookValue>=multiplier*12000) {
-			return("Cooked")
+			return ["Cooked", (cookValue-12000)/(multiplier*150000)];
 		}
 		else if (cookValue>=multiplier*5000) {
-			return("Undercooked")
+			return ["Undercooked", (cookValue-5000)/(multiplier*12000)];
 		}
 		else {
-			return("Raw")
+			return ["Raw", 1];
 		}
 	}
 }
