@@ -44,6 +44,14 @@ var story = {
 "Grandma: And Chinese.",
 "Dad: Mooom!"],
 
+"Golf Story":
+["Grandpa: Son, what’s your par on the John Milton Golf Course?.",
+"Dad: I'm a little rusty, but my average is about 76.",
+"Grandpa: Oh really? Chaahooooo I am down to 69.",
+"Dad: Congratulations Dad.",
+"Grandpa: How about you and I hit a few around next week?",
+"Dad: I will have to check my calendar, but I would love to."],
+
 "Creeper Worker":
 ["Brother: ...and so this guy kept trying to see what I wrote down on my notepad, and I keep trying to hide it from his prying eyes. Anyways...",
 "Dad: Hey that reminds me of this guy at work.",
@@ -382,7 +390,7 @@ var story = {
 "Grandma: Word travels fast on the front. Just don't let the officers hear you singing it or they'll whoop your ass faster than you can say vodka. ",
 "Grandpa: Advice to keep close at heart. "],
 
-"Dad Tells a bad Joke":
+"Dad Tells a Bad Dad Joke":
 ["Dad: Hey guys, what's the key to a great Thanksgiving dinner?",
 "Mom: Of course it is the loving family?",
 "Brother: I bet it is the pillowy mounds of mashed potatoes.",
@@ -399,7 +407,7 @@ var story = {
 "Grandma: hmmm, ok. I think I get it.",
 "Dad: Ok...."],
 
-"Mom Story":
+"Mom Butter Story":
 ["Mom: My favorite color is butter.",
 "Girlfriend: That's cool."],
 
@@ -421,6 +429,172 @@ var story = {
 "Cat: (Translation) It's like you don't love me anymore.",
 "Mom: It'll be done very soon, I promise! You can have a few bites.",
 "Cat: Meow Meow Meow Meow!",
-"Cat: (Translation) I don't want turkey, I want fish!"]
+"Cat: (Translation) I don't want turkey, I want fish!"],
+
+
+"Mom Talks About Her Bathroom Policy and her Students":
+["Mom: I make sure my students are well hydrated and well rested.",
+"Mom: We have 20 minutes of reading time, 20 minutes of sleeping time, and 20 cumulative daily minutes of bathroom time.",
+"Mom: I bring bottles of water and juice on my own dime to make sure the students are at maximum productivity.",
+"Dad: What if someone needs to use the restroom for 30 minutes?",
+"Mom: It doesn't bug me, but the school has some strict bathroom policies. I've gotten in trouble in the past.",
+"Dad: Oh, You never told me about this. What happened honey?",
+"Mom: I didn't want to bother you with the details. But I guess there's no harm in letting you know.",
+"Mom: For a while I allowed all my students to use the bathroom whenever they wanted. They didn't even have to ask. I wanted the students to feel independent.",
+"Mom: But then the administration told me that all students were required to have a bathroom pass. Too many students were skipping class they feared.",
+"Mom: I never lost a student, and all my students knew not to abuse their privilege given to them, but I did as I was told.
+"Mom: I made sure students signed themselves out, wrote their name, signed it, then took the bathroom pass.",
+"Girlfriend: That seems very efficient. But are the third graders mature enough to get themselves to the bathroom and not goof off?",
+"Mom: Well, every student has their 20 minutes. I don't want to parent them. That's not my job. My job is to teach lessons.",
+"Mom: It seemed to work well. None of my students abused the system.",
+"Mom: But it seemed the administration didn't appreciate the system. They changed the rules once again.",
+"Mom: Now students are only allowed to go to the bathroom once per day. No more than 5 minutes or else I have to go looking for them.",
+"Mom: I told all my students. 'Make sure you use the restroom at recess and before school'. And they did.",
+"Brother: Your students seem very well behaved. I can't even imagine a class of third graders acting as well-mannered as you describe.",
+"Mom: You would be surprised what putting a little trust in a person can do.",
+"Mom: Well, the newest method was working dandy. I wouldn't say it was as good as what we had setup before, but it was fine.",
+"Mom: Less than a week later however, I got another memo.",
+"Mom: 'Students are to be allowed to use the restroom facilities whenever they need.",
+"Dad: They reverted their one-bathroom per child policy?",
+"Mom: I hate to bring this up at the dinner table.",
+"Grandma: Don't be worrying. Tell us the story.",
+"Mom: Sigh, ok. One of the students in the other class, not mine of course, had to use the restroom. But she had already used her one bathroom break.",
+"Mom: So the teacher told her to go back to her seat.",
+"Mom: A while later....",
+"Brother: Ahh geeez, she peed everywhere?",
+"Mom: Greg!",
+"Brother: What? It isn't like this is the first time this has ever happened? I hear about this happening all the time on internet message boards.",
+"Mom: It was certainly a surprise for me!",
+"Dad: I'm sorry to, hehehe, hear that honey.",
+"Mom: This isn't a laughing matter.",
+"Dad: Sorry ma'am."],
+
+"Grandpa tells a story about how a bug crawls in the ear of one of his fellow army buddies during the Korean War":
+["Grandpa: Mmmm mmm, I can't wait to hear the sizzling of that turkey.",
+"Grandma: You never seem to hear when I call you.",
+"Grandpa: That's called selective hearing. My hearing is fine.",
+"Grandpa: Which reminds me of my old friend Jimmy.",
+"Grandma: How is ol' Jimmy?",
+"Grandpa: Deaf in the one ear as usual, but he couldn't be a happier soul. We're going golfing next week.",
+"Mom: I don't believe I've met Jimmy.",
+"Grandpa: He and I go way back. We were GIs together during the Korean War. Then he lost his hearing.",
+"Brother: Was it due to the loudness of the guns? A mortar round? Shrapnel?",
+"Grandpa: I don't know what the media has filled your noggin with, but not all injury in war is glamorous.",
+"Brother: I agree, war is terrible. But, I must say the technology is interesting.",
+"Grandpa: Be glad you don't have to serve and only reap the riches of wartime development.",
+"Grandpa: As for Jimmy, he lost his hearing at camp.",
+"Grandpa: We went to sleep for the night and a beetle bug crawled in his ear.",
+"Grandpa: Tried to fish it out but he ended up crushing it.",
+"Grandpa: Field medics couldn't get all the pieces out, and we were at least two days away from a decent hospital.",
+"Grandpa: The ear got infected and Jimmy lost his hearing soon after.",
+"Grandpa: 'Bug Brain' we used to call him. Great guy.",
+"Girlfriend: I'm sorry to hear that.",
+"Grandpa: Can't undo the past. Those dang bugs were everywhere though.",
+"Mom: Gross, Gross, Gross. ",
+"Grandpa: It isn't that bad. Be grateful I didn't tell you the story where we ate them. Not bad. A little crunchy. Not as good as turkey though.",
+"Mom: !!!"],
+
+"Story about Girlfriend’s teacher that makes buzzer noises when you got something wrong":
+["Girlfriend: Greg, here's something that might tinkle your fancy.",
+"Girlfriend: I saw my old professor from a couple years back, Professor Ronfleur. The Humanities teacher. Do you remember him?
+"Brother: The guy who always wore the purple bow tie? Who could forget him? Did he buzz you?",
+"Girlfriend: Ha-ha, no, but that's why I brought it up. That buzz!",
+"Mom: What buzz?",
+"Girlfriend: I guess we never told you Mom. Remember when we took that humanities class at the local community college during the summer?",
+"Girlfriend: We were trying to get the lower division English requirements out the way so could take classes at college that were actually worth our time.",
+"Girlfriend: This Professor Ronfleur used to make a buzzing sound whenever anybody got something wrong.",
+"Girlfriend: 'In what way does Aristotle disagree with Plato's Allegory of the Cave?' and then...",
+"Girlfriend: BRRZZZZZZZT!",
+"Girlfriend: He would make this super nasally buzzing noise.",
+"Brother: Seriously! Whenever I see the guy, I can just imagine pressing his bow tie and a buzzing noise coming out.",
+"Girlfriend: And he did it ALL. THE. TIME.",
+"Brother: Yeah! Did he say anything to you when he saw you?",
+"Girlfriend: I said hello and introduced myself, but he didn't know me. Just gave me the glazed ham eye look.",
+"Brother: Glazed ham?",
+"Girlfriend: For Thanksgiving.",
+"Brother: He gave you the glazed turkey look.",
+"Girlfriend: Exactly."],
+
+"Brother's Fiancee is on Business Trip":
+["Mom: Greg, where's your fiancée? Why didn't you invite her over for Thanksgiving dinner?",
+"Brother: I did invite her, but she couldn't make it. She is on a business trip and could not get the time off.",
+"Mom: A business trip on Thanksgiving? But Thanksgiving only happens once per year! This is the perfect time to rekindle the spirit of family.",
+"Brother: I know Mom, but Thanksgiving doesn't happen everywhere, and her job in sales demands that she travel abroad to meet with potential clients in person.",
+"Brother: I miss her a lot when she leaves, but whenever she returns home, we make every moment count. We count our blessings every day.",
+"Mom: Amen",
+"Brother: Though, it is too bad that since we're both so busy all the time, our new house remains largely unoccupied throughout the day.",
+"Mom: Awww honey, I'll have to come and visit.",
+"Brother: uh, well yeah, sure Mom. You can come and visit.",
+"Grandpa: What!? I want to come and see your new place too.",
+"Brother: Sure...yeah ok.",
+"Girlfriend: You aren't going to invite me?",
+"Brother: Yes, definitely. Everyone can come and visit. Just... I don't want to stress out my fiancée when she comes home.",
+"Brother: She likes to relax at home.",
+"Mom: Don't worry honey, we won't stress her out. I'll make her my delicious breakfast omelet.",
+"Grandpa: And I'll tell her my war stories.",
+"Brother: Oh, good..."],
+
+"Turkey Fact - Snood": 
+["Turkey: Gobble Gobble. Turkeys have a fleshy bit that comes off their forehead called the snood. Turkey farmers will occasional remove the snood, in a process called 'de-snooding'.",
+"Turkey: Male turkeys like their snood intact to attract a mate, and for dominance. Be kind to your turkey. Do not lose the snood."],
+
+"Turkey Fact - Cat Puns": 
+["Turkey: Gobble Gobble. I suppose it is too late to ask you not to eat me. But is it too late to ask for you to kick that cat of yours?",
+"Cat: Hey Turkey, it has been a long time. I see you're dead.",
+"Turkey: Kasey, how dare you speak to me. First, you steal my plans for world domination and now you gloat at my passing. For shame.",
+"Cat: It isn't my fault you taste so delicious. I'm going to delight in eating your flesh. Maybe if I beg enough they may give me your head on a platter",
+"Turkey: Oooh, don't get me fired up.",
+"Cat: Meow meow meow! The oven is doing that quite nicely.",
+"Turkey: Ga-Gobble!",
+"Cat: Meow Meow",
+"Dad: Aww Kasey, can't you a cute little kitty."],
+
+"Turkey Fact - Wattle":
+["Turkey: Hey, it is time for another turkey fact.",
+"Turkey: Most people will recognize the wattle on a chicken as that piece of red flesh that hangs down from the beak.",
+"Turkey: But did you know turkeys have them too?",
+"Turkey: I personally believe they are much sexier on a turkey than a chicken anyhow. And you can bet a fine wattle will attract the hen's attention.",
+"Turkey: Gobble Gobble"],
+
+"Turkey Fact - Unsuscribe":
+["Turkey: I hope I'm worth it. But hey, now you can listen to a wonderful fact about turkeys.",
+"Turkey: Turkeys are members of the order Galliformes. That means we share relations to other birds like the chicken and pheasant.",
+"Turkey: To unsubscribe from Turkey facts, please gobble like a turkey into the microphone.",
+"Turkey: 'Gobble' in 3",
+"Turkey: 2",
+"Turkey: 1",
+"Turkey: Now Recording...",
+"Turkey: I'm sorry, we didn't recognize your dialect. Please try again soon.",
+"Turkey: You are now automatically renewed for another full year of Turkey Facts",
+"Turkey: Please have a nice day."],
+
+"Turkey Fact - genus":
+["Turkey: My friend, welcome to another fantastic turkey fact!",
+"Turkey: Today we're learning that turkeys are in the genus Meleagris.",
+"Turkey: This is probably useless information for you. Good!",
+"Turkey: Until next time."],
+
+"Turkey Fact - gobble":
+["Turkey: The turkey is often associated with the gobble sound. But that is just sexist.",
+"Turkey: Only male turkeys gobble. Females instead make cooing and clicking noises. Put an end to stereotypes!"],
+
+"Turkey Fact - poult":
+["Turkey: Don't eat me, I have children. Zillions of children.",
+"Turkey: But since we're talking about children, did you know that a young turkey is called a poult?",
+"Turkey: Now you do.",
+"Turkey: By the way, the best way to cook a turkey is to not at all."],
+
+"Turkey Fact - World Dominination":
+["Turkey: Hey Kasey.",
+"Cat: What may I do for you juicy?",
+"Turkey: Don't piss off turkeys or they'll gang up on you.",
+"Turkey: That's because a group of turkeys is called a gang.",
+"Turkey: A turkey group may also be called a rafter.",
+"Turkey: I'm more of a kayaker personally.",
+"Cat: Get meowta here",
+"Turkey: That pun was fowl",
+"Cat: Purrrsonally, not as bad as yours.",
+"Turkey: Gobble Gobble"]
+
 
 };
