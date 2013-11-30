@@ -148,17 +148,61 @@ function FinalConfirmationUI(stage, gameState){
     gameState.pubsub.subscribe( "ShowFinalConfirm", this.showFinalConfirm );
 }
 
+function AlarmUI(stage, gameState){
+	var that = this;
+	this.showingConfirm = false;
+
+	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/FinalConfirmation.png");
+	var yesButton = new Button( stage, gameState, 355, 338, 388, 50, null, null, function(){
+		gameState.pubsub.publish( "Play", "Ding" );
+		gameState.pubsub.publish( "SwitchScreen", "ScoreScreen" );
+		that.hideFinalConfirm();
+	} );
+	var noButton = new Button( stage, gameState, 355, 395, 388, 50, null, null, function(){that.hideFinalConfirm();} );
+
+	this.hideFinalConfirm = function(){
+		stage.removeChild( finalImg );
+		stage.removeChild( yesButton );
+		stage.removeChild( noButton );
+		that.showingConfirm = false;
+	};
+
+	// Show core temperature
+	this.showFinalConfirm = function(){
+		console.log("Showing final confirm");
+		if( !that.showingConfirm ){
+			that.showingConfirm = true;
+			stage.addChild( finalImg );
+			stage.addChild( noButton );
+			stage.addChild( yesButton );
+		}
+	};
+
+	// change temperature, this one's for the UI
+    gameState.pubsub.subscribe( "ShowFinalConfirm", this.showFinalConfirm );
+}
+
 function CookbookUI( stage, gameState ){
 	var that = this;
 	this.showingCookbook = false;
 
 	var cookbookImg = new createjs.Bitmap("res/screens/KitchenScreen/Cookbook-Open.png");
 	var closeButton = new Button( stage, gameState, 710, 10, 100, 50, null, null, function(){that.hideCookbook();} );
+	var turkeyTypeText = new createjs.Text("", "18px Arial", "#ffffffff" );
+	turkeyTypeText.x = 535;
+	turkeyTypeText.y = 56;
+
+	var turkeyWeightText = new createjs.Text("", "18px Arial", "#ffffffff" );
+	turkeyWeightText.x = 553;
+	turkeyWeightText.y = 85;
+
 	var logEntries = [];
 	this.hideCookbook = function(){
 
 		stage.removeChild( closeButton );
 		stage.removeChild( cookbookImg );
+		stage.removeChild( turkeyTypeText );
+		stage.removeChild(turkeyWeightText);
 		for( i in logEntries ){
 			stage.removeChild(logEntries[i]);
 		}
@@ -172,6 +216,8 @@ function CookbookUI( stage, gameState ){
 			stage.addChild( cookbookImg );
 			stage.addChild( closeButton );
 
+			turkeyTypeText.text = gameState.turkeyType;
+			turkeyWeightText.text = gameState.turkeyWeight + " lbs";
 			for( i in gameState.peekRecords ){
 				var record = gameState.peekRecords[i];
 				var time = new Date( gameState.peekRecords[i].getTime() );
@@ -186,6 +232,8 @@ function CookbookUI( stage, gameState ){
 				logEntries.push(logLine);
 				stage.addChild(logLine);
 			}
+			stage.addChild(turkeyTypeText);
+			stage.addChild(turkeyWeightText);
 
 			that.showingCookbook = true;
 		}
@@ -340,7 +388,8 @@ function OvenUI( stage, gameState ){
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
 				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
 			}
-
+			if(ovenModel)
+				ovenModel.setRawTemp( (ovenModel.getRawTemp() - 25) < 150 ? 150 : ovenModel.getRawTemp() - 25 );
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
 		}else if (that.ovenDoor == OVEN_OPEN ){
 			that.ovenDoor = OVEN_PEEK;
@@ -410,7 +459,9 @@ function OvenUI( stage, gameState ){
     this.secondTick = function(diff){
     		// check if oven door is open
     		if( that.ovenDoor == OVEN_OPEN ){
-    			// incur -25 + penalty 5 degrees a second for opening the oven.
+
+    			// incur -25 upon door open and penalty -5 degrees a second for opening the oven.
+    			ovenModel.setRawTemp( (ovenModel.getRawTemp() - 5) < 150 ? 150 : ovenModel.getRawTemp() - 5 );
     		}
 
     		ovenModel.secondTick();
@@ -669,9 +720,10 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  		mouseOver.addEventListener( "click", function(){
  			if(!that.bought && cost <= gameState.wallet ){
 
-	 			if( that.name.indexOf("Turkey") != -1 && gameState.turkeyBought != true){
+	 			if( that.name.indexOf("Turkey") != -1 && gameState.turkeyBought != true ){
 	 				gameState.turkeyBought = true;
 	 				gameState.turkeyWeight = weight;
+	 				gameState.turkeyType = that.name;
 				    gameState.marketItems[ that.name ].delete();
 				    that.bought = true;
 				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
@@ -774,7 +826,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	button.alpha = 0.5;
+ 	button.alpha = 0.01;
  	button.addEventListener( "click", function(){
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){

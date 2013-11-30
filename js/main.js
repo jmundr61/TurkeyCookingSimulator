@@ -16,6 +16,7 @@ function GameState(){
 	this.turkeyWeight = 8;
     this.peekRecords = [];
     this.turkeyCooking = false;
+    this.turkeyType = "";
 
     // stats
     this.storeVisits = 0;

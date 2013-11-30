@@ -18,7 +18,7 @@ function DialogUI( stage, gameState ){
 	var DIALOG_RECEDING = 0;
 	var DIALOG_SHOWING = 1;
 	var DIALOG_PAUSING = 2;
-	var MILLIS_PER_CHAR = 150;
+	var MILLIS_PER_CHAR = 100;
 
 	var peopleImg = {
 		"Boyfriend": new createjs.Bitmap("res/people/Boyfriend.png"),
@@ -157,7 +157,7 @@ function DialogUI( stage, gameState ){
     	tick: function(){
     		delayCounter = new Date().getTime() - oldTime;
 
-    		if( that.autoAdvance == true && that.dialogBox.y ==0 && delayCounter > ( that.textContent.text.length * MILLIS_PER_CHAR ) ){
+    		if( that.autoAdvance == true && that.dialogBox.y ==0 && delayCounter > ( (that.textContent.text.length * MILLIS_PER_CHAR) < 2000 ? 200 : (that.textContent.text.length * MILLIS_PER_CHAR)  ) ){
     			clickEvent();
     		}
 

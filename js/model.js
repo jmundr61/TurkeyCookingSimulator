@@ -121,6 +121,14 @@ function OvenModel( turkeyWeight, gameState ) {
     		console.log("temp changed to " + setTemp);
             that.setTemp = setTemp;
     	},
+    	// set the tempInfini
+    	setRawTemp: function(newTemp){
+    		console.log("raw temp changed to" + that.tempInfini);
+    		that.tempInfini = newTemp;
+    	},
+    	getRawTemp: function(){
+    		return that.tempInfini;
+    	},
 	    secondTick: function(){
 			that.globalTime = that.globalTime + 1;
 			that.steadyTimer = that.steadyTimer + 1;
