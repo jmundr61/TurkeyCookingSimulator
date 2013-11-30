@@ -5,6 +5,7 @@ function GameState(){
 	BindPubSub( this.pubsub );
 	this.currentTime = new Date().getTime();
 	this.oldTime = new Date().getTime();
+    this.oldDialogueTime = new Date().getTime();
 
     this.gameStarted = false;
 	this.name = "";
@@ -14,6 +15,13 @@ function GameState(){
 	this.boughtOvenLight = false;
 	this.turkeyWeight = 8;
     this.peekRecords = [];
+    this.turkeyCooking = false;
+
+    // stats
+    this.storeVisits = 0;
+    this.dialogHeard = 0;
+    this.ovenOpened = 0;
+
 // Game State flags
     this.turkeyBought = false;
     var randomWeight = [ (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
@@ -129,6 +137,7 @@ function GameState(){
 	queue.loadFile( {id: "res/sound/Kitchen/Oven_Door_Peek_Open.mp3", src:"res/sound/Kitchen/Oven_Door_Peek_Open.mp3"});
     queue.loadFile( {id: "res/sound/Kitchen/Close_Cookbook.mp3", src:"res/sound/Kitchen/Close_Cookbook.mp3"});
     queue.loadFile( {id: "res/sound/Kitchen/Open_Cookbook.mp3", src:"res/sound/Kitchen/Open_Cookbook.mp3"});
+    queue.loadFile( {id: "res/sound/Kitchen/sizzle.mp3", src:"res/sound/Kitchen/sizzle.mp3"} );
 
     // Market Items
     queue.loadFile( {id: "res/screens/MarketScreen/MarketTopShelf.png", src:"res/screens/MarketScreen/MarketTopShelf.png"});
@@ -231,7 +240,7 @@ function GameState(){
 
 	    "Alarm Clock" : new MarketItem( this, "Alarm Clock", 173,248, 6.00, "res/items/Alarm.png", "res/items/AlarmGlow.png", "res/screens/KitchenScreen/AlarmKitchen.png", "res/screens/KitchenScreen/AlarmKitchenGlow.png", "Have you ever wanted to control time? Now you can. Digital readout counts down until time of choice. Audible alarm" ),
 		"Cookbook" : new MarketItem( this, "Cookbook", 283,203, 3.00, "res/items/Cookbook1.png", "res/items/Cookbook1Glow.png","res/screens/KitchenScreen/CookbookKitchen.png",  "res/screens/KitchenScreen/CookbookKitchenGlow.png", "How do I cook turkey? Handy note space included for writing down temperature measurements" ),
-	    "Repurposed Stuffing" : new MarketItem( this, "Repurposed Stuffing",  510,197, 2.00, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposed.png", "res/screens/KitchenScreen/StuffingRepurposedKitchen.png", "res/screens/KitchenScreen/StuffingRepurposedKitchenGlow.png","At least 80% original breadcrumb. Guaranteed to contain no avian products" ),
+	    "Repurposed Stuffing" : new MarketItem( this, "Repurposed Stuffing",  510,197, 2.00, "res/items/StuffingRepurposed.png", "res/items/StuffingRepurposedGlow.png", "res/screens/KitchenScreen/StuffingRepurposedKitchen.png", "res/screens/KitchenScreen/StuffingRepurposedKitchenGlow.png","At least 80% original breadcrumb. Guaranteed to contain no avian products" ),
 	    "Exquisite Stuffing" : new MarketItem( this, "Exquisite Stuffing", 458,210, 3.00, "res/items/StuffingExquisite.png", "res/items/StuffingExquisiteGlow.png", "res/screens/KitchenScreen/StuffingExquisiteKitchen.png","res/screens/KitchenScreen/StuffingExquisiteKitchenGlow.png", "Colonial merchants once traveled the four reaches of the Earth to bring back the ingredients contained in this very box" ),
 
 	    "Special Stuffing" : new MarketItem( this, "Special Stuffing", 390,220, 6.00, "res/items/StuffingSpecial.png", "res/items/StuffingSpecialGlow.png",
@@ -298,7 +307,6 @@ function GameUI( canvasElem, gameState ){
 	/* Initialize All Screens */
 	this.screens = {
 		"LoadingScreen" 	 : LoadingScreen,
-		"HelpScreen"       	 : HelpScreen,
 		"MainScreen" 	 	 : MainScreen,
 		"DifficultyScreen" 	 : DifficultyScreen,
 		"KitchenScreen"		 : KitchenScreen,

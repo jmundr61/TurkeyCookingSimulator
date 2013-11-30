@@ -79,8 +79,9 @@ function MainScreen( stage, gameState ){
  	animation.x = 140;
  	animation.y = 210;
 
+	new HelpUI(stage, gameState);
  	animation.addEventListener("tick", handleTick);
- 	function handleTick(event) {
+ 	function handleTick(event){
  		if ( turkeyAnimations[event.currentTarget.currentAnimation][1] == event.currentTarget.currentFrame ){
  			event.currentTarget.paused = true;
  		}
@@ -94,7 +95,7 @@ function MainScreen( stage, gameState ){
 
 	// buttons info/credits/start
  	new ImgButton( stage, gameState, 571,527, "res/screens/MainScreen/ButtonStart.png", "res/screens/MainScreen/ButtonStart.png","SwitchScreen", "DifficultyScreen", "Click"  );
- 	new ImgButton( stage, gameState, 17,470, "res/screens/MainScreen/ButtonHelp.png", "res/screens/MainScreen/ButtonHelp.png","SwitchScreen", "HelpScreen", "Click"  );
+ 	new ImgButton( stage, gameState, 17,470, "res/screens/MainScreen/ButtonHelp.png", "res/screens/MainScreen/ButtonHelp.png",null, null, "Click", function(){ gameState.pubsub.publish("ShowHelp",""); } );
  	new ImgButton( stage, gameState, 17,527, "res/screens/MainScreen/ButtonCredits.png", "res/screens/MainScreen/ButtonCredits.png","SwitchScreen", "CreditsScreen", "Click"  );
 
  	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:1} );
@@ -102,8 +103,6 @@ function MainScreen( stage, gameState ){
 
     return {
 		blit : function(){
-			// Randomly do stuff
-
 			if( createjs.Ticker.getTicks() %50 == 0 ){
 
 				animation.gotoAndPlay(["peck", "ruffle", "stare"][UtilityFunctions.randRange(0,2)]);
@@ -243,8 +242,9 @@ function KitchenScreen( stage, gameState ){
 	// Fade out any other sounds
 	gameState.pubsub.publish( "FadeOut", "" );
 
+	//gameState.pubsub.publish( "BackgroundLoop", {name:"Sizzle", pos:0, volume:0.5} );
 	this.uiElems = [];
-	
+
 	this.uiElems.push( new WindowUI( stage, gameState ) );
 
 	this.background = new createjs.Bitmap( "res/screens/KitchenScreen/KitchenScreen.png" );
@@ -260,13 +260,16 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems.push( new ClockUI( stage, gameState ) );
 
 
-	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, "SwitchScreen", "HelpScreen" ) );
+	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, null,null, function(){ gameState.pubsub.publish("ShowHelp","");} ) );
 
-	new ImgButton( stage, gameState, 0,0, "res/screens/KitchenScreen/StoreBrochure.png", "res/screens/KitchenScreen/StoreBrochureGlow.png", "SwitchScreen", "MarketScreen", "Click"  );
+	new ImgButton( stage, gameState, 0,0, "res/screens/KitchenScreen/StoreBrochure.png", "res/screens/KitchenScreen/StoreBrochureGlow.png", null,null, "Click", function(){
+		gameState.pubsub.publish("SwitchScreen", "MarketScreen");
+ 		gameState.storeVisits++;
+	} );
 
 	// If player did not buy a turkey, tell them
-	if( !gameState.turkeyBought ){
-		gameState.pubsub.publish( "ShowDialog", {seq:"PaintStory", autoAdvance:true} );
+	if( gameState.turkeyBought ){
+		gameState.pubsub.publish( "ShowDialog", {seq:"Spouse gets surprise movie tickets", autoAdvance:true} );
 	}
 
 	return {
@@ -441,32 +444,6 @@ function ScoreScreen( stage, gameState ){
 	}
 
 	// Retry Button
-}
-
-
-function HelpScreen( stage, gameState ){
-	var that = this;
-
-    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/HelpP1P2.png" );
-    stage.addChild( this.background );
-    stage.addChild( new Button( stage, gameState, 698, 15, 80, 50,null, null, function(){
-    	if( !gameState.gameStarted )
-    		gameState.pubsub.publish("SwitchScreen", "MainScreen");
-    	else
-    		gameState.pubsub.publish("SwitchScreen", "KitchenScreen");
-    } ));
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-	//
 }
 
 function CreditsScreen( stage, gameState ){

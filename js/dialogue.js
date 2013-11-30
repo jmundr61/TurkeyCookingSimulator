@@ -33,6 +33,8 @@ function DialogUI( stage, gameState ){
 		"Male": new createjs.Bitmap("res/people/PlayerMale.png")
 	};
 
+	var dialogueList = Object.keys(story);
+
 	this.dialogSpeed = 30;
 	this.dialogState = DIALOG_PAUSING;
 
@@ -67,8 +69,20 @@ function DialogUI( stage, gameState ){
  		   	 peopleImg["Me"] = peopleImg[gameState.gender];
  		}
 
+		if( !peopleImg["Spouse"] ){
+			if( gameState.gender == "Male" ){
+				peopleImg["Spouse"] = peopleImg["Girlfriend"] ;
+			}else{
+				peopleImg["Spouse"] = peopleImg["Boyfriend"] ;
+			}
+		}
+
  		if( textSeq.seq == "custom" ){
  			messages["custom"] = ["Me: " + textSeq.customText ];
+ 		}
+
+ 		if( textSeq.random ){
+ 			that.showRandomConvo();
  		}
 
  		that.currDialogueSeq = new DialogueSequence( textSeq.seq );
@@ -82,11 +96,11 @@ function DialogUI( stage, gameState ){
  	}
 
  	this.showRandomConvo = function(){
- 		storyArray = Object.keys(stories);
+ 		dialogueList = Object.keys(story);
 
  		// check if there is something going on
  		if( !that.currDialogueSeq.more() ){
- 			this.showDialog( storyArray[ UtilityFunctions.randRange(0, storyArray.length) ] );
+ 			this.showDialog( story[ dialogueList[ UtilityFunctions.randRange(0, dialogueList.length) ] ] || story["Dad Tells a bad Joke"] );
  		}
  	}
 

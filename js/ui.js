@@ -44,6 +44,77 @@ function ClockUI( stage, gameState ){
 
 }
 
+function HelpUI( stage, gameState ){
+	var that = this;
+	this.showingHelp = false;
+	var helpPages = [
+		new createjs.Bitmap("res/screens/HelpCreditsScreen/HelpP1P2.png"),
+		new createjs.Bitmap("res/screens/HelpCreditsScreen/HelpP3P4.png"),
+		new createjs.Bitmap("res/screens/HelpCreditsScreen/HelpP5P6.png"),
+		new createjs.Bitmap("res/screens/HelpCreditsScreen/HelpP7P8.png")
+	];
+	var position = 0;
+	var helpImg = helpPages[0];
+	var closeButton = new Button( stage, gameState, 708, 8, 80, 50,null, null, function(){ that.hideHelp(); } );
+	var nextButton = new Button( stage, gameState, 645, 543, 80, 50, null,null, function(){ gameState.pubsub.publish("Play", "Open_Cookbook");
+		if( helpImg ){
+			position++;
+			helpImg.visible = false;
+			helpImg = helpPages[ position % 4 ];
+			helpImg.visible = true;
+		} else{
+			that.hideHelp();
+		}
+	 });
+	var prevButton = new Button( stage, gameState, 77, 546, 80, 50, null,null, function(){ gameState.pubsub.publish("Play", "Open_Cookbook");
+		if( helpImg ){
+			position--;
+			helpImg.visible = false;
+			helpImg = helpPages[ Math.abs(position) % 4 ];
+			helpImg.visible = true;
+		} else {
+			that.hideHelp();
+		}
+	});
+
+	stage.addChild( this.background );
+    stage.addChild( closeButton );
+
+	this.hideHelp = function(){
+		helpImg.visible=false;
+		stage.removeChild( closeButton );
+		stage.removeChild( nextButton );
+		stage.removeChild( prevButton );
+		for( var i in helpPages ){
+			helpPages[i].visible = false;
+			stage.removeChild( helpPages[i] );
+		}
+		that.showingHelp = false;
+		gameState.pubsub.publish("Play", "Close_Cookbook");
+	}
+
+	// Show core temperature
+	this.showHelp = function(){
+		if( that.showingHelp ) return;
+		gameState.pubsub.publish("Play", "Open_Cookbook");
+
+		for( var i in helpPages ){
+			helpPages[i].visible = false;
+			stage.addChild( helpPages[i] );
+		}
+
+		helpPages[0].visible = true;
+		stage.addChild( closeButton );
+		stage.addChild( nextButton );
+		stage.addChild( prevButton );
+		that.showingHelp = true;
+
+	}
+
+	// change temperature, this one's for the UI
+    gameState.pubsub.subscribe( "ShowHelp", this.showHelp );
+}
+
 function CookbookUI( stage, gameState ){
 	var that = this;
 	this.showingCookbook = false;
@@ -190,10 +261,9 @@ function OvenUI( stage, gameState ){
 
 	this.ovenLightToggle = function(){
 
-		lightPressedImg.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
-
 		// Only work if the user bought an oven light
 		if( gameState.boughtOvenLight ){
+			lightPressedImg.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
 			if( that.ovenDoor == OVEN_CLOSED){
 				doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
 				doorClosedLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
@@ -204,10 +274,6 @@ function OvenUI( stage, gameState ){
 				doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
 				doorOpen.alpha = 0;
 			}
-		}else{
-			// say it only once
-			if( lightPressedImg.alpha == 1)
-				gameState.pubsub.publish( "ShowDialog", {seq:"BrokenLight", autoAdvance:true} );
 		}
 	}
 
@@ -256,8 +322,8 @@ function OvenUI( stage, gameState ){
 	function ovenPeek(){
 		if( that.ovenDoor == OVEN_CLOSED && that.ovenDoor != OVEN_OPEN ){
 			gameState.pubsub.publish( "Play", "Oven_Door_Peek_Open" );
-			doorPeekLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
-			doorPeekLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+			doorPeekLightOn.alpha = lightPressedImg.alpha;
+			doorPeekLightOff.alpha = !lightPressedImg.alpha;
 			doorClosedLightOn.alpha = 0;
 			doorClosedLightOff.alpha = 0;
 			doorOpen.alpha = 0;
@@ -268,11 +334,12 @@ function OvenUI( stage, gameState ){
 				var state = ovenModel.getTurkeyState();
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
 				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
+    			that.ovenOpened++;
 			}
 		}
 		else if (that.ovenDoor == OVEN_PEEK){
-			doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
-			doorClosedLightOff.alpha = lightPressedImg.alpha == 0 ? 1 : 0;
+			doorClosedLightOn.alpha = lightPressedImg.alpha;
+			doorClosedLightOff.alpha = !lightPressedImg.alpha;
 			doorPeekLightOn.alpha = 0;
 			doorPeekLightOff.alpha = 0;
 			that.ovenDoor = OVEN_CLOSED;
@@ -291,6 +358,7 @@ function OvenUI( stage, gameState ){
 			state = ovenModel.getTurkeyState();
 			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"The core temperature of the turkey reads " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
 			gameState.pubsub.publish( "AddRecord", {type:"Probe", text:"Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F"} );
+			that.ovenOpened++;
 		}
 	}
 
@@ -307,8 +375,9 @@ function OvenUI( stage, gameState ){
     this.secondTick = function(diff){
     		// check if oven door is open
     		if( that.ovenDoor == OVEN_OPEN ){
-    			// - 25 + penalty 5 degrees a second for opening the oven.
+    			// incur -25 + penalty 5 degrees a second for opening the oven.
     		}
+
     		ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
@@ -325,10 +394,9 @@ function OvenUI( stage, gameState ){
     	tick: function(){
     		// IMPORTANT: SECOND TIMER
     		var diff = Date.now() - gameState.oldTime;
-			if( diff > 10000 ){
-				gameState.oldTime = Date.now();
+    		var dialoguediff = Date.now() - gameState.oldDialogueTime;
+			if( diff > 1000 ){
     			that.secondTick( diff );
-    			console.log(new Date( gameState.currentTime) );
 
 	    		if( gameState.turkeyBought ){
 
@@ -346,6 +414,11 @@ function OvenUI( stage, gameState ){
 					if( turkeyState["skin"]["cond"][0] == "House Fire" )
 						turkeyStates[4].alpha = 1;
 				}
+				gameState.oldTime = Date.now();
+			}
+			if( gameState.turkeyBought && dialoguediff > 60*1000 ){
+					gameState.pubsub.publish( "ShowDialog", {seq:"Spouse gets surprise movie tickets", autoAdvance:true, random:true} );
+					gameState.oldDialogueTime = Date.now();
 			}
     	},
     	render: function(){
@@ -656,7 +729,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	button.alpha = 0.01;
+ 	button.alpha = 0.5;
  	button.addEventListener( "click", function(){ 
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){
