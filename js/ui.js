@@ -295,7 +295,7 @@ function OvenUI( stage, gameState ){
 
 
     this.secondTick = function(diff){
-    		//ovenModel.secondTick();
+    		ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
 
@@ -405,20 +405,20 @@ function WindowUI( stage, gameState ){
      	animations: treeAnimations
  	};
 	var spriteSheet = new createjs.SpriteSheet(data);
- 	//var animation = new createjs.Sprite(spriteSheet, "treeAnimations");
- 	//animation.x = 415;
- 	//animation.y = 30;
+ 	var animation = new createjs.Sprite(spriteSheet, "treeAnimations");
+ 	animation.x = 415;
+ 	animation.y = 30;
 	
 	// Fast forward, move sky
 	gameState.pubsub.subscribe( "SkipTime", function(){
 		dayNight.x -=  dayNight.x < -15583 ? 0 : (11.38 * 20);
 	});
 
-    //stage.addChild( dayNight );
+    stage.addChild( dayNight );
     stage.addChild( ground );
     stage.addChild( houses );
     stage.addChild( streetLight );
-    //stage.addChild( animation );
+    stage.addChild( animation );
 return {
 
 	tick: function(){
