@@ -274,7 +274,7 @@ function OvenUI( stage, gameState ){
 
 	// Show core temperature
 	this.showTempDialog = function(){
-		if( that.ovenDoor == OVEN_CLOSED ){
+		if( that.ovenDoor != OVEN_OPEN ){
 			gameState.pubsub.publish("ShowDialog", {seq:"OpenDoor", autoAdvance:true});
 		}
 		else{
