@@ -117,7 +117,7 @@ function OvenUI( stage, gameState ){
 	}
 
 	var turkeyStates = [
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1Small.svg" ),
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2.svg" ),
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState3.svg" ),
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4.svg" ),
@@ -126,7 +126,7 @@ function OvenUI( stage, gameState ){
 	// place turkeys in oven
 	for (i in turkeyStates){
 		turkeyStates[i].alpha = 0;
-		turkeyStates[i].scaleX = turkeyStates[i].scaleY = 0.2;
+		turkeyStates[i].scaleX = turkeyStates[i].scaleY =1;
 		turkeyStates[i].x = 75;
 		turkeyStates[i].y = 258;
 	}
@@ -360,6 +360,7 @@ function OvenUI( stage, gameState ){
 						turkeyStates[4].alpha = 1;
 
 					panFront.alpha = 1;
+					stage.addChild(turkeyStates[0]);
 					/*for(i in turkeyStates){
 						stage.addChild(turkeyStates[i]);
 

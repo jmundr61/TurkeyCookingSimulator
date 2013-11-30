@@ -72,7 +72,7 @@ function GameState(){
 
     // Kitchen Items
     queue.loadFile( {id: "res/screens/KitchenScreen/KitchenScreen.png", src:"res/screens/KitchenScreen/KitchenScreen.png"});
-	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState1.svg", src:"res/screens/KitchenScreen/TurkeyState1.svg"});
+	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState1Small.svg", src:"res/screens/KitchenScreen/TurkeyState1Small.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState2.svg", src:"res/screens/KitchenScreen/TurkeyState2.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState3.svg", src:"res/screens/KitchenScreen/TurkeyState3.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState4.svg", src:"res/screens/KitchenScreen/TurkeyState4.svg"});
