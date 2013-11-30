@@ -442,7 +442,7 @@ var story = {
 "Mom: I didn't want to bother you with the details. But I guess there's no harm in letting you know.",
 "Mom: For a while I allowed all my students to use the bathroom whenever they wanted. They didn't even have to ask. I wanted the students to feel independent.",
 "Mom: But then the administration told me that all students were required to have a bathroom pass. Too many students were skipping class they feared.",
-"Mom: I never lost a student, and all my students knew not to abuse their privilege given to them, but I did as I was told.
+"Mom: I never lost a student and all my students knew not to abuse their privileges, but I did as I was told.",
 "Mom: I made sure students signed themselves out, wrote their name, signed it, then took the bathroom pass.",
 "Girlfriend: That seems very efficient. But are the third graders mature enough to get themselves to the bathroom and not goof off?",
 "Mom: Well, every student has their 20 minutes. I don't want to parent them. That's not my job. My job is to teach lessons.",
@@ -496,7 +496,7 @@ var story = {
 
 "Story about Girlfriend’s teacher that makes buzzer noises when you got something wrong":
 ["Girlfriend: Greg, here's something that might tinkle your fancy.",
-"Girlfriend: I saw my old professor from a couple years back, Professor Ronfleur. The Humanities teacher. Do you remember him?
+"Girlfriend: I saw my old professor from a couple years back, Professor Ronfleur. The Humanities teacher. Do you remember him?",
 "Brother: The guy who always wore the purple bow tie? Who could forget him? Did he buzz you?",
 "Girlfriend: Ha-ha, no, but that's why I brought it up. That buzz!",
 "Mom: What buzz?",
