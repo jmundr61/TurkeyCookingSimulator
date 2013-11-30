@@ -295,7 +295,7 @@ function OvenUI( stage, gameState ){
 
 
     this.secondTick = function(diff){
-    		ovenModel.secondTick();
+    		//ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
 

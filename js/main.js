@@ -71,6 +71,7 @@ function GameState(){
     queue.loadFile( {id: "UIBuzzFile", src:"res/sound/GUI/buzz.mp3"} );
 
     // Kitchen Items
+    queue.loadFile( {id: "res/screens/KitchenScreen/KitchenScreen.png", src:"res/screens/KitchenScreen/KitchenScreen.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState1.svg", src:"res/screens/KitchenScreen/TurkeyState1.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState2.svg", src:"res/screens/KitchenScreen/TurkeyState2.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState3.svg", src:"res/screens/KitchenScreen/TurkeyState3.svg"});
