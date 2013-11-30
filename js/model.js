@@ -21,7 +21,7 @@ function TurkeyLayer( name, percentRadius, turkeyModel, ovenModel ){
     																		ovenModel.globalTime );
 			that.waterLost = that.waterLost + UtilityFunctions.waterLoss( that.finalTemperature );
 			that.cookCondition = UtilityFunctions.cookCondition(that.waterLost);
-			//console.log( that.name + ": "+ that.waterLost + " " + that.cookCondition);
+			console.log( that.name + ": "+ that.waterLost + " " + that.cookCondition);
     	},
 		resetLayerTemps: function(){
 			that.initialTemp = that.finalTemperature;
@@ -118,7 +118,7 @@ function OvenModel( turkeyWeight, gameState ) {
     		};
     	},
     	changeTemp: function(setTemp){
-    		//console.log("temp changed to " + setTemp);
+    		console.log("temp changed to " + setTemp);
             that.setTemp = setTemp;
     	},
 	    secondTick: function(){
@@ -134,9 +134,9 @@ function OvenModel( turkeyWeight, gameState ) {
 				// Turn off oven light
 				gameState.pubsub.publish( "OvenLight", "Off" );
 			}
-				//console.log("Steady Temp " + that.steadyTemp)
-				//console.log("Steady Timer " + that.steadyTimer)
-				//console.log("Oven Temp " + that.tempInfini )
+				console.log("Steady Temp " + that.steadyTemp)
+				console.log("Steady Timer " + that.steadyTimer)
+				console.log("Oven Temp " + that.tempInfini )
 				turkey.updateLayerTemps();
 	    }
 	}
@@ -262,7 +262,7 @@ UtilityFunctions = {
 
 		tempAtTimeAndRadius=(sum*(tempInitial-tempInfini))+tempInfini
 
-		//console.log("The Temperature at radius " + rPosition + " m and time " + t/60/60 + " hours is " + tempAtTimeAndRadius + " C or " + this.C2F(tempAtTimeAndRadius) + " F");
+		console.log("The Temperature at radius " + rPosition + " m and time " + t/60/60 + " hours is " + tempAtTimeAndRadius + " C or " + this.C2F(tempAtTimeAndRadius) + " F");
 		return(tempAtTimeAndRadius)
 	},
 

@@ -361,10 +361,10 @@ function OvenUI( stage, gameState ){
 
 					panFront.alpha = 1;
 					stage.addChild(turkeyStates[0]);
-					/*for(i in turkeyStates){
+					for(i in turkeyStates){
 						stage.addChild(turkeyStates[i]);
 
-					}*/
+					}
 					stage.addChild(panFront);
 				}
 			// Pan front goes here
