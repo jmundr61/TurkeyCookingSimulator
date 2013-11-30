@@ -118,10 +118,10 @@ function OvenUI( stage, gameState ){
 
 	var turkeyStates = [
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1Small.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState3.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5.svg" )
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2Small.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState3Small.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4Small.svg" ),
+		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5Small.svg" )
 	];
 	// place turkeys in oven
 	for (i in turkeyStates){
@@ -330,7 +330,10 @@ function OvenUI( stage, gameState ){
 						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "House Fire" )
 						turkeyStates[4].alpha = 1;
-				
+					for(i in turkeyStates){
+						stage.addChild(turkeyStates[i]);
+
+					}
 				}
 			}
     	},
