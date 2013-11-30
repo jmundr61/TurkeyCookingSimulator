@@ -97,7 +97,7 @@ function MainScreen( stage, gameState ){
  	new ImgButton( stage, gameState, 17,470, "res/screens/MainScreen/ButtonHelp.png", "res/screens/MainScreen/ButtonHelp.png",null, null, "Click", function(){ gameState.pubsub.publish("ShowHelp",""); } );
  	new ImgButton( stage, gameState, 17,527, "res/screens/MainScreen/ButtonCredits.png", "res/screens/MainScreen/ButtonCredits.png","SwitchScreen", "CreditsScreen", "Click"  );
 
- 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:1} );
+ 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:0.7} );
     this.uiElems = [];
 
     return {
@@ -256,6 +256,7 @@ function KitchenScreen( stage, gameState ){
 
 	this.uiElems.push( gameState.ovenUI ? gameState.ovenUI.render() : ( gameState.ovenUI = new OvenUI( stage, gameState ) ).render() );
 	this.uiElems.push( new ClockUI( stage, gameState ) );
+	this.uiElems.push( new AlarmUI(stage, gameState) );
 
 
 	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, null,null, function(){ gameState.pubsub.publish("ShowHelp","");} ) );
@@ -269,7 +270,7 @@ function KitchenScreen( stage, gameState ){
 	if( !gameState.turkeyBought ){
 		gameState.pubsub.publish( "ShowDialog", {seq:"KitchenInitial", autoAdvance:true} );
 	}
-
+	
 	return {
 		blit : function(){
 
@@ -392,7 +393,7 @@ function ScoreScreen( stage, gameState ){
 
     this.background = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Tally.png" );
     stage.addChild( this.background );
- 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:1} );
+ 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:0.7} );
 
     //
 

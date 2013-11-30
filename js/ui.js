@@ -152,34 +152,55 @@ function AlarmUI(stage, gameState){
 	var that = this;
 	this.showingConfirm = false;
 
-	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/FinalConfirmation.png");
-	var yesButton = new Button( stage, gameState, 355, 338, 388, 50, null, null, function(){
-		gameState.pubsub.publish( "Play", "Ding" );
-		gameState.pubsub.publish( "SwitchScreen", "ScoreScreen" );
-		that.hideFinalConfirm();
-	} );
-	var noButton = new Button( stage, gameState, 355, 395, 388, 50, null, null, function(){that.hideFinalConfirm();} );
+	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/AlarmKitchen.png");
 
-	this.hideFinalConfirm = function(){
-		stage.removeChild( finalImg );
-		stage.removeChild( yesButton );
-		stage.removeChild( noButton );
-		that.showingConfirm = false;
-	};
+	var timerText = new createjs.Text("00:00", "24px Arial", "#ffffffff" );
+	timerText.x = 372;
+	timerText.y = 290;
+
+	var clearButton = new Button( stage, gameState, 364, 327, 17, 13, null, null, function(){
+		gameState.alarmTimer = 0;
+		that.updateTimer();
+	} );
+
+	var hourButton = new Button( stage, gameState, 386, 327, 24, 13, null, null, function(){
+		gameState.alarmTimer +=3600;
+		that.updateTimer();
+	} );
+	var minuteButton = new Button( stage, gameState, 414, 327, 24, 13, null, null, function(){
+		gameState.alarmTimer +=300;
+		that.updateTimer();
+	} );
+
+	this.updateTimer = function(){
+		var colon = gameState.currentTime%2 ? ":" : " ";
+		var totalSec = gameState.alarmTimer;
+		var hours = parseInt( totalSec / 3600 ) % 24
+		var minutes = parseInt( totalSec / 60 ) % 60;
+		var timeText = ("00"+hours).slice(-2) + colon + ("00"+minutes).slice(-2);
+		timerText.text = timeText;
+	}
 
 	// Show core temperature
-	this.showFinalConfirm = function(){
-		console.log("Showing final confirm");
-		if( !that.showingConfirm ){
-			that.showingConfirm = true;
-			stage.addChild( finalImg );
-			stage.addChild( noButton );
-			stage.addChild( yesButton );
-		}
-	};
+	//this.showAlarmUI = function(){
+		stage.addChild( finalImg );
+		stage.addChild( timerText );
+		stage.addChild( clearButton );
+		stage.addChild( hourButton );
+		stage.addChild( minuteButton );
+	//};
+	//alarmTimer
+	this.updateTimer();
 
-	// change temperature, this one's for the UI
-    gameState.pubsub.subscribe( "ShowFinalConfirm", this.showFinalConfirm );
+	return{
+		secondTick: function(){
+			that.updateTimer();
+		},
+		tick:function(){
+		}
+	}
+
+
 }
 
 function CookbookUI( stage, gameState ){
@@ -253,7 +274,7 @@ function OvenUI( stage, gameState ){
 	this.ovenDoor = OVEN_CLOSED;
 
 	// Important Model, dummy placeholder
-	var ovenModel = { secondTick:function(){} };
+	var ovenModel = { secondTick:function(){}, setRawTemp:function(){}, getRawTemp:function(){} };
 
 	var ovenLight = new createjs.Shape();
 	ovenLight.graphics.beginFill( "black" ).drawCircle( 181, 126, 2 );
@@ -387,9 +408,9 @@ function OvenUI( stage, gameState ){
 				var state = ovenModel.getTurkeyState();
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
 				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
-			}
-			if(ovenModel)
 				ovenModel.setRawTemp( (ovenModel.getRawTemp() - 25) < 150 ? 150 : ovenModel.getRawTemp() - 25 );
+			}
+
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
 		}else if (that.ovenDoor == OVEN_OPEN ){
 			that.ovenDoor = OVEN_PEEK;
@@ -463,7 +484,6 @@ function OvenUI( stage, gameState ){
     			// incur -25 upon door open and penalty -5 degrees a second for opening the oven.
     			ovenModel.setRawTemp( (ovenModel.getRawTemp() - 5) < 150 ? 150 : ovenModel.getRawTemp() - 5 );
     		}
-
     		ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
@@ -539,12 +559,13 @@ function OvenUI( stage, gameState ){
 					}
 					stage.addChild(panFront);
 				}
+
 			// Pan front goes here
 			stage.addChild( panFront );
 
 			//finalize button
 			if( gameState.turkeyBought ){
-				stage.addChild( new Button( stage, gameState, 45, 250, 250, 175, null, null, function(){
+				stage.addChild( new Button( stage, gameState, 45, 250, 250, 150, null, null, function(){
 					gameState.pubsub.publish("Play", "Error");
 					gameState.pubsub.publish("ShowFinalConfirm","");
 				} ) );
@@ -826,7 +847,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	button.alpha = 0.01;
+ 	button.alpha = 0.5;
  	button.addEventListener( "click", function(){
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){

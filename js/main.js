@@ -17,6 +17,7 @@ function GameState(){
     this.peekRecords = [];
     this.turkeyCooking = false;
     this.turkeyType = "";
+    this.alarmTimer = 0;
 
     // stats
     this.storeVisits = 0;
@@ -324,7 +325,7 @@ function GameUI( canvasElem, gameState ){
 
 	var soundManager = new SoundManager( gameState );
 
-	this.activeScreenObj = new LoadingScreen( this.stage, gameState );
+	this.activeScreenObj = new KitchenScreen( this.stage, gameState );
 	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
 	textContent.x = 750;
 	textContent.y = 30;
