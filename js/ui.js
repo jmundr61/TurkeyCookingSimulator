@@ -115,6 +115,36 @@ function HelpUI( stage, gameState ){
     gameState.pubsub.subscribe( "ShowHelp", this.showHelp );
 }
 
+
+function FinalConfirmationUI(stage, gameState){
+	var that = this;
+	this.showingConfirm = false;
+
+	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/FinalConfirmation.png");
+	var yesButton = new Button( stage, gameState, 355, 338, 388, 50, null, null, function(){that.hideFinalConfirm();} );
+	var noButton = new Button( stage, gameState, 355, 395, 388, 50, null, null, function(){that.hideFinalConfirm();} );
+
+	this.hideFinalConfirm = function(){
+		stage.removeChild( finalImg );
+		stage.removeChild( yesButton );
+		stage.removeChild( noButton );
+		that.showingConfirm = false;
+	};
+
+	// Show core temperature
+	this.showFinalConfirm = function(){
+		if( !that.showingConfirm ){
+			stage.addChild( finalImg );
+			stage.addChild( noButton );
+			stage.addChild( yesButton );
+			that.showingConfirm = true;
+		}
+	};
+
+	// change temperature, this one's for the UI
+    gameState.pubsub.subscribe( "ShowFinalConfirm", this.showFinalConfirm );
+}
+
 function CookbookUI( stage, gameState ){
 	var that = this;
 	this.showingCookbook = false;
@@ -193,12 +223,22 @@ function OvenUI( stage, gameState ){
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4Small.svg" ),
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5Small.svg" )
 	];
+
 	// place turkeys in oven
 	for (i in turkeyStates){
 		turkeyStates[i].alpha = 0;
 		turkeyStates[i].scaleX = turkeyStates[i].scaleY =1;
 		turkeyStates[i].x = 75;
 		turkeyStates[i].y = 258;
+		turkeyStates[i].addEventListener( "mouseover", function(){
+	 		document.body.style.cursor='pointer';
+	 	});
+ 		turkeyStates[i].addEventListener( "mouseout", function(){
+ 			document.body.style.cursor='default';
+ 		});
+ 		turkeyStates[i].addEventListener( "click", function(){
+ 			gameState.pubsub.publish("ShowFinalConfirm","");
+ 		});
 	}
 
 	var temperatureText = new createjs.Text( "OFF", "40px Arial", "#ff7700" );
@@ -416,7 +456,7 @@ function OvenUI( stage, gameState ){
 				}
 				gameState.oldTime = Date.now();
 			}
-			if( gameState.turkeyBought && dialoguediff > 60*1000 ){
+			if( gameState.turkeyBought && dialoguediff > 10*1000 ){
 					gameState.pubsub.publish( "ShowDialog", {seq:"Spouse gets surprise movie tickets", autoAdvance:true, random:true} );
 					gameState.oldDialogueTime = Date.now();
 			}

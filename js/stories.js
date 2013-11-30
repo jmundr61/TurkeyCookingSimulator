@@ -45,12 +45,12 @@ var story = {
 "Dad: Mooom!"],
 
 "Creeper Worker":
-["Brother: ...and so this guy kept trying to see what I wrote down on my notepad, and I keep trying to hide it from his prying eyes. Anyways…",
+["Brother: ...and so this guy kept trying to see what I wrote down on my notepad, and I keep trying to hide it from his prying eyes. Anyways...",
 "Dad: Hey that reminds me of this guy at work.",
 "Brother: I'm trying to tell a story here Dad.",
 "Mom: Let Greg finish.",
 "Dad: Ok, finish your story.",
-"Brother: Well… I forgot where I was going with it. Err, the guy was trying to view my notepad...and well, that's about it. Look what you did Dad.",
+"Brother: Well... I forgot where I was going with it. Err, the guy was trying to view my notepad...and well, that's about it. Look what you did Dad.",
 "Dad: Sorry. But hey! Now you can hear my story.",
 "Dad: Just like you, we had a nosey co-worker. This co-worker was showing around a new customer to our branch when a screensaver caught his in a nearby room.",
 "Grandma: What is a screensaver?",
@@ -88,7 +88,7 @@ var story = {
 "Brother: I look down and there are primer drops all over my pants.",
 "Dad: Why were you holding the paint bucket though? Don't you just pour it in a roller pan and do it that way like I taught you?",
 "Brother: Well yes, but I was also cutting the edges of the room before hand, like you taught me. And that was easier with the paint bucket in my hand.",
-"Brother: Or so I thought…",
+"Brother: Or so I thought...",
 "Mom: What happened next Greggy?",
 "Brother: Mom, don't call me 'Greggy'.",
 "Brother: Anywaaays, I quickly put the can down in the roller pan I had nearby. I turned around to find some paper towels to clean myself off with.",
@@ -168,7 +168,7 @@ var story = {
 "Brother: The flier outside said they had one of those video sensations, you know the one who does the makeup? I can't remember her name.",
 "Mom: So did you go in?",
 "Brother: And wait in that long line? I don't even wear makeup!",
-"Mom: Yeah, but what about your fiancée'? Why not get her something nice?",
+"Mom: Yeah, but what about your fiancee'? Why not get her something nice?",
 "Brother: I'm sure she would love some makeup, but I can buy that stuff on any day.",
 "Brother: One kind of interesting, but obvious, thing about the line composition was that it was majorly women. There was a handful of guys, but I'd assume they were boyfriends.",
 "Grandpa: Back in my day, I would have gotten in that line and wooed all the women.",
@@ -361,7 +361,7 @@ var story = {
 
 "Grandparents sings a Patriotist song":
 ["Grandpa: Since dinner is taking a while, it seems like a good time for a song don't you think?",
-"Dad: Dad, please no…",
+"Dad: Dad, please no...",
 "Grandpa: Ooooh, I saw Mussolini sitting on a log",
 "Grandpa: All puffed up like a great big frog",
 "Grandpa: Sneaked up close and stuck him with a wire",
@@ -379,7 +379,7 @@ var story = {
 "Grandpa: He tried to hang on and he tried to let go ",
 "Grandma: Now they have a new dance called Hitler in the snow. ",
 "Grandpa: Wow, I didn't know you knew that one. ",
-"Grandma: Word travels fast on the front. Just don't let the officers hear you singing it or they'll whoop your ass faster than you can say водка. ",
+"Grandma: Word travels fast on the front. Just don't let the officers hear you singing it or they'll whoop your ass faster than you can say vodka. ",
 "Grandpa: Advice to keep close at heart. "],
 
 "Dad Tells a bad Joke":
@@ -397,7 +397,7 @@ var story = {
 "Grandma: Well, what do you mean 'key' .",
 "Dad: A 'key', something that is of vital importance.",
 "Grandma: hmmm, ok. I think I get it.",
-"Dad: Ok…."],
+"Dad: Ok...."],
 
 "Mom Story":
 ["Mom: My favorite color is butter.",

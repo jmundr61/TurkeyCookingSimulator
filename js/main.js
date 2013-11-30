@@ -56,6 +56,7 @@ function GameState(){
     queue.loadFile( {id: "res/screens/DifficultyScreen/Difficulty-Selection.png", src:"res/screens/DifficultyScreen/Difficulty-Selection.png"} );
 	queue.loadFile( {id: "res/screens/DifficultyScreen/ButtonMale.png", src:"res/screens/DifficultyScreen/ButtonMale.png"} );
     queue.loadFile( {id: "res/screens/DifficultyScreen/ButtonFemale.png", src:"res/screens/DifficultyScreen/ButtonFemale.png"} );
+
     // Load image assets
     queue.loadFile( {id: "TurkeySpriteFile", src:"res/screens/MainScreen/TurkeySprite.png"} );
     queue.loadFile( {id: "MainBackgroundFile", src:"res/screens/MainScreen/Main-Screen.png"} );
@@ -87,6 +88,7 @@ function GameState(){
 
     // Kitchen Items
     queue.loadFile( {id: "res/screens/KitchenScreen/KitchenScreen.png", src:"res/screens/KitchenScreen/KitchenScreen.png"});
+    queue.loadFile( {id: "res/screens/KitchenScreen/FinalConfirmation.png", src:"res/screens/KitchenScreen/FinalConfirmation.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState1Small.svg", src:"res/screens/KitchenScreen/TurkeyState1Small.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState2Small.svg", src:"res/screens/KitchenScreen/TurkeyState2Small.svg"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/TurkeyState3Small.svg", src:"res/screens/KitchenScreen/TurkeyState3Small.svg"});

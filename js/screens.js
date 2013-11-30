@@ -246,7 +246,7 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems = [];
 
 	this.uiElems.push( new WindowUI( stage, gameState ) );
-
+	new FinalConfirmationUI(stage, gameState );
 	this.background = new createjs.Bitmap( "res/screens/KitchenScreen/KitchenScreen.png" );
     stage.addChild( this.background );
     console.log(gameState.purchasedItems);
@@ -268,8 +268,8 @@ function KitchenScreen( stage, gameState ){
 	} );
 
 	// If player did not buy a turkey, tell them
-	if( gameState.turkeyBought ){
-		gameState.pubsub.publish( "ShowDialog", {seq:"Spouse gets surprise movie tickets", autoAdvance:true} );
+	if( !gameState.turkeyBought ){
+		gameState.pubsub.publish( "ShowDialog", {seq:"KitchenInitial", autoAdvance:true} );
 	}
 
 	return {

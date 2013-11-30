@@ -1,6 +1,6 @@
 function DialogueSequence( sequence ){
 
-	var targetStory = story[sequence] ? story[sequence].slice(0) : messages[sequence].slice(0);
+	var targetStory = story[sequence] ? story[sequence].slice(0) : (  messages[sequence] ?  messages[sequence].slice(0) : [] );
 
 	return {
 		next: function(){
@@ -83,6 +83,7 @@ function DialogUI( stage, gameState ){
 
  		if( textSeq.random ){
  			that.showRandomConvo();
+ 			return;
  		}
 
  		that.currDialogueSeq = new DialogueSequence( textSeq.seq );
@@ -96,11 +97,17 @@ function DialogUI( stage, gameState ){
  	}
 
  	this.showRandomConvo = function(){
+ 		// No more stories, thanks for playing
+ 		if( dialogueList.length == 0 ) return;
+
  		dialogueList = Object.keys(story);
+ 		var randomKey = UtilityFunctions.randRange(0, dialogueList.length);
 
  		// check if there is something going on
  		if( !that.currDialogueSeq.more() ){
- 			this.showDialog( story[ dialogueList[ UtilityFunctions.randRange(0, dialogueList.length) ] ] || story["Dad Tells a bad Joke"] );
+ 			console.log("random story");
+ 			this.showDialog( {seq: dialogueList[ randomKey ] || "Dad Tells a bad Joke", autoAdvance:true } );
+ 			delete story[ dialogueList[ randomKey ] ];
  		}
  	}
 
@@ -149,7 +156,7 @@ function DialogUI( stage, gameState ){
     	tick: function(){
     		delayCounter = new Date().getTime() - oldTime;
 
-    		if( that.autoAdvance == true && that.dialogBox.y ==435 && delayCounter > ( that.textContent.text.length * MILLIS_PER_CHAR ) ){
+    		if( that.autoAdvance == true && that.dialogBox.y ==0 && delayCounter > ( that.textContent.text.length * MILLIS_PER_CHAR ) ){
     			clickEvent();
     		}
 
