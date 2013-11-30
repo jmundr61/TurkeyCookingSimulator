@@ -330,10 +330,6 @@ function OvenUI( stage, gameState ){
 						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "House Fire" )
 						turkeyStates[4].alpha = 1;
-					for(i in turkeyStates){
-						stage.addChild(turkeyStates[i]);
-
-					}
 				}
 			}
     	},
