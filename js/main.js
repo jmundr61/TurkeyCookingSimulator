@@ -6,6 +6,7 @@ function GameState(){
 	this.currentTime = new Date().getTime();
 	this.oldTime = new Date().getTime();
 
+    this.gameStarted = false;
 	this.name = "";
 	this.gender = "Male";
 	this.wallet = 45.00;
@@ -55,7 +56,13 @@ function GameState(){
     queue.loadFile( {id: "HelpButtonFile", src:"res/screens/MainScreen/ButtonHelp.png"} );
     queue.loadFile( {id: "CreditsButtonFile", src:"res/screens/MainScreen/ButtonCredits.png"} );
 
-    queue.loadFile( {id: "HelpCreditsScreen", src:"res/screens/HelpCreditsScreen/Help.png"} );
+    queue.loadFile( {id: "CreditsScreenFile", src:"res/screens/HelpCreditsScreen/Credits.png" } );
+    queue.loadFile( {id: "HelpP1P2", src:"res/screens/HelpCreditsScreen/HelpP1P2.png" } );
+    queue.loadFile( {id: "HelpP3P4", src:"res/screens/HelpCreditsScreen/HelpP3P4.png" } );
+    queue.loadFile( {id: "HelpP5P6", src:"res/screens/HelpCreditsScreen/HelpP5P6.png" } );
+    queue.loadFile( {id: "HelpP7P8", src:"res/screens/HelpCreditsScreen/HelpP7P8.png" } );
+
+    queue.loadFile( {id: "HelpScreenFile", src:"res/screens/HelpCreditsScreen/Credits.png" } );
 
     queue.loadFile( {id: "MarketScreenfile", src:"res/screens/MarketScreen/MarketScreen.png"} );
 
@@ -291,7 +298,7 @@ function GameUI( canvasElem, gameState ){
 	/* Initialize All Screens */
 	this.screens = {
 		"LoadingScreen" 	 : LoadingScreen,
-		"InfoHelpScreen" 	 : InfoHelpScreen,
+		"HelpScreen"       	 : HelpScreen,
 		"MainScreen" 	 	 : MainScreen,
 		"DifficultyScreen" 	 : DifficultyScreen,
 		"KitchenScreen"		 : KitchenScreen,

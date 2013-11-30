@@ -77,7 +77,7 @@ function CookbookUI( stage, gameState ){
 				logLine.x = 423;
 				logLine.y = 50 * i+ 165;
 				logLine.textBaseline = "alphabetic";
-				logLine.text = record.getType() + "   " + time.getHours() + ":" + time.getMinutes() + "        " + record.getContent();
+				logLine.text = record.getType() + "   " + ("00"+time.getHours()).slice(-2) + ":" + ("00"+time.getMinutes()).slice(-2) + "        " + record.getContent();
 
 				logEntries.push(logLine);
 				stage.addChild(logLine);
@@ -234,6 +234,12 @@ function OvenUI( stage, gameState ){
 			handleBar.graphics.beginFill("#ffffff").drawRect(5, 450, 400, 60);
 			handleBar.alpha = 0.5;
 
+			if( gameState.turkeyBought ){
+				var state = ovenModel.getTurkeyState();
+				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
+				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
+			}
+
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
 		}else if (that.ovenDoor == OVEN_OPEN ){
 			that.ovenDoor = OVEN_PEEK;
@@ -258,6 +264,11 @@ function OvenUI( stage, gameState ){
 			that.ovenDoor = OVEN_PEEK;
 
 			handleBar.y = 48;
+			if( gameState.turkeyBought ){
+				var state = ovenModel.getTurkeyState();
+				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
+				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
+			}
 		}
 		else if (that.ovenDoor == OVEN_PEEK){
 			doorClosedLightOn.alpha = lightPressedImg.alpha == 0 ? 0 : 1;
@@ -294,6 +305,10 @@ function OvenUI( stage, gameState ){
 	gameState.pubsub.subscribe("DoneSkipTime", function(){ that.doneSkipTime = true; });
 
     this.secondTick = function(diff){
+    		// check if oven door is open
+    		if( that.ovenDoor == OVEN_OPEN ){
+    			// - 25 + penalty 5 degrees a second for opening the oven.
+    		}
     		ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
@@ -326,7 +341,7 @@ function OvenUI( stage, gameState ){
 						turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "Dry" )
 						turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
-					if( turkeyState["skin"]["cond"][0] == "Charcoal" )
+					if( turkeyState["skin"]["cond"][0] == "Burnt" )
 						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "House Fire" )
 						turkeyStates[4].alpha = 1;
@@ -353,7 +368,7 @@ function OvenUI( stage, gameState ){
 						turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"] == "Dry" )
 						turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
-					if( turkeyState["skin"]["cond"] == "Charcoal" )
+					if( turkeyState["skin"]["cond"] == "Burnt" )
 						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"] == "House Fire" )
 						turkeyStates[4].alpha = 1;
@@ -641,7 +656,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	button.alpha = 0.1;
+ 	button.alpha = 0.01;
  	button.addEventListener( "click", function(){ 
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){

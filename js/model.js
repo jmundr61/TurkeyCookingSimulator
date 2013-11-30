@@ -282,22 +282,28 @@ UtilityFunctions = {
 	cookCondition: function(cookValue,volume){
 		var multiplier = 1;
 		if (cookValue>=multiplier*600000) {
-			return ["House Fire", (cookValue-600000)/(multiplier*600000)];
+			return ["House Fire", (cookValue-600000)/(multiplier*600000),"on fire"];
 		}
 		else if(cookValue>=multiplier*250000) {
-			return ["Charcoal", (cookValue-250000)/(multiplier*600000)];
+			return ["Burnt", (cookValue-250000)/(multiplier*600000), "burnt"];
 		}
 		else if (cookValue>=multiplier*150000) {
-			return ["Dry", (cookValue-150000)/(multiplier*250000)];
+			return ["Dry", (cookValue-150000)/(multiplier*250000), "dry"];
+		}
+		else if (cookValue>=multiplier*85000){
+			return ["Cooked", (cookValue-12000)/(multiplier*150000), "overcooked"];
 		}
 		else if (cookValue>=multiplier*12000) {
-			return ["Cooked", (cookValue-12000)/(multiplier*150000)];
+			return ["Cooked", (cookValue-12000)/(multiplier*150000), "cooked"];
+		}
+		else if (cookValue>=multiplier*10000){
+			return ["Undercooked", (cookValue-5000)/(multiplier*12000), "slightly cooked"];
 		}
 		else if (cookValue>=multiplier*5000) {
-			return ["Undercooked", (cookValue-5000)/(multiplier*12000)];
+			return ["Undercooked", (cookValue-5000)/(multiplier*12000), "undercooked"];
 		}
 		else {
-			return ["Raw", 1];
+			return ["Raw", 1, "raw"];
 		}
 	}
 }

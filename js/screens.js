@@ -60,25 +60,6 @@ function LoadingScreen( stage, gameState ){
 	}
 }
 
-function InfoHelpScreen( stage, gameState ){
-	var that = this;
-
-    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/Help.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
 
 function MainScreen( stage, gameState ){
 	var that = this;
@@ -113,7 +94,7 @@ function MainScreen( stage, gameState ){
 
 	// buttons info/credits/start
  	new ImgButton( stage, gameState, 571,527, "res/screens/MainScreen/ButtonStart.png", "res/screens/MainScreen/ButtonStart.png","SwitchScreen", "DifficultyScreen", "Click"  );
- 	new ImgButton( stage, gameState, 17,470, "res/screens/MainScreen/ButtonHelp.png", "res/screens/MainScreen/ButtonHelp.png","SwitchScreen", "InfoScreen", "Click"  );
+ 	new ImgButton( stage, gameState, 17,470, "res/screens/MainScreen/ButtonHelp.png", "res/screens/MainScreen/ButtonHelp.png","SwitchScreen", "HelpScreen", "Click"  );
  	new ImgButton( stage, gameState, 17,527, "res/screens/MainScreen/ButtonCredits.png", "res/screens/MainScreen/ButtonCredits.png","SwitchScreen", "CreditsScreen", "Click"  );
 
  	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:1} );
@@ -227,8 +208,8 @@ function DifficultyScreen( stage, gameState ){
  	stage.addChild( new Button( stage, gameState, 500, 235, 100, 55, "ChangeGender", "Male" ) );
  	stage.addChild( new Button( stage, gameState, 500, 300, 100, 55, "ChangeGender", "Female" ) );
 
- 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, null, null, function(){ gameState.hard = false; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
- 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, null, null, function(){ gameState.hard = true; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
+ 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, null, null, function(){ gameState.hard = false; gameState.gameStarted = true; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
+ 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, null, null, function(){ gameState.hard = true;  gameState.gameStarted = true; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
 
  	stage.addChild( new Button( stage, gameState, 35, 495, 85, 55, "SwitchScreen", "MainScreen" ) );
 
@@ -462,11 +443,38 @@ function ScoreScreen( stage, gameState ){
 	// Retry Button
 }
 
-function CreditsScreen( stage, gameState ){
-		var that = this;
 
-    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/Help.png" );
+function HelpScreen( stage, gameState ){
+	var that = this;
+
+    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/HelpP1P2.png" );
     stage.addChild( this.background );
+    stage.addChild( new Button( stage, gameState, 698, 15, 80, 50,null, null, function(){
+    	if( !gameState.gameStarted )
+    		gameState.pubsub.publish("SwitchScreen", "MainScreen");
+    	else
+    		gameState.pubsub.publish("SwitchScreen", "KitchenScreen");
+    } ));
+
+    this.uiElems = [];
+    return {
+		blit : function(){
+
+			// Draw all the uiElements
+	        for( var index in that.uiElems ){
+				that.uiElems[ index ].tick();
+			}
+		}
+	}
+	//
+}
+
+function CreditsScreen( stage, gameState ){
+	var that = this;
+
+    this.background = new createjs.Bitmap( "res/screens/HelpCreditsScreen/Credits.png" );
+    stage.addChild( this.background );
+    stage.addChild( new Button( stage, gameState, 698, 533, 80, 50, "SwitchScreen", "MainScreen" ) );
 
     this.uiElems = [];
     return {
