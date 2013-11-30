@@ -65,20 +65,19 @@ function CookbookUI( stage, gameState ){
 	// Show core temperature
 	this.showCookbook = function(){
 		if( !that.showingCookbook ){
-			console.log("show cookbook---" + gameState.peekRecords );
 			stage.addChild( cookbookImg );
 			stage.addChild( closeButton );
 
 			for( i in gameState.peekRecords ){
 				var record = gameState.peekRecords[i];
-				gameState.peekRecords[i].getTime();
+				var time = new Date( gameState.peekRecords[i].getTime() );
 
 				var logLine = new createjs.Text( "OFF", "12px Arial", "#ffffffff" );
 
-				logLine.x = 520;
+				logLine.x = 423;
 				logLine.y = 50 * i+ 165;
 				logLine.textBaseline = "alphabetic";
-				logLine.text = record.getContent();
+				logLine.text = record.getType() + "   " + time.getHours() + ":" + time.getMinutes() + "        " + record.getContent();
 
 				logEntries.push(logLine);
 				stage.addChild(logLine);
@@ -115,7 +114,7 @@ function OvenUI( stage, gameState ){
 			ovenLight.visible = true;
 		}
 	}
-
+	this.doneSkipTime = true;
 	var turkeyStates = [
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1Small.svg" ),
 		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2Small.svg" ),
@@ -279,8 +278,8 @@ function OvenUI( stage, gameState ){
 		}
 		else{
 			state = ovenModel.getTurkeyState();
-			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm.. the core temperature of the turkey is " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
-			gameState.pubsub.publish( "AddRecord", "Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" );
+			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"The core temperature of the turkey reads " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
+			gameState.pubsub.publish( "AddRecord", {type:"Probe", text:"Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F"} );
 		}
 	}
 
@@ -292,7 +291,7 @@ function OvenUI( stage, gameState ){
     gameState.pubsub.subscribe( "OvenLightToggle", this.ovenLightToggle );
 	gameState.pubsub.subscribe( "OvenLight", this.changeOvenLight );
 	gameState.pubsub.subscribe( "StartTurkeyModel", this.startTurkeyModel );
-
+	gameState.pubsub.subscribe("DoneSkipTime", function(){ that.doneSkipTime = true; });
 
     this.secondTick = function(diff){
     		ovenModel.secondTick();
@@ -304,6 +303,7 @@ function OvenUI( stage, gameState ){
 		for(var i = 0; i < 1200; i++){
 			that.secondTick( 1000 );
 		}
+		gameState.pubsub.publish("DoneSkipTime","");
 	});
 
     return {
@@ -379,7 +379,12 @@ function OvenUI( stage, gameState ){
 		    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
 		    stage.addChild( new Button( stage, gameState, 145, 163, 41, 17, "OvenLightToggle", "" ) );
 		    if( gameState.hard == false )
-		    	stage.addChild( new Button( stage, gameState, 220, 120, 50, 50, "SkipTime", "" ) );
+		    	stage.addChild( new Button( stage, gameState, 220, 120, 50, 50, null, null, function(){
+		    		if( that.doneSkipTime ){
+		    			gameState.pubsub.publish("SkipTime","");
+		    			that.doneSkipTime = false;
+		    		}
+		    	}) );
 			stage.addChild( handleBar);
     		return this;
     	}
@@ -388,10 +393,15 @@ function OvenUI( stage, gameState ){
 
 function WindowUI( stage, gameState ){
 
-	var dayNight = new createjs.Bitmap("res/Test4-217.svg");
+	var dayNight = new createjs.Bitmap("res/screens/Window/Test4-217.svg");
+	var mood = new createjs.Bitmap("res/screens/Window/Test4TransparencyFull.svg");
+
+	mood.y=30;
 	dayNight.y=30;
+
 	var secondCounter = 0;
-	dayNight.x = -(new Date().getHours()*682.625);
+	dayNight.x = -(new Date( gameState.currentTime ).getHours()*682.625);
+	mood.x = -(new Date( gameState.currentTime ).getHours()*682.625);
 
 	var ground = new createjs.Bitmap( "res/screens/Window/Ground.png" );
 	var houses = new createjs.Bitmap( "res/screens/Window/Housefar.png" );
@@ -411,7 +421,8 @@ function WindowUI( stage, gameState ){
 	
 	// Fast forward, move sky
 	gameState.pubsub.subscribe( "SkipTime", function(){
-		dayNight.x -=  dayNight.x < -15583 ? 0 : (11.38 * 20);
+		var newpos =  -(new Date( gameState.currentTime ).getHours()*682.625);
+		mood.x = dayNight.x = newpos < -15583 ? 0 : newpos;
 	});
 
     stage.addChild( dayNight );
@@ -419,6 +430,7 @@ function WindowUI( stage, gameState ){
     stage.addChild( houses );
     stage.addChild( streetLight );
     stage.addChild( animation );
+    stage.addChild( mood );
 return {
 
 	tick: function(){

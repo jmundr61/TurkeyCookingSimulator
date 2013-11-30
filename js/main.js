@@ -8,7 +8,7 @@ function GameState(){
 
 	this.name = "";
 	this.gender = "Male";
-	this.wallet = 40.00;
+	this.wallet = 45.00;
 	this.hard = false;
 	this.boughtOvenLight = false;
 	this.turkeyWeight = 8;
@@ -231,11 +231,11 @@ function GameState(){
 	    	"res/screens/KitchenScreen/StuffingSpecialKitchen.png","res/screens/KitchenScreen/StuffingSpecialKitchenGlow.png",
 	    	"Once rated as the most handsome man in the universe. Scott and his patented special stuffing will set you on the path to food heaven" ),
 
-	    "Organic Turkey" : new MarketItem( this, "Organic Turkey", 180,360, randomWeight[0]*1.6, "res/items/Turkey5.png", "res/items/Turkey5Glow.png",null,null, "All natural. No hormones. No antibiotics. Free Range. Lead Free", parseFloat(randomWeight[0]) ),
-	    "Free Range Turkey": new MarketItem( this, "Free Range Turkey", 540,320, randomWeight[1]*1.20, "res/items/Turkey4.png", "res/items/Turkey4Glow.png",null,null, "Our turkeys have wide open spaces to roam and are fed with only the highest quality feed.", parseFloat(randomWeight[1]) ),
-	    "Sunny Farms Turkey" : new MarketItem( this, "Sunny Farms Turkey", 265,415, randomWeight[2]*0.80, "res/items/Turkey3.png", "res/items/Turkey3Glow.png",null,null, "100% Turkey product from Sunny Farms Heavy Industries, Ltd.", parseFloat(randomWeight[2]) ),
+	    "Organic Turkey" : new MarketItem( this, "Organic Turkey", 180,360, randomWeight[0]*1.2, "res/items/Turkey5.png", "res/items/Turkey5Glow.png",null,null, "All natural. No hormones. No antibiotics. Free Range. Lead Free", parseFloat(randomWeight[0]) ),
+	    "Free Range Turkey": new MarketItem( this, "Free Range Turkey", 540,320, randomWeight[1]*1.00, "res/items/Turkey4.png", "res/items/Turkey4Glow.png",null,null, "Our turkeys have wide open spaces to roam and are fed with only the highest quality feed.", parseFloat(randomWeight[1]) ),
+	    "Sunny Farms Turkey" : new MarketItem( this, "Sunny Farms Turkey", 265,415, randomWeight[2]*0.60, "res/items/Turkey3.png", "res/items/Turkey3Glow.png",null,null, "100% Turkey product from Sunny Farms Heavy Industries, Ltd.", parseFloat(randomWeight[2]) ),
 	    "Pastured Turkey": new MarketItem( this, "Pastured Turkey", 474,357, randomWeight[3]*1.4, "res/items/Turkey2.png", "res/items/Turkey2Glow.png",null,null, "Grassy fields and natural ingredients allow our turkeys to have a better life, and taste great.", parseFloat(randomWeight[3]) ),
-		"General Turkey": new MarketItem( this, "General Turkey", 378,426, randomWeight[4]*1.00, "res/items/Turkey1.png", "res/items/Turkey1Glow.png",null,null, "100% General Satisfaction Guaranteed", parseFloat(randomWeight[4]) )
+		"General Turkey": new MarketItem( this, "General Turkey", 378,426, randomWeight[4]*0.80, "res/items/Turkey1.png", "res/items/Turkey1Glow.png",null,null, "100% General Satisfaction Guaranteed", parseFloat(randomWeight[4]) )
 	};
 
 	this.purchasedItems = [];
@@ -244,7 +244,7 @@ function GameState(){
 	this.kitchenIntro = false;
 
     this.addRecord = function( record ){
-        that.peekRecords.push( new Record( new Date(), record ) );
+        that.peekRecords.push( new Record( record.type, that.currentTime, record.text ) );
     }
     that.pubsub.subscribe( "AddRecord", this.addRecord );
 
@@ -283,7 +283,7 @@ function GameUI( canvasElem, gameState ){
 	var SCREEN_STABLE = 0;
 
 	this.stage = new createjs.Stage( canvasElem );
-	this.stage.enableMouseOver(20);
+	this.stage.enableMouseOver(25);
 
 	this.activeScreenName = "EndingScreen";
 	this.activeScreenObj = {};
@@ -367,13 +367,16 @@ function GameUI( canvasElem, gameState ){
 	}
 }
 
-function Record( dateTime, record ){
+function Record( type, dateTime, record ){
     return {
         getTime: function(){
             return dateTime;
         },
         getContent: function(){
             return record;
+        },
+        getType: function(){
+            return type;
         }
     }
 }
