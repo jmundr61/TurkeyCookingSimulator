@@ -200,6 +200,7 @@ function GameState(){
    	queue.loadFile( {id: "res/people/Mom.png", src:"res/people/Mom.png"});
    	queue.loadFile( {id: "res/people/PlayerFemale.png", src:"res/people/PlayerFemale.png"});
    	queue.loadFile( {id: "res/people/PlayerMale.png", src:"res/people/PlayerMale.png"});
+    queue.loadFile( {id: "res/people/TurkeyGhost.png", src:"res/people/TurkeyGhost.png"});
 
     // Load Window elements
     queue.loadFile( {id: "res/screens/Window/Door1.png", src:"res/screens/Window/Door1.png"});
@@ -224,8 +225,7 @@ function GameState(){
     queue.loadFile( {id: "res/screens/Window/Win10.png", src:"res/screens/Window/Win10.png"});
     queue.loadFile( {id: "res/screens/Window/Win11.png", src:"res/screens/Window/Win11.png"});
     queue.loadFile( {id: "res/screens/Window/Tree_Animation.png", src:"res/screens/Window/Tree_Animation.png"});
-    queue.loadFile( {id: "res/screens/Window/Test4-217.png", src:"res/screens/Window/Test4-217.png"});
-    queue.loadFile( {id: "res/screens/Window/Test4-217.png", src:"res/screens/Window/Test4TransparencyFull.png"});
+    queue.loadFile( {id: "res/screens/Window/Test4TransparencyFull.svg", src:"res/screens/Window/Test4TransparencyFull.svg"});
 
 
 

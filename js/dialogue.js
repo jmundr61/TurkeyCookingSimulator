@@ -30,7 +30,8 @@ function DialogUI( stage, gameState ){
 		"Grandpa": new createjs.Bitmap("res/people/Grandpa.png"),
 		"Mom": new createjs.Bitmap("res/people/Mom.png"),
 		"Female": new createjs.Bitmap("res/people/PlayerFemale.png"),
-		"Male": new createjs.Bitmap("res/people/PlayerMale.png")
+		"Male": new createjs.Bitmap("res/people/PlayerMale.png"),
+		"Turkey": new createjs.Bitmap("res/people/TurkeyGhost.png")
 	};
 
 	var dialogueList = Object.keys(story);

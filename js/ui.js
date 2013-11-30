@@ -133,6 +133,7 @@ function FinalConfirmationUI(stage, gameState){
 
 	// Show core temperature
 	this.showFinalConfirm = function(){
+		console.log("Showing final confirm");
 		if( !that.showingConfirm ){
 			stage.addChild( finalImg );
 			stage.addChild( noButton );
@@ -528,8 +529,7 @@ function WindowUI( stage, gameState ){
 	dayNight.y=30;
 
 	var secondCounter = 0;
-	dayNight.x = -(new Date( gameState.currentTime ).getHours()*682.625);
-	mood.x = -(new Date( gameState.currentTime ).getHours()*682.625);
+	mood.x = dayNight.x = -(new Date( gameState.currentTime ).getHours()*682.625);
 
 	var ground = new createjs.Bitmap( "res/screens/Window/Ground.png" );
 	var houses = new createjs.Bitmap( "res/screens/Window/Housefar.png" );
@@ -550,7 +550,7 @@ function WindowUI( stage, gameState ){
 	// Fast forward, move sky
 	gameState.pubsub.subscribe( "SkipTime", function(){
 		var newpos =  -(new Date( gameState.currentTime ).getHours()*682.625);
-		mood.x = dayNight.x = newpos < -15583 ? 0 : newpos;
+		 dayNight.x = mood.x =newpos < -15583 ? 0 : newpos;
 	});
 
     stage.addChild( dayNight );
@@ -567,11 +567,13 @@ return {
 		secondCounter++;
 		if( secondCounter > 60 ){
 			dayNight.x-=11.38;
+			mood.x -= 11.38;
 			secondCounter = 0;
 		}
 
 		// move the overlay
-		//console.log(dayNight.x);
+		console.log("Mood"+mood.x);
+
 		if( dayNight.x < -15583 )
 			dayNight.x = 0;
 
