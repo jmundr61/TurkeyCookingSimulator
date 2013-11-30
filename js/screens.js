@@ -335,6 +335,7 @@ function MarketScreen( stage, gameState ){
 
     this.uiElems = [];
     this.uiElems.push( new ImgButton( stage, gameState, 690,0, "res/items/ExitSign.png", "res/items/ExitGlow.png","SwitchScreen", "KitchenScreen", "Click"  ) );
+
     var marketItemKeys = Object.keys(gameState.marketItems);
     for (var index in marketItemKeys ) {
     	gameState.marketItems[marketItemKeys[index]].draw( stage );
@@ -426,7 +427,7 @@ function EndingScreen( stage, gameState ){
 }
 
 function ScoreScreen( stage, gameState ){
-		var that = this;
+	var that = this;
 
     this.background = new createjs.Bitmap( "res/Main.png" );
     stage.addChild( this.background );

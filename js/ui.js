@@ -569,9 +569,6 @@ return {
 			secondCounter = 0;
 		}
 
-		// move the overlay
-		console.log("Mood"+mood.x);
-
 		if( dayNight.x < -15583 )
 			dayNight.x = 0;
 
@@ -671,6 +668,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 	 				gameState.turkeyBought = true;
 	 				gameState.turkeyWeight = weight;
 				    gameState.marketItems[ that.name ].delete();
+				    that.bought = true;
 				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
 				    gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost))
 				    gameState.pubsub.publish("StartTurkeyModel","");
@@ -703,31 +701,33 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 	 			gameState.pubsub.publish( "Play", "Error" );
 	 		}
  		});
-
  		mouseOver.visible = false;
+
  	var objReturn = {
 		tick: function(){},
 		getName: function(){return that.name;},
 		delete: function( stage ){
+			that.visible = false;
 			gameState.pubsub.publish("RemoveItems", [mouseOut, mouseOver]);
-			mouseOut.visible = false;
-			mouseOver.visible = false;
 		},
 		draw: function( stage, newx, newy ){
 			if( newx && newy ){
 				mouseOut.x = mouseOver.x = newx;
 				mouseOut.y = mouseOver.y = newy;
 			}
-
+			console.log("NewScreen for item "+that.name +" is " +gameState.newScreen );
 			if( gameState.newScreen == "KitchenScreen" ){
+				mouseOutKitchen.visible = true;
 				stage.addChild( mouseOutKitchen );
 				mouseOverKitchen.visible = false;
 	    		stage.addChild( mouseOverKitchen );
 	    		return;
 			}
 
-			stage.addChild( mouseOut );
-	    	stage.addChild( mouseOver );
+			if( !that.bought ){
+				stage.addChild( mouseOut );
+	    		stage.addChild( mouseOver );
+	    	}
 		}
 	}
 	return objReturn;
