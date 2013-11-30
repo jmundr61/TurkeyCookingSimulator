@@ -449,7 +449,7 @@ function OvenUI( stage, gameState ){
 				}
 				gameState.oldTime = Date.now();
 			}
-			if( gameState.turkeyBought && dialoguediff > 10*1000 ){
+			if( gameState.turkeyBought && dialoguediff > 5*60*1000 ){
 					gameState.pubsub.publish( "ShowDialog", {seq:"Spouse gets surprise movie tickets", autoAdvance:true, random:true} );
 					gameState.oldDialogueTime = Date.now();
 			}
@@ -505,7 +505,7 @@ function OvenUI( stage, gameState ){
 		    stage.addChild( new Button( stage, gameState, 95, 163, 41, 17, "ChangeTemperature", "Down" ) );
 		    stage.addChild( new Button( stage, gameState, 145, 163, 41, 17, "OvenLightToggle", "" ) );
 		    if( gameState.hard == false )
-		    	stage.addChild( new Button( stage, gameState, 220, 120, 50, 50, null, null, function(){
+		    	stage.addChild( new Button( stage, gameState, 205, 105, 80, 80, null, null, function(){
 		    		if( that.doneSkipTime ){
 		    			gameState.pubsub.publish("SkipTime","");
 		    			that.doneSkipTime = false;
