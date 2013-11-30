@@ -77,9 +77,6 @@ function HelpUI( stage, gameState ){
 		}
 	});
 
-	stage.addChild( this.background );
-    stage.addChild( closeButton );
-
 	this.hideHelp = function(){
 		helpImg.visible=false;
 		stage.removeChild( closeButton );
@@ -104,6 +101,7 @@ function HelpUI( stage, gameState ){
 		}
 
 		helpPages[0].visible = true;
+		stage.addChild( that.background );
 		stage.addChild( closeButton );
 		stage.addChild( nextButton );
 		stage.addChild( prevButton );
@@ -121,7 +119,11 @@ function FinalConfirmationUI(stage, gameState){
 	this.showingConfirm = false;
 
 	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/FinalConfirmation.png");
-	var yesButton = new Button( stage, gameState, 355, 338, 388, 50, null, null, function(){that.hideFinalConfirm();} );
+	var yesButton = new Button( stage, gameState, 355, 338, 388, 50, null, null, function(){
+		gameState.pubsub.publish( "Play", "Ding" );
+		gameState.pubsub.publish( "SwitchScreen", "ScoreScreen" );
+		that.hideFinalConfirm();
+	} );
 	var noButton = new Button( stage, gameState, 355, 395, 388, 50, null, null, function(){that.hideFinalConfirm();} );
 
 	this.hideFinalConfirm = function(){
@@ -335,7 +337,7 @@ function OvenUI( stage, gameState ){
 
 			if( gameState.turkeyBought ){
 				var state = ovenModel.getTurkeyState();
-				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
+				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
 				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
 			}
 
@@ -365,7 +367,7 @@ function OvenUI( stage, gameState ){
 			handleBar.y = 48;
 			if( gameState.turkeyBought ){
 				var state = ovenModel.getTurkeyState();
-				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
+				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
 				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
     			that.ovenOpened++;
 			}
@@ -389,7 +391,7 @@ function OvenUI( stage, gameState ){
 		}
 		else{
 			state = ovenModel.getTurkeyState();
-			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:false, customText:"The core temperature of the turkey reads " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
+			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"The core temperature of the turkey reads " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
 			gameState.pubsub.publish( "AddRecord", {type:"Probe", text:"Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F"} );
 			that.ovenOpened++;
 		}
@@ -490,9 +492,12 @@ function OvenUI( stage, gameState ){
 			stage.addChild( panFront );
 
 			//finalize button
-			stage.addChild( new Button( stage, gameState, 45, 250, 250, 175, null, null, function(){
-				gameState.pubsub.publish("ShowFinalConfirm","");
-			} ) );
+			if( gameState.turkeyBought ){
+				stage.addChild( new Button( stage, gameState, 45, 250, 250, 175, null, null, function(){
+					gameState.pubsub.publish("Play", "Error");
+					gameState.pubsub.publish("ShowFinalConfirm","");
+				} ) );
+			}
 
 			stage.addChild( doorPeekLightOn);
 		    stage.addChild( doorPeekLightOff);

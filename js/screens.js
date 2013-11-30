@@ -79,7 +79,6 @@ function MainScreen( stage, gameState ){
  	animation.x = 140;
  	animation.y = 210;
 
-	new HelpUI(stage, gameState);
  	animation.addEventListener("tick", handleTick);
  	function handleTick(event){
  		if ( turkeyAnimations[event.currentTarget.currentAnimation][1] == event.currentTarget.currentFrame ){
@@ -386,51 +385,33 @@ function MarketScreen( stage, gameState ){
 
 }
 
-function TurkeyOutScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
-
-function EndingScreen( stage, gameState ){
-		var that = this;
-
-    this.background = new createjs.Bitmap( "res/Main.png" );
-    stage.addChild( this.background );
-
-    this.uiElems = [];
-    return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
-	}
-
-
-}
-
 function ScoreScreen( stage, gameState ){
 	var that = this;
 
-    this.background = new createjs.Bitmap( "res/Main.png" );
+	gameState.pubsub.publish( "FadeOut", "" );
+
+    this.background = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Tally.png" );
     stage.addChild( this.background );
+ 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:1} );
+
+    //
+
+    // Retry button
+    stage.addChild( new Button( stage, gameState, 590, 350, 200, 55, null, null, function(){ document.location.reload(); } ) );
+
+    // All the text for the entries
+    var totalCookTime;
+    var realTimeElapsed;
+    var finalCoreTemperature;
+    var totalScore;
+
+    // Optimal Temperature to be served at
+	this.scoreDistribution= function(inputTemp) {
+ 		desiredAverage = 162;
+		variance = 1000; //Std Deviation 31.62
+ 		return(Math.exp(-(Math.pow((inputTemp-desiredAverage),2)/(2*variance))))
+	};
+
 
     this.uiElems = [];
     return {

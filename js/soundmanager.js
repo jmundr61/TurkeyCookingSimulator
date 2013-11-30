@@ -21,6 +21,7 @@ function SoundManager( gameState ){
 	createjs.Sound.registerSound("res/sound/GUI/buzz.mp3", "Error");
 	createjs.Sound.registerSound("res/sound/Store/buy.mp3", "Buy");
 	createjs.Sound.registerSound("res/sound/Store/entrance.mp3", "Entrance");
+	createjs.Sound.registerSound("res/sound/GUI/ding.mp3", "Ding");
 
 	// Kitchen sound
 	createjs.Sound.registerSound("res/sound/Kitchen/Oven_Door_Full_Open.mp3", "Oven_Door_Full_Open");

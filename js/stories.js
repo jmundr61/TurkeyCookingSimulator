@@ -1,7 +1,7 @@
 var messages = {
 	"Null":["Me: "],
 	"KitchenInitial" : ["Me: I need to buy a turkey..."],
-	"CannotBuyTurkey" : ["Me: I've barely have time for ONE turkey, let alone TWO!"],
+	"CannotBuyTurkey" : ["Me: I barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
 	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
 	"EmptyOven" : ["Me: Ah, the oven is already preheated..."],

@@ -71,6 +71,9 @@ function GameState(){
     queue.loadFile( {id: "HelpP5P6", src:"res/screens/HelpCreditsScreen/HelpP5P6.png" } );
     queue.loadFile( {id: "HelpP7P8", src:"res/screens/HelpCreditsScreen/HelpP7P8.png" } );
 
+
+
+    queue.loadFile( {id: "ScoreScreenFile", src:"res/screens/ScoreScreen/Score-Tally.png" } );
     queue.loadFile( {id: "HelpScreenFile", src:"res/screens/HelpCreditsScreen/Credits.png" } );
 
     queue.loadFile( {id: "MarketScreenfile", src:"res/screens/MarketScreen/MarketScreen.png"} );
@@ -85,6 +88,7 @@ function GameState(){
     queue.loadFile( {id: "UILowClickFile", src:"res/sound/GUI/lowclick.mp3"} );
     queue.loadFile( {id: "UIClickFile", src:"res/sound/GUI/click.mp3"} );
     queue.loadFile( {id: "UIBuzzFile", src:"res/sound/GUI/buzz.mp3"} );
+    queue.loadFile( {id: "UIDingFile", src:"res/sound/GUI/ding.mp3"} );
 
     // Kitchen Items
     queue.loadFile( {id: "res/screens/KitchenScreen/KitchenScreen.png", src:"res/screens/KitchenScreen/KitchenScreen.png"});
@@ -313,8 +317,6 @@ function GameUI( canvasElem, gameState ){
 		"DifficultyScreen" 	 : DifficultyScreen,
 		"KitchenScreen"		 : KitchenScreen,
 		"MarketScreen"		 : MarketScreen,
-		"TurkeyOutScreen"	 : TurkeyOutScreen,
-		"EndingScreen"		 : EndingScreen,
 		"ScoreScreen"		 : ScoreScreen,
 		"CreditsScreen"		 : CreditsScreen
 	}
@@ -347,6 +349,7 @@ function GameUI( canvasElem, gameState ){
 		that.stage.addChild( overlay );
 		dialogManager.render();
 	};
+    new HelpUI(this.stage, gameState);
 
 	gameState.pubsub.subscribe( "SwitchScreen", this.switchScreen );
 	gameState.pubsub.subscribe( "ActuallySwitchScreen", this.actuallySwitchScreen );
