@@ -246,7 +246,6 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems = [];
 
 	this.uiElems.push( new WindowUI( stage, gameState ) );
-	new FinalConfirmationUI(stage, gameState );
 	this.background = new createjs.Bitmap( "res/screens/KitchenScreen/KitchenScreen.png" );
     stage.addChild( this.background );
     console.log(gameState.purchasedItems);

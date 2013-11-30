@@ -135,10 +135,10 @@ function FinalConfirmationUI(stage, gameState){
 	this.showFinalConfirm = function(){
 		console.log("Showing final confirm");
 		if( !that.showingConfirm ){
+			that.showingConfirm = true;
 			stage.addChild( finalImg );
 			stage.addChild( noButton );
 			stage.addChild( yesButton );
-			that.showingConfirm = true;
 		}
 	};
 
@@ -208,6 +208,7 @@ function OvenUI( stage, gameState ){
 	var ovenLight = new createjs.Shape();
 	ovenLight.graphics.beginFill( "black" ).drawCircle( 181, 126, 2 );
 
+	var confirmation = new FinalConfirmationUI(stage, gameState );
 	// Oven light control
 	this.changeOvenLight = function( state ){
 		if( state == "On" ){
@@ -231,15 +232,6 @@ function OvenUI( stage, gameState ){
 		turkeyStates[i].scaleX = turkeyStates[i].scaleY =1;
 		turkeyStates[i].x = 75;
 		turkeyStates[i].y = 258;
-		turkeyStates[i].addEventListener( "mouseover", function(){
-	 		document.body.style.cursor='pointer';
-	 	});
- 		turkeyStates[i].addEventListener( "mouseout", function(){
- 			document.body.style.cursor='default';
- 		});
- 		turkeyStates[i].addEventListener( "click", function(){
- 			gameState.pubsub.publish("ShowFinalConfirm","");
- 		});
 	}
 
 	var temperatureText = new createjs.Text( "OFF", "40px Arial", "#ff7700" );
@@ -491,12 +483,17 @@ function OvenUI( stage, gameState ){
 					stage.addChild(turkeyStates[0]);
 					for(i in turkeyStates){
 						stage.addChild(turkeyStates[i]);
-
 					}
 					stage.addChild(panFront);
 				}
 			// Pan front goes here
 			stage.addChild( panFront );
+
+			//finalize button
+			stage.addChild( new Button( stage, gameState, 45, 250, 250, 175, null, null, function(){
+				gameState.pubsub.publish("ShowFinalConfirm","");
+			} ) );
+
 			stage.addChild( doorPeekLightOn);
 		    stage.addChild( doorPeekLightOff);
 
@@ -515,6 +512,7 @@ function OvenUI( stage, gameState ){
 		    		}
 		    	}) );
 			stage.addChild( handleBar);
+
     		return this;
     	}
 	}
@@ -712,8 +710,8 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 		getName: function(){return that.name;},
 		delete: function( stage ){
 			gameState.pubsub.publish("RemoveItems", [mouseOut, mouseOver]);
-
-			delete gameState.marketItems[that.name];
+			mouseOut.visible = false;
+			mouseOver.visible = false;
 		},
 		draw: function( stage, newx, newy ){
 			if( newx && newy ){
@@ -772,13 +770,12 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
  	button.alpha = 0.5;
- 	button.addEventListener( "click", function(){ 
+ 	button.addEventListener( "click", function(){
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){
 			gameState.pubsub.publish( eventCmd, arg );
 			return;
 		}
-		console.log(altfunc);
 		altfunc();
  		gameState.pubsub.publish( eventCmd, arg );
 	 } );
