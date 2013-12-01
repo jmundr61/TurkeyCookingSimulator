@@ -12,7 +12,7 @@
     </div>
   </center>
   </body>
-  <script src="createjs-2013.09.25.min.js"></script>
+  <script src="http://code.createjs.com/createjs-2013.09.25.min.js"></script>
   <script src="js/model.js"></script>
   <script src="js/soundmanager.js"></script>
   <script src="js/stories.js"></script>
@@ -22,22 +22,6 @@
   <script src="js/main.js"></script>
   <script>
     new GameState();
-
-    function showXY(e)
-    {
-    var mouseX, mouseY;
-
-    if(e.offsetX) {
-        mouseX = e.offsetX;
-        mouseY = e.offsetY;
-    }
-    else if(e.layerX) {
-        mouseX = e.layerX;
-        mouseY = e.layerY;
-    }
-    console.log("x: " + mouseX + "y :" + mouseY);
-
-    }
   </script>
   <!-- Load all the things! -->
 </html>

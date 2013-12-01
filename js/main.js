@@ -1,5 +1,7 @@
 // Robert- Here be dragons
 
+var DEBUG = 1;
+
 function GameState(){
 	var that = this;
 
@@ -355,7 +357,7 @@ function GameUI( canvasElem, gameState ){
 	var textContent = new createjs.Text( "", "20px Arial", "black" );
 	textContent.x = 750;
 	textContent.y = 30;
-	this.stage.addChild( textContent);
+	//this.stage.addChild( textContent);
 	var overlay = new createjs.Shape();
  	overlay.graphics.beginFill("#fffffff").drawRect(0, 0, 800, 600 );
  	overlay.alpha = 0;
@@ -367,13 +369,13 @@ function GameUI( canvasElem, gameState ){
 	this.switchScreen = function( screenName ){
 		gameState.screenState = SCREEN_OUT;
 		dialogManager.minDialog();
-		console.log("Switch screen called with" + screenName);
+		if(DEBUG) console.log("Switch screen called with" + screenName);
 		gameState.newScreen = screenName;
 	};
 	this.actuallySwitchScreen = function( screenName ){
 		that.stage.removeAllChildren();
 		that.activeScreenObj = new that.screens[ screenName ]( that.stage, gameState );
-		that.stage.addChild( textContent );
+		//that.stage.addChild( textContent );
 		that.stage.addChild( overlay );
 		dialogManager.render();
 	};

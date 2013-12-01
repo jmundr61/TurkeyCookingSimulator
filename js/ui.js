@@ -135,7 +135,7 @@ function FinalConfirmationUI(stage, gameState){
 
 	// Show core temperature
 	this.showFinalConfirm = function(){
-		console.log("Showing final confirm");
+		if(DEBUG) console.log("Showing final confirm");
 		if( !that.showingConfirm ){
 			that.showingConfirm = true;
 			stage.addChild( finalImg );
@@ -435,7 +435,7 @@ function OvenUI( stage, gameState ){
 	}
 
 	this.startTurkeyModel = function(){
-		console.log("weight is" + gameState.turkeyWeight);
+		if(DEBUG) console.log("weight is" + gameState.turkeyWeight);
 		gameState.ovenModel = new OvenModel( gameState.turkeyWeight, gameState );
 	}
 
@@ -547,7 +547,7 @@ function OvenUI( stage, gameState ){
 	}
 
 	gameState.pubsub.subscribe( "SkipTime", function(){
-		console.log("Skipping time");
+		if(DEBUG) console.log("Skipping time");
 		for(var i = 0; i < 1200; i++){
 			that.secondTick( 1000 );
 		}
@@ -791,7 +791,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
  			}
 
  			if ( that.name.indexOf("Cookbook") != -1 ){
- 				console.log("click, show cookbook");
+ 				if(DEBUG) console.log("click, show cookbook");
  				gameState.pubsub.publish("ShowCookbook","");
  				gameState.pubsub.publish("Play", "Open_Cookbook");
  			}
@@ -865,7 +865,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 				mouseOut.x = mouseOver.x = newx;
 				mouseOut.y = mouseOver.y = newy;
 			}
-			console.log("NewScreen for item "+that.name +" is " +gameState.newScreen );
+			if(DEBUG) console.log("NewScreen for item "+that.name +" is " +gameState.newScreen );
 			if( gameState.newScreen == "KitchenScreen" ){
 				mouseOutKitchen.visible = true;
 				stage.addChild( mouseOutKitchen );
@@ -915,7 +915,7 @@ function ImgButton( stage, gameState, x, y, mouseOutImg, mouseOverImg, eventCmd,
 
 function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg, altfunc ){
 	var that = this;
-	console.log("button clicked with "+ arg);
+	if(DEBUG) console.log("button clicked with "+ arg);
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);

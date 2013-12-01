@@ -68,7 +68,7 @@ function DialogUI( stage, gameState ){
 	this.endFunc = function(){};
 
  	this.showDialog= function( textSeq ){
- 		console.log("showing"+ textSeq);
+ 		if(DEBUG) console.log("showing"+ textSeq);
  		if( !peopleImg["Me"] ){
  		   	 peopleImg["Me"] = peopleImg[gameState.gender];
  		}
@@ -112,7 +112,7 @@ function DialogUI( stage, gameState ){
 
  		// check if there is something going on
  		if( !that.currDialogueSeq.more() ){
- 			console.log("random story");
+ 			if(DEBUG) console.log("random story");
  			this.showDialog( {seq: dialogueList[ randomKey ] || "Dad Tells a bad Joke", autoAdvance:true } );
  			delete story[ dialogueList[ randomKey ] ];
  			gameState.dialogueHeard++;
@@ -136,7 +136,7 @@ function DialogUI( stage, gameState ){
 
  			that.dialogMotionQueue.push(DIALOG_SHOWING);
  			that.textContent.text=nextDialogue[1];
- 			console.log("showing face:" +nextDialogue[0] );
+ 			if(DEBUG) console.log("showing face:" +nextDialogue[0] );
 
  			// swap out face immediately
  			that.currentFace.y = 250;
@@ -175,13 +175,13 @@ function DialogUI( stage, gameState ){
 	    		that.dialogBox.y+=that.dialogSpeed;
 	    		that.textContent.y += that.dialogSpeed;
 	    		that.currentFace.y += that.dialogSpeed;
-	    		//console.log( "Receding" + that.dialogBox.y );
+	    		//if(DEBUG) console.log( "Receding" + that.dialogBox.y );
     		}
     		if( that.dialogState == DIALOG_SHOWING ){
     			that.dialogBox.y-=that.dialogSpeed;
     			that.textContent.y -= that.dialogSpeed;
     			that.currentFace.y -= that.dialogSpeed;
-    			//console.log( "Advancing" + that.dialogBox.y );
+    			//if(DEBUG) console.log( "Advancing" + that.dialogBox.y );
     		}
 
     		// toggle states
@@ -190,7 +190,7 @@ function DialogUI( stage, gameState ){
     			that.textContent.y = 735;
     			that.currentFace.y = 250;
     			that.dialogState = DIALOG_PAUSING;
-    			//console.log( "Pausing on recede" + that.dialogBox.y );
+    			//if(DEBUG) console.log( "Pausing on recede" + that.dialogBox.y );
 
     		}
     		if( that.dialogBox.y < 0 && that.dialogState == DIALOG_SHOWING ){
@@ -198,7 +198,7 @@ function DialogUI( stage, gameState ){
     			that.textContent.y = 480;
     			that.currentFace.y = 0;
     			that.dialogState = DIALOG_PAUSING;
-    			//console.log( "Pausing on showing" + that.dialogBox.y );
+    			//if(DEBUG) console.log( "Pausing on showing" + that.dialogBox.y );
     		}
 
     		/* next states if there are any on the queue */

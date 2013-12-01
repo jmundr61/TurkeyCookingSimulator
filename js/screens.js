@@ -249,10 +249,10 @@ function KitchenScreen( stage, gameState ){
 	this.uiElems.push( new WindowUI( stage, gameState ) );
 	this.background = new createjs.Bitmap( "res/screens/KitchenScreen/KitchenScreen.png" );
     stage.addChild( this.background );
-    console.log(gameState.purchasedItems);
-    console.log("KitchenScreen");
+    if(DEBUG) console.log(gameState.purchasedItems);
+    if(DEBUG) console.log("KitchenScreen");
 	for(var i in gameState.purchasedItems ){
-		console.log(gameState.purchasedItems);
+		if(DEBUG) console.log(gameState.purchasedItems);
 		gameState.purchasedItems[i].draw( stage );
 	}
 

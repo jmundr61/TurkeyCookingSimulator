@@ -21,7 +21,7 @@ function TurkeyLayer( name, percentRadius, turkeyModel, ovenModel ){
     																		ovenModel.globalTime );
 			that.waterLost = that.waterLost + UtilityFunctions.waterLoss( that.finalTemperature );
 			that.cookCondition = UtilityFunctions.cookCondition(that.waterLost);
-			console.log( that.name + ": "+ that.waterLost + " " + that.cookCondition);
+			if(DEBUG) console.log( that.name + ": "+ that.waterLost + " " + that.cookCondition);
     	},
 		resetLayerTemps: function(){
 			that.initialTemp = that.finalTemperature;
@@ -118,12 +118,12 @@ function OvenModel( turkeyWeight, gameState ) {
     		};
     	},
     	changeTemp: function(setTemp){
-    		console.log("temp changed to " + setTemp);
+    		if(DEBUG) console.log("temp changed to " + setTemp);
             that.setTemp = setTemp;
     	},
     	// set the tempInfini
     	setRawTemp: function(newTemp){
-    		console.log("raw temp changed to" + that.tempInfini);
+    		if(DEBUG) console.log("raw temp changed to" + that.tempInfini);
     		that.tempInfini = newTemp;
     	},
     	getRawTemp: function(){
@@ -145,9 +145,9 @@ function OvenModel( turkeyWeight, gameState ) {
 				// Turn off oven light
 				gameState.pubsub.publish( "OvenLight", "Off" );
 			}
-				console.log("Steady Temp " + that.steadyTemp)
-				console.log("Steady Timer " + that.steadyTimer)
-				console.log("Oven Temp " + that.tempInfini )
+				if(DEBUG) console.log("Steady Temp " + that.steadyTemp)
+				if(DEBUG) console.log("Steady Timer " + that.steadyTimer)
+				if(DEBUG) console.log("Oven Temp " + that.tempInfini )
 				turkey.updateLayerTemps();
 	    }
 	}
@@ -174,8 +174,8 @@ UtilityFunctions = {
 		var rectangleVolume = depth*height*length; //m^3  Multiple by 1/4 to account for triangular shape and empty Space
 		var complexRadius = Math.pow(rectangleVolume/((4/3)*Math.PI), 1/3); //Volume of 3D Box = 3D Sphere
 
-		//console.log("Simple Radius  " + simpleRadius + " Meters")
-		//console.log("Complex Radius  " + complexRadius + " Meters")
+		//if(DEBUG) console.log("Simple Radius  " + simpleRadius + " Meters")
+		//if(DEBUG) console.log("Complex Radius  " + complexRadius + " Meters")
 		return complexRadius;
 	},
 
@@ -193,7 +193,7 @@ UtilityFunctions = {
                         }
                 }
                 else {
-                        //console.log("No Bracketed Root " + negativeTest)
+                        //if(DEBUG) console.log("No Bracketed Root " + negativeTest)
                 }
         }
 		return storage;
@@ -248,20 +248,20 @@ UtilityFunctions = {
 		var frontCoefficientPortion;
 
 
-		//console.log("Alpha is " + alpha)
+		//if(DEBUG) console.log("Alpha is " + alpha)
 
 		var Fourier = (alpha*t)/Math.pow(rTotal,2)
-		//console.log("Fourier is " +  Fourier)
+		//if(DEBUG) console.log("Fourier is " +  Fourier)
 
 		var biotNum = heatConvection * rTotal/thermalConduct
 
 	    if ( biotNum != this.cachedBiot ) {
-	            console.log("Recalculating Lambda Terms")
+	            if(DEBUG) console.log("Recalculating Lambda Terms")
 	            this.cachedLambda = this.findAllRoots(min,max,max*Math.PI*10,biotNum)
 	            this.cachedBiot = biotNum;
 	    }
 
-		//console.log("The Biot Value is " + biotNum)
+		//if(DEBUG) console.log("The Biot Value is " + biotNum)
 
 		for (var i = 0; i<this.cachedLambda.length; i++) {
 		        var lambdaN = this.cachedLambda[i];
@@ -273,7 +273,7 @@ UtilityFunctions = {
 
 		tempAtTimeAndRadius=(sum*(tempInitial-tempInfini))+tempInfini
 
-		console.log("The Temperature at radius " + rPosition + " m and time " + t/60/60 + " hours is " + tempAtTimeAndRadius + " C or " + this.C2F(tempAtTimeAndRadius) + " F");
+		if(DEBUG) console.log("The Temperature at radius " + rPosition + " m and time " + t/60/60 + " hours is " + tempAtTimeAndRadius + " C or " + this.C2F(tempAtTimeAndRadius) + " F");
 		return(tempAtTimeAndRadius)
 	},
 
