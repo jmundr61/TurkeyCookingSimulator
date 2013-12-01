@@ -397,6 +397,7 @@ function ScoreScreen( stage, gameState ){
     // All the text for the entries
     var totalCookTime = gameState.turkeyCookCounter;
     var realTimeElapsed = Date.now() - gameState.startTime;
+    console.log("total cook time:"+ realTimeElapsed);
 
 	var turkeyState = gameState.ovenModel.getTurkeyState();
     var totalScore = 0;
@@ -429,8 +430,10 @@ function ScoreScreen( stage, gameState ){
 		"General Turkey": 1.00
     };
      // Optimal Temperature to be served at
-	this.scoreDistribution= function(inputTemp) {
- 		desiredAverage = 162;
+	this.scoreDistribution= function(inputTemp, layer) {
+		desiredAverage = 165;
+ 		if(layer=="skin") desiredAverage = 260;
+
 		variance = 1000; //Std Deviation 31.62
  		return(Math.exp(-(Math.pow((inputTemp-desiredAverage),2)/(2*variance))))
 	};
@@ -465,13 +468,13 @@ function ScoreScreen( stage, gameState ){
 		randomDiag = terrible;
 	}
 
-	for (var i = 0; i<=2; i++) {
+	for (var i = 0; i<=5; i++) {
 		resultsDialogue.push(randomString(randomDiag));
 	}
 	messages["end"] = resultsDialogue;
 
 	function randomString(stringArray) {
-		var index = Math.floor(Math.random()*stringArray.length);
+		var index = UtilityFunctions.randRange(0, stringArray.length-1);
 		var stringResult = stringArray[index];
 		stringArray.splice(index,1);
 		return (stringResult)
@@ -505,7 +508,7 @@ function ScoreScreen( stage, gameState ){
 		var hours = parseInt( totalCookTime / 3600 ) % 24;
 		var minutes = parseInt( totalCookTime / 60 ) % 60;
 		var seconds = totalCookTime % 60;
-		var timeText = ("00"+hours).slice(-2) + ":" + ("00"+minutes).slice(-2) + ":" + ("00"+seconds).slice(-2);
+		var timeText = ("00"+hours.toFixed(0)).slice(-2) + ":" + ("00"+minutes.toFixed(0)).slice(-2) + ":" + ("00"+seconds.toFixed(0)).slice(-2);
 
 		var totalCookTimeText = new createjs.Text( timeText, "20px Arial", "black" );
 		totalCookTimeText.x = 270;
@@ -515,7 +518,7 @@ function ScoreScreen( stage, gameState ){
 		hours = parseInt( realTimeElapsed / 3600 ) % 24;
 		minutes = parseInt( realTimeElapsed / 60 ) % 60;
 		seconds = realTimeElapsed % 60;
-		timeText = ("00"+hours).slice(-2) + ":" + ("00"+minutes).slice(-2) + ":" + ("00"+seconds).slice(-2);
+		timeText = ("00"+hours.toFixed(0)).slice(-2) + ":" + ("00"+minutes.toFixed(0)).slice(-2) + ":" + ("00"+seconds.toFixed(0)).slice(-2);
 
 		var realtimeElapsedText = new createjs.Text( timeText, "20px Arial", "black" );
 		realtimeElapsedText.x = 270;
