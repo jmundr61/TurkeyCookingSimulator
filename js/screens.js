@@ -272,7 +272,7 @@ function KitchenScreen( stage, gameState ){
 
 	// If player did not buy a turkey, tell them
 	if( !gameState.turkeyBought ){
-		gameState.pubsub.publish( "ShowDialog", {seq:"KitchenInitial", autoAdvance:true} );
+		gameState.pubsub.publish( "ShowDialog", {seq:"KitchenInitial", autoAdvance:false} );
 	}
 	
 	return {

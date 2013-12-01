@@ -92,11 +92,9 @@ function GameState(){
 
     // Load sound assets
     queue.loadFile( {id: "TitleMusicFile", src:"res/sound/turkey_in_the_straw.mp3"} );
-    queue.loadFile( {id: "MarketBackgroundSoundFile", src:"res/sound/Store/supermarket.mp3"} );
 	queue.loadFile( {id: "MarketSoundFile", src:"res/sound/Store/Waterford.mp3"} );
 
 	// UI sounds
-    queue.loadFile( {id: "UIPopFile", src:"res/sound/GUI/pop.mp3"} );
     queue.loadFile( {id: "UILowClickFile", src:"res/sound/GUI/lowclick.mp3"} );
     queue.loadFile( {id: "UIClickFile", src:"res/sound/GUI/click.mp3"} );
     queue.loadFile( {id: "UIBuzzFile", src:"res/sound/GUI/buzz.mp3"} );
