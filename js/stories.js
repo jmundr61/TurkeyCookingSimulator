@@ -308,7 +308,7 @@ var story = {
 
 "Grandmother reveals the virtues of the bread line":
 ["Brother: The Turkey is taking a while to cook. [Player] isn't too good at cooking is [GenderPronoun]?",
-"Girlfriend: How dare you talk about [Player] he is a great cook. Sometimes. Well, you'll see!",
+"Girlfriend: How dare you talk about [Player] like that. [Player] is a great cook. You'll see!",
 "Grandma: You guys have it lucky. Where I grew up we had bread lines.",
 "Grandma: My family would stand in a bread line for over six hours with the POSSIBILITY of receiving a loaf of bread.",
 "Grandma: I remember one particular occasion where my mom told me to take my baby sister with me and go stand in the bread line.",
