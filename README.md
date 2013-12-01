@@ -6,7 +6,7 @@ It is another Thanksgiving holiday, a time of retrospect and blessings.
 You have been invited over for dinner.
 Wanting to make a good impression, you agree to cook the turkey…
 
-# Turkey Cooking Simulator Features:
+## Turkey Cooking Simulator Features:
 * Real-time cooking action!
 * Unparalleled turkey-based thermodynamics!
 * Hours of gripping stories and drama!
@@ -25,7 +25,7 @@ Wanting to make a good impression, you agree to cook the turkey…
 
 ## Authors
 
-* [Robert J. Chen](www.fernjager.net) - Programming
+* [Robert J. Chen](http://fernjager.net) - Programming
 * [Benjamin Kwok](tengen1112@gmail.com) - Art
 * [Scott R. Mobley](http://www.linkedin.com/in/mobleyscott) - Math and Dialogue
 * Sheen Kao -  Supreme Commissar Overlord MC 
