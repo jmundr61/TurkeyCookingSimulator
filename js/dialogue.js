@@ -85,6 +85,7 @@ function DialogUI( stage, gameState ){
  			messages["custom"] = ["Me: " + textSeq.customText ];
  		}
 
+
  		if( textSeq.random ){
  			that.showRandomConvo();
  			return;
@@ -95,7 +96,7 @@ function DialogUI( stage, gameState ){
 
  		that.endFunc = textSeq.endFunc || function(){};
 
- 		that.textContent.text=nextDialogue[1];
+ 		that.textContent.text=nextDialogue[1].replace(/\[GenderPronoun\]/g, gameState.pronoun ).replace(/\[Player\]/g, gameState.name );
  		that.currentFace.y = 250;
  		that.currentFace = peopleImg[nextDialogue[0]] || that.currentFace;
  		that.autoAdvance = textSeq.autoAdvance;
@@ -166,7 +167,7 @@ function DialogUI( stage, gameState ){
     	tick: function(){
     		delayCounter = new Date().getTime() - oldTime;
 
-    		if( that.autoAdvance == true && that.dialogBox.y ==0 && delayCounter > ( (that.textContent.text.length * MILLIS_PER_CHAR) < 2000 ? 200 : (that.textContent.text.length * MILLIS_PER_CHAR)  ) ){
+    		if( that.autoAdvance == true && that.dialogBox.y ==0 && delayCounter > ( (that.textContent.text.length * MILLIS_PER_CHAR) < 2000 ? 2000 : (that.textContent.text.length * MILLIS_PER_CHAR)  ) ){
     			clickEvent();
     		}
 

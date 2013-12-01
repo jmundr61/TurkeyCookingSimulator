@@ -1,6 +1,6 @@
 var messages = {
 	"Null":["Me: "],
-	"KitchenInitial" : ["Me: I need to buy a turkey..."],
+	"KitchenInitial" : ["Me: I should run to the store and buy a delicious turkey!"],
 	"CannotBuyTurkey" : ["Me: I barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
 	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
@@ -660,6 +660,5 @@ var story = {
 "Turkey: That pun was fowl",
 "Cat: Purrrsonally, not as bad as yours.",
 "Turkey: Gobble Gobble"]
-
 
 };

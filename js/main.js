@@ -11,6 +11,7 @@ function GameState(){
     this.gameStarted = false;
 	this.name = "";
 	this.gender = "Male";
+    this.pronoun = "he";
 	this.wallet = 45.00;
 	this.hard = false;
 	this.boughtOvenLight = false;

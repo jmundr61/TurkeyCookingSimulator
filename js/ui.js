@@ -405,6 +405,17 @@ function OvenUI( stage, gameState ){
  	handleBar.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
  	handleBar.addEventListener( "pressup", handlePress );
 
+    var evalSkin  = {
+    	"raw": "The turkey looks no different from when I put it in",
+    	"undercooked": "The skin looks pink",
+    	"slightly cooked": "The turkey could use a couple more minutes",
+    	"cooked": "The turkey looks good enough to eat",
+    	"overcooked": "The turkey looks a bit shriveled",
+    	"dry": "The turkey looks like cardboard",
+    	"burnt": "The turkey looks burnt"
+    };
+
+
 	// Look for a drag event
 	function handlePress(event) {
 		if( event.stageY > 300 && that.ovenDoor != OVEN_OPEN ){
@@ -418,8 +429,8 @@ function OvenUI( stage, gameState ){
 
 			if( gameState.turkeyBought ){
 				var state = gameState.ovenModel.getTurkeyState();
-				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
-				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
+				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:evalSkin[turkeyState["skin"]["cond"][2]] + "." } );
+				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:evalSkin[turkeyState["skin"]["cond"][2]]} );
 				gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 25) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 25 );
 				gameState.ovenOpened++;
 			}
@@ -450,8 +461,8 @@ function OvenUI( stage, gameState ){
 			handleBar.y = 48;
 			if( gameState.turkeyBought ){
 				var state = gameState.ovenModel.getTurkeyState();
-				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
-				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
+				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:evalSkin[turkeyState["skin"]["cond"][2]] } );
+				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " +turkeyState["skin"]["cond"][2]} );
 			}
 		}
 		else if (that.ovenDoor == OVEN_PEEK){
@@ -504,6 +515,8 @@ function OvenUI( stage, gameState ){
 		for(var i = 0; i < 1200; i++){
 			that.secondTick( 1000 );
 		}
+		if( gameState.alarmActivated )
+			gameState.alarmTimer -= 1200;
 		gameState.pubsub.publish("DoneSkipTime","");
 	});
 

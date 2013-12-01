@@ -216,9 +216,11 @@ function DifficultyScreen( stage, gameState ){
  		if( gender == "Male" ){
  			that.maleSelection.alpha = 1;
  			that.femaleSelection.alpha = 0;
+ 			gameState.pronoun = "he";
  		}else{
  			that.maleSelection.alpha = 0;
  			that.femaleSelection.alpha = 1;
+ 			gameState.pronoun = "she";
  		}
  	})
 	return {
