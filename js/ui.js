@@ -769,6 +769,11 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 
 	 				// if we bought a clock, enable it!
 	 				if( that.name.indexOf("Alarm") != -1 ) gameState.alarmBought = true;
+	 				if( that.name.indexOf("Frills") != -1 ) gameState.frillsModifier = 5;
+
+	 				if( that.name.indexOf("Exquisite") != -1 ){ gameState.stuffingTypeModifier = gameState.stuffingTypeModifier > 1.08 ? gameState.stuffingTypeModifier : 1.08; }
+	 				if( that.name.indexOf("Special") != -1 ){ gameState.stuffingTypeModifier = gameState.stuffingTypeModifier > 1.17 ? gameState.stuffingTypeModifier : 1.17; }
+	 				if( that.name.indexOf("Repurposed") != -1 ){ gameState.stuffingTypeModifier = gameState.stuffingTypeModifier > 1.05 ? gameState.stuffingTypeModifier : 1.05; }
 
 		 			gameState.purchasedItems.push( objReturn );
 		 			gameState.marketItems[ that.name ].delete();
@@ -783,7 +788,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 		 		}
 		 		// Buy turkey first
 		 		else{
-		 			gameState.pubsub.publish( "ShowDialog", {seq:"BuyTurkeyFirst", autoAdvance:true} );
+		 			gameState.pubsub.publish( "ShowDialog", {seq:"BuyTurkeyFirst", autoAdvance:false} );
 		 			gameState.pubsub.publish( "Play", "Error" );
 		 		}
  			}

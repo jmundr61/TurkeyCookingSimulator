@@ -8,6 +8,71 @@ var messages = {
 	"OpenDoor" :["Me: I should probably try opening the oven door to measure the turkey's temperature"]
 }
 
+//Terrible Results
+var terrible = [
+"Grandpa: Outrageous. I didn't fight for freedom for this kind of meal.",
+"Grandpa: I could have cooked a better fowl with a flamethrower in Korea.",
+"Grandma: My sister can make feast out of a potato. What is this?",
+"Dad: Don't expect my blessing.",
+"Mom: No thanks, I'm actually a vegetarian.",
+"Brother: Who taught you how to cook?",
+"Brother: What an awful turkey.",
+"Girlfriend: I'm leaving you honey. It's not you, its the turkey.",
+"Cat: Meow Meow ('Get out of my house!')"];
+
+//Subpar Results
+var subPar = [
+"Grandpa: My fake teeth can't chew through this tough turkey.",
+"Grandpa: Treat the turkey with respect next time.",
+"Grandma: Dear grandchild, next year let Grandmother do cooking.",
+"Dad: I had high expectations from you.",
+"Dad: You've brought shame to your family.",
+"Dad: Not bad, but it could have been better.",
+"Mom: Remember, it is the thought that matters.",
+"Mom: You are welcome here no matter how well you cook.",
+"Mom: Honey, I think this turkey could have turned out better.",
+"Brother: Uhh, What's for dessert?",
+"Brother: We should get a pre-baked turkey next time",
+"Girlfriend: Hey, the cat seems to like it.",
+"Girlfriend: We'll have to go to some cooking classes together.",
+"Cat: Hisssssss"];
+
+//Average Results
+var average = [
+"Grandpa: Hmm. Passable.",
+"Grandma: This turkey tastes good, you have done well.",
+"Dad: Pretty decent turkey have you cooked here.",
+"Mom: Tastes better than store cooked turkeys.",
+"Brother: This is way better than I expected.",
+"Girlfriend: Not bad.",
+"Cat: Meow meow ('I may not leave a present in your shoes today')"];
+
+//Great Results
+var great = [
+"Grandpa: Fine job, sonny! Just like the golden days.",
+"Grandpa: Tender and juicy, just the way I like it.",
+"Grandma: Such a talented little cook. Welcome to family.",
+"Grandma: Most enjoyable dinner. Now, who wants baked apples?",
+"Dad: Good and meaty, mmm-mmm!",
+"Mom: The second best turkey I have ever had!",
+"Mom: You should teach me your secrets",
+"Brother: Way to go, this turkey is fantastic.",
+"Girlfriend: Oh, what a nice turkey.",
+"Cat: Meow MEOW! ('I am pleased, human')"];
+
+//Perfect Results
+var perfect = [
+"Grandpa: Damn good gobsmackingly delicious piece of freedom!",
+"Grandma: Excellent! You will cook festival dinner next year, yes?",
+"Dad: Finger-licking perfection!",
+"Mom: This turkey is delicious. Let's get you two wed immediately!",
+"Mom: Never have I had a more scrumptious turkey!",
+"Brother: All-praise the turkeymeister!",
+"Girlfriend: Bite after bite of gourmet delight!",
+"Girlfriend: We should get married. Tonight!",
+"Cat: Puuuurrrrrrr"];
+
+
 var story = {
 
 "Duck Story":
@@ -45,7 +110,7 @@ var story = {
 "Dad: Mooom!"],
 
 "Golf Story":
-["Grandpa: Son, what’s your par on the John Milton Golf Course?.",
+["Grandpa: Son, what's your par on the John Milton Golf Course?.",
 "Dad: I'm a little rusty, but my average is about 76.",
 "Grandpa: Oh really? Chaahooooo I am down to 69.",
 "Dad: Congratulations Dad.",
@@ -494,7 +559,7 @@ var story = {
 "Grandpa: It isn't that bad. Be grateful I didn't tell you the story where we ate them. Not bad. A little crunchy. Not as good as turkey though.",
 "Mom: !!!"],
 
-"Story about Girlfriend’s teacher that makes buzzer noises when you got something wrong":
+"Story about Girlfriend's teacher that makes buzzer noises when you got something wrong":
 ["Girlfriend: Greg, here's something that might tinkle your fancy.",
 "Girlfriend: I saw my old professor from a couple years back, Professor Ronfleur. The Humanities teacher. Do you remember him?",
 "Brother: The guy who always wore the purple bow tie? Who could forget him? Did he buzz you?",

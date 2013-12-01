@@ -416,14 +416,63 @@ function ScoreScreen( stage, gameState ){
     	"overcooked": 1000,
     	"dry": 400,
     	"burnt": 0
-    }
+    };
 
+    var typeToMod = {
+    	"Organic Turkey" : 1.03,
+	    "Free Range Turkey" : 1.02,
+	    "Sunny Farms Turkey" : 0.98,
+	    "Pastured Turkey": 1.05,
+		"General Turkey": 1.00
+    };
      // Optimal Temperature to be served at
 	this.scoreDistribution= function(inputTemp) {
  		desiredAverage = 162;
 		variance = 1000; //Std Deviation 31.62
  		return(Math.exp(-(Math.pow((inputTemp-desiredAverage),2)/(2*variance))))
 	};
+
+	// Temperature Score
+	var outerTemp = UtilityFunctions.C2F(turkeyState.skin.temp).toFixed(2);
+	var coreTemp = UtilityFunctions.C2F(turkeyState.core.temp).toFixed(2);
+
+	var outerTempScore = that.scoreDistribution( outerTemp ) * 200;
+	var coreTempScore = that.scoreDistribution( coreTemp ) * 200;
+
+	totalScore += parseInt(skinScoreChart[ turkeyState.skin.cond[2]]);
+	totalScore += parseInt(skinScoreChart[ turkeyState.core.cond[2]]);
+	totalScore += parseInt(outerTempScore.toFixed(0));
+	totalScore += parseInt(coreTempScore.toFixed(0));
+
+
+	resultsDialogue = [];
+	if (totalScore>=2000) {
+		randomDiag = perfect;
+	}
+	else if (totalScore>=1200) {
+		randomDiag = great;
+	}
+	else if (totalScore>=625) {
+		randomDiag = average;
+	}
+	else if (totalScore>=300) {
+		randomDiag = subPar;
+	}
+	else {
+		randomDiag = terrible;
+	}
+
+	for (var i = 0; i<=2; i++) {
+		resultsDialogue.push(randomString(randomDiag));
+	}
+	messages["end"] = resultsDialogue;
+
+	function randomString(stringArray) {
+		var index = Math.floor(Math.random()*stringArray.length);
+		var stringResult = stringArray[index];
+		stringArray.splice(index,1);
+		return (stringResult)
+	}
 
 	gameState.pubsub.publish( "FadeOut", "" );
 
@@ -444,7 +493,7 @@ function ScoreScreen( stage, gameState ){
 
  	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:0.7} );
 
-	gameState.pubsub.publish( "ShowDialog", {seq:"NoMoney", autoAdvance:true, endFunc:function(){
+	gameState.pubsub.publish( "ShowDialog", {seq:"end", autoAdvance:true, endFunc:function(){
 		background1.alpha=1;
 
 		stage.addChild( new Button( stage, gameState, 590, 540, 190, 50, null, null, function(){ document.location.reload(); } ) );
@@ -459,7 +508,7 @@ function ScoreScreen( stage, gameState ){
 		totalCookTimeText.x = 270;
 		totalCookTimeText.y = 107;
 
-		realTimeElapsed /= 1000;
+		realTimeElapsed = realTimeElapsed / 1000;
 		hours = parseInt( realTimeElapsed / 3600 ) % 24;
 		minutes = parseInt( realTimeElapsed / 60 ) % 60;
 		seconds = realTimeElapsed % 60;
@@ -477,7 +526,6 @@ function ScoreScreen( stage, gameState ){
 		dialogueHeardText.x = 270;
 		dialogueHeardText.y = 167;
 
-
 		stage.addChild( totalCookTimeText );
 		stage.addChild( realtimeElapsedText );
 		stage.addChild( ovenOpenedText );
@@ -489,13 +537,9 @@ function ScoreScreen( stage, gameState ){
 		outerConditionDesc.x = 150;
 		outerConditionDesc.y = 320;
 
-		totalScore += parseInt(skinScoreChart[ turkeyState.skin.cond[2]]);
-
 		var coreConditionDesc = new createjs.Text( turkeyState.core.cond[2], "20px Arial", "#00000000" );
 		coreConditionDesc.x = 150;
 		coreConditionDesc.y = 340;
-
-		totalScore += parseInt(skinScoreChart[ turkeyState.core.cond[2]]);
 
 		var outerConditionText = new createjs.Text( skinScoreChart[ turkeyState.skin.cond[2] ], "20px Arial", "#00000000" );
 		outerConditionText.x = 310;
@@ -513,11 +557,6 @@ function ScoreScreen( stage, gameState ){
 		stage.addChild( outerConditionDesc );
 
 		// Temperature Score
-		var outerTemp = UtilityFunctions.C2F(turkeyState.skin.temp).toFixed(2);
-		var coreTemp = UtilityFunctions.C2F(turkeyState.core.temp).toFixed(2);
-
-		var outerTempScore = that.scoreDistribution( outerTemp ) * 200;
-		var coreTempScore = that.scoreDistribution( coreTemp ) * 200;
 
 		var outerTemperatureText = new createjs.Text( outerTempScore.toFixed(0), "20px Arial", "#00000000" );
 		outerTemperatureText.x = 680;
@@ -531,13 +570,13 @@ function ScoreScreen( stage, gameState ){
 		outerTemperatureDesc.x = 530;
 		outerTemperatureDesc.y = 320;
 
-		totalScore += parseInt(outerTempScore.toFixed(0));
+
 
 		var coreTemperatureDesc = new createjs.Text( coreTemp + " F", "20px Arial", "#00000000" );
 		coreTemperatureDesc.x = 530;
 		coreTemperatureDesc.y = 340;
 
-		totalScore += parseInt(coreTempScore.toFixed(0));
+
 
 		stage.addChild( outerTemperatureText );
 		stage.addChild( coreTemperatureText );
@@ -545,26 +584,26 @@ function ScoreScreen( stage, gameState ){
 		stage.addChild( coreTemperatureDesc );
 		stage.addChild( outerTemperatureDesc );
 
-		console.log(totalScore);
-
 		// Modifiers
-		var turkeyTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+		var turkeyMod = typeToMod[gameState.turkeyType];
+		var turkeyTypeModifierText = new createjs.Text( "+"+((1-turkeyMod)*100).toFixed(0) + "%", "20px Arial", "#00000000" );
 		turkeyTypeModifierText.x = 310;
 		turkeyTypeModifierText.y = 437;
 
-		totalScore *= 1;
+		totalScore *= turkeyMod;
 
-		var stuffingTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+
+		var stuffingTypeModifierText = new createjs.Text( "+"+((gameState.stuffingTypeModifier-1)*100).toFixed(0)+"%" , "20px Arial", "#00000000" );
 		stuffingTypeModifierText.x = 310
 		stuffingTypeModifierText.y = 457;
 
-		totalScore *= 1;
+		totalScore *= gameState.stuffingTypeModifier;
 
-		var frillsModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+		var frillsModifierText = new createjs.Text( "x"+gameState.frillsModifier, "20px Arial", "#00000000" );
 		frillsModifierText.x = 310
 		frillsModifierText.y = 477;
 
-		totalScore *= 1;
+		totalScore *= gameState.frillsModifier;
 
 		var hardcoreModifierText = new createjs.Text( "x"+gameState.hardcoreModifier, "20px Arial", "#00000000" );
 		hardcoreModifierText.x = 310
@@ -572,8 +611,8 @@ function ScoreScreen( stage, gameState ){
 
 		totalScore *= gameState.hardcoreModifier;
 
-		var totalText = new createjs.Text( totalScore, "32px Arial", "#00000000" );
-		totalText.x = 250
+		var totalText = new createjs.Text( totalScore.toFixed(0), "32px Arial", "#00000000" );
+		totalText.x = 250;
 		totalText.y = 550;
 		stage.addChild( totalText );
 
