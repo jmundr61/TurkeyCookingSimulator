@@ -215,7 +215,7 @@ UtilityFunctions = {
 				
 				var parenthesis = []
 				for (var k=0; k<splitsNum; k++){
-					parenthesis.push(dTdr[k]*pointRadius[k])
+					parenthesis.push(dTdr[k]*Math.pow(pointRadius[k],2))
 				}
 				
 				dPdr = []
