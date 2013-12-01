@@ -808,7 +808,7 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 				    that.bought = true;
 
 				    // record time started
-    				gameState.pubsub.publish( "AddRecord", {type:"Note ", text:"Turkey bought and placed in oven" );
+    				gameState.pubsub.publish( "AddRecord", {type:"Note ", text:"Turkey bought and placed in oven"} );
 
 
 				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
