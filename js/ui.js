@@ -400,7 +400,7 @@ function OvenUI( stage, gameState ){
 
 	var handleBar = new createjs.Shape();
  	handleBar.graphics.beginFill("#ffffff").drawRect(20, 190, 300, 20);
- 	handleBar.alpha = 0.5;
+ 	handleBar.alpha = 0.01;
  	handleBar.addEventListener( "mouseover", function(){ document.body.style.cursor='pointer'; } );
  	handleBar.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
  	handleBar.addEventListener( "pressup", handlePress );
@@ -425,7 +425,7 @@ function OvenUI( stage, gameState ){
 			doorOpen.alpha = 1;
 			handleBar.graphics.clear();
 			handleBar.graphics.beginFill("#ffffff").drawRect(5, 450, 400, 60);
-			handleBar.alpha = 0.5;
+			handleBar.alpha = 0.01;
 
 			if( gameState.turkeyBought ){
 				var state = gameState.ovenModel.getTurkeyState();
@@ -441,7 +441,7 @@ function OvenUI( stage, gameState ){
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Close" );
 			handleBar.graphics.clear();
 		 	handleBar.graphics.beginFill("#ffffff").drawRect(20, 190, 300, 20);
- 			handleBar.alpha = 0.5;
+ 			handleBar.alpha = 0.01;
 			ovenPeek();
 		}
 	}
@@ -878,7 +878,7 @@ function Button( stage, gameState, x_orig, y_orig, x_dest, y_dest, eventCmd, arg
 
 	var button = new createjs.Shape();
  	button.graphics.beginFill("#ffffff").drawRect(x_orig, y_orig, x_dest, y_dest);
- 	button.alpha = 0.5;
+ 	button.alpha = 0.01;
  	button.addEventListener( "click", function(){
  		gameState.pubsub.publish( "Play", "Click" );
 		if( !altfunc ){
