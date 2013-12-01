@@ -293,7 +293,7 @@ UtilityFunctions = {
 	cookCondition: function(cookValue,volume){
 		var multiplier = 1;
 		if (cookValue>=multiplier*600000) {
-			return ["Fire", (cookValue-600000)/(multiplier*600000),"like it's on fire"];
+			return ["Fire", (cookValue-600000)/(multiplier*600000),"fire"];
 		}
 		else if(cookValue>=multiplier*250000) {
 			return ["Burnt", (cookValue-250000)/(multiplier*600000), "burnt"];

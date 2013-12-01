@@ -24,7 +24,7 @@ function GameState(){
 
     // stats
     this.storeVisits = 0;
-    this.dialogHeard = 0;
+    this.dialogueHeard = 0;
     this.ovenOpened = 0;
 
     // modifiers

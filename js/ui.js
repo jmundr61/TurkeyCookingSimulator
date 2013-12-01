@@ -421,6 +421,7 @@ function OvenUI( stage, gameState ){
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
 				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
 				gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 25) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 25 );
+				gameState.ovenOpened++;
 			}
 
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
@@ -451,7 +452,6 @@ function OvenUI( stage, gameState ){
 				var state = gameState.ovenModel.getTurkeyState();
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
 				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
-    			that.ovenOpened++;
 			}
 		}
 		else if (that.ovenDoor == OVEN_PEEK){
@@ -475,7 +475,6 @@ function OvenUI( stage, gameState ){
 			state = gameState.ovenModel.getTurkeyState();
 			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"The core temperature of the turkey reads " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
 			gameState.pubsub.publish( "AddRecord", {type:"Probe", text:"Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F"} );
-			that.ovenOpened++;
 		}
 	}
 

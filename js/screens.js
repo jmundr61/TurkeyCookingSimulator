@@ -206,8 +206,8 @@ function DifficultyScreen( stage, gameState ){
  	stage.addChild( new Button( stage, gameState, 500, 235, 100, 55, "ChangeGender", "Male" ) );
  	stage.addChild( new Button( stage, gameState, 500, 300, 100, 55, "ChangeGender", "Female" ) );
 
- 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, null, null, function(){ gameState.hard = false; gameState.gameStarted = true; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
- 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, null, null, function(){ gameState.hard = true;  gameState.gameStarted = true; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
+ 	stage.addChild( new Button( stage, gameState, 503, 370, 200, 55, null, null, function(){ gameState.hard = false; gameState.gameStarted = true; gameState.hardcoreModifier=20; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
+ 	stage.addChild( new Button( stage, gameState, 500, 495, 205, 55, null, null, function(){ gameState.hard = true;  gameState.gameStarted = true; gameState.hardcoreModifier=1; gameState.pubsub.publish("SwitchScreen", "KitchenScreen"); } ) );
 
  	stage.addChild( new Button( stage, gameState, 35, 495, 85, 55, "SwitchScreen", "MainScreen" ) );
 
@@ -396,17 +396,43 @@ function ScoreScreen( stage, gameState ){
     var realTimeElapsed = Date.now() - gameState.startTime;
 
 	var turkeyState = gameState.ovenModel.getTurkeyState();
-    var finalCoreTemperature;
-    var totalScore;
+    var totalScore = 0;
+
+    var skinScoreChart  = {
+    	"raw": 0,
+    	"undercooked": -100,
+    	"slightly cooked": 75,
+    	"cooked": 500,
+    	"overcooked": 200,
+    	"dry": -300,
+    	"burnt": -500
+    };
+
+    var coreScoreChart  = {
+    	"raw": 0,
+    	"undercooked": 125,
+    	"slightly cooked": 750,
+    	"cooked": 1000,
+    	"overcooked": 1000,
+    	"dry": 400,
+    	"burnt": 0
+    }
+
+     // Optimal Temperature to be served at
+	this.scoreDistribution= function(inputTemp) {
+ 		desiredAverage = 162;
+		variance = 1000; //Std Deviation 31.62
+ 		return(Math.exp(-(Math.pow((inputTemp-desiredAverage),2)/(2*variance))))
+	};
 
 	gameState.pubsub.publish( "FadeOut", "" );
 
     this.background = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Evaluation-1.png" );
-    this.background.alpha = 0;
+    this.background.alpha = 1;
     stage.addChild( this.background );
 
     background1 = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Evaluation-2.png" );
-    background1.alpha = 1;
+    background1.alpha = 0;
 	stage.addChild( background1 );
 
 	for (i in gameState.turkeyStates){
@@ -421,121 +447,144 @@ function ScoreScreen( stage, gameState ){
 	gameState.pubsub.publish( "ShowDialog", {seq:"NoMoney", autoAdvance:true, endFunc:function(){
 		background1.alpha=1;
 
+		stage.addChild( new Button( stage, gameState, 590, 540, 190, 50, null, null, function(){ document.location.reload(); } ) );
+
+		// Cooking stats
+		var hours = parseInt( totalCookTime / 3600 ) % 24;
+		var minutes = parseInt( totalCookTime / 60 ) % 60;
+		var seconds = totalCookTime % 60;
+		var timeText = ("00"+hours).slice(-2) + ":" + ("00"+minutes).slice(-2) + ":" + ("00"+seconds).slice(-2);
+
+		var totalCookTimeText = new createjs.Text( timeText, "20px Arial", "#00000000" );
+		totalCookTimeText.x = 270;
+		totalCookTimeText.y = 107;
+
+		realTimeElapsed /= 1000;
+		hours = parseInt( realTimeElapsed / 3600 ) % 24;
+		minutes = parseInt( realTimeElapsed / 60 ) % 60;
+		seconds = realTimeElapsed % 60;
+		timeText = ("00"+hours).slice(-2) + ":" + ("00"+minutes).slice(-2) + ":" + ("00"+seconds).slice(-2);
+
+		var realtimeElapsedText = new createjs.Text( timeText, "20px Arial", "#00000000" );
+		realtimeElapsedText.x = 270;
+		realtimeElapsedText.y = 127;
+
+		var ovenOpenedText = new createjs.Text( gameState.ovenOpened, "20px Arial", "#00000000" );
+		ovenOpenedText.x = 270;
+		ovenOpenedText.y = 147;
+
+		var dialogueHeardText = new createjs.Text( gameState.dialogueHeard, "20px Arial", "#00000000" );
+		dialogueHeardText.x = 270;
+		dialogueHeardText.y = 167;
+
+
+		stage.addChild( totalCookTimeText );
+		stage.addChild( realtimeElapsedText );
+		stage.addChild( ovenOpenedText );
+		stage.addChild( dialogueHeardText );
+
+		// Cookedness Score
+
+		var outerConditionDesc = new createjs.Text( turkeyState.skin.cond[2], "20px Arial", "#00000000" );
+		outerConditionDesc.x = 150;
+		outerConditionDesc.y = 320;
+
+		totalScore += parseInt(skinScoreChart[ turkeyState.skin.cond[2]]);
+
+		var coreConditionDesc = new createjs.Text( turkeyState.core.cond[2], "20px Arial", "#00000000" );
+		coreConditionDesc.x = 150;
+		coreConditionDesc.y = 340;
+
+		totalScore += parseInt(skinScoreChart[ turkeyState.core.cond[2]]);
+
+		var outerConditionText = new createjs.Text( skinScoreChart[ turkeyState.skin.cond[2] ], "20px Arial", "#00000000" );
+		outerConditionText.x = 310;
+		outerConditionText.y = 320;
+
+		var coreConditionText = new createjs.Text( coreScoreChart[  turkeyState.skin.cond[2] ], "20px Arial", "#00000000" );
+		coreConditionText.x = 310;
+		coreConditionText.y = 340;
+
+
+		stage.addChild( coreConditionText );
+		stage.addChild( outerConditionText );
+
+		stage.addChild( coreConditionDesc );
+		stage.addChild( outerConditionDesc );
+
+		// Temperature Score
+		var outerTemp = UtilityFunctions.C2F(turkeyState.skin.temp).toFixed(2);
+		var coreTemp = UtilityFunctions.C2F(turkeyState.core.temp).toFixed(2);
+
+		var outerTempScore = that.scoreDistribution( outerTemp ) * 200;
+		var coreTempScore = that.scoreDistribution( coreTemp ) * 200;
+
+		var outerTemperatureText = new createjs.Text( outerTempScore.toFixed(0), "20px Arial", "#00000000" );
+		outerTemperatureText.x = 680;
+		outerTemperatureText.y = 320;
+
+		var coreTemperatureText = new createjs.Text( coreTempScore.toFixed(0), "20px Arial", "#00000000" );
+		coreTemperatureText.x = 680;
+		coreTemperatureText.y = 340;
+
+		var outerTemperatureDesc = new createjs.Text( outerTemp + " F", "20px Arial", "#00000000" );
+		outerTemperatureDesc.x = 530;
+		outerTemperatureDesc.y = 320;
+
+		totalScore += parseInt(outerTempScore.toFixed(0));
+
+		var coreTemperatureDesc = new createjs.Text( coreTemp + " F", "20px Arial", "#00000000" );
+		coreTemperatureDesc.x = 530;
+		coreTemperatureDesc.y = 340;
+
+		totalScore += parseInt(coreTempScore.toFixed(0));
+
+		stage.addChild( outerTemperatureText );
+		stage.addChild( coreTemperatureText );
+
+		stage.addChild( coreTemperatureDesc );
+		stage.addChild( outerTemperatureDesc );
+
+		console.log(totalScore);
+
+		// Modifiers
+		var turkeyTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+		turkeyTypeModifierText.x = 310;
+		turkeyTypeModifierText.y = 437;
+
+		totalScore *= 1;
+
+		var stuffingTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+		stuffingTypeModifierText.x = 310
+		stuffingTypeModifierText.y = 457;
+
+		totalScore *= 1;
+
+		var frillsModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+		frillsModifierText.x = 310
+		frillsModifierText.y = 477;
+
+		totalScore *= 1;
+
+		var hardcoreModifierText = new createjs.Text( "x"+gameState.hardcoreModifier, "20px Arial", "#00000000" );
+		hardcoreModifierText.x = 310
+		hardcoreModifierText.y = 497;
+
+		totalScore *= gameState.hardcoreModifier;
+
+		var totalText = new createjs.Text( totalScore, "32px Arial", "#00000000" );
+		totalText.x = 250
+		totalText.y = 550;
+		stage.addChild( totalText );
+
+		stage.addChild( stuffingTypeModifierText );
+		stage.addChild( turkeyTypeModifierText );
+		stage.addChild( frillsModifierText );
+		stage.addChild( hardcoreModifierText );
+
+
 	}} );
 
-	stage.addChild( new Button( stage, gameState, 590, 540, 190, 50, null, null, function(){ document.location.reload(); } ) );
-
-
-	// Cooking stats
-	var hours = parseInt( totalCookTime / 3600 ) % 24
-	var minutes = parseInt( totalCookTime / 60 ) % 60;
-	var timeText = hours + ":" + minutes;
-
-	var totalCookTimeText = new createjs.Text( timeText, "20px Arial", "#00000000" );
-	totalCookTimeText.x = 270;
-	totalCookTimeText.y = 107;
-
-	realTimeElapsed /= 1000;
-	hours = parseInt( realTimeElapsed / 3600 ) % 24
-	minutes = parseInt( realTimeElapsed / 60 ) % 60;
-	timeText = hours + ":" + minutes;
-
-	var realtimeElapsedText = new createjs.Text( timeText, "20px Arial", "#00000000" );
-	realtimeElapsedText.x = 270;
-	realtimeElapsedText.y = 127;
-
-	var ovenOpenedText = new createjs.Text( gameState.ovenOpened, "20px Arial", "#00000000" );
-	ovenOpenedText.x = 270;
-	ovenOpenedText.y = 147;
-
-	var dialogueHeardText = new createjs.Text( gameState.dialogHeard, "20px Arial", "#00000000" );
-	dialogueHeardText.x = 270;
-	dialogueHeardText.y = 167;
-
-
-	stage.addChild( totalCookTimeText );
-	stage.addChild( realtimeElapsedText );
-	stage.addChild( ovenOpenedText );
-	stage.addChild( dialogueHeardText );
-
-	// Cookedness Score
-	var outerConditionText = new createjs.Text( "100", "20px Arial", "#00000000" );
-	outerConditionText.x = 310;
-	outerConditionText.y = 320;
-
-	var coreConditionText = new createjs.Text( "200", "20px Arial", "#00000000" );
-	coreConditionText.x = 310;
-	coreConditionText.y = 340;
-
-	var outerConditionDesc = new createjs.Text( "RAW", "20px Arial", "#00000000" );
-	outerConditionDesc.x = 150;
-	outerConditionDesc.y = 320;
-
-	var coreConditionDesc = new createjs.Text( "COOKED", "20px Arial", "#00000000" );
-	coreConditionDesc.x = 150;
-	coreConditionDesc.y = 340;
-
-	stage.addChild( coreConditionText );
-	stage.addChild( outerConditionText );
-
-	stage.addChild( coreConditionDesc );
-	stage.addChild( outerConditionDesc );
-
-	// Temperature Score
-	var outerTemp = UtilityFunctions.C2F(turkeyState.skin.temp).toFixed(2);
-	var coreTemp = UtilityFunctions.C2F(turkeyState.core.temp).toFixed(2);
-
-	var outerTemperatureText = new createjs.Text( "100", "20px Arial", "#00000000" );
-	outerTemperatureText.x = 680;
-	outerTemperatureText.y = 320;
-
-	var coreTemperatureText = new createjs.Text( "200", "20px Arial", "#00000000" );
-	coreTemperatureText.x = 680;
-	coreTemperatureText.y = 340;
-
-	var outerTemperatureDesc = new createjs.Text( outerTemp + " F", "20px Arial", "#00000000" );
-	outerTemperatureDesc.x = 530;
-	outerTemperatureDesc.y = 320;
-
-	var coreTemperatureDesc = new createjs.Text( coreTemp + " F", "20px Arial", "#00000000" );
-	coreTemperatureDesc.x = 530;
-	coreTemperatureDesc.y = 340;
-
-	stage.addChild( outerTemperatureText );
-	stage.addChild( coreTemperatureText );
-
-	stage.addChild( coreTemperatureDesc );
-	stage.addChild( outerTemperatureDesc );
-
-
-	// Modifiers
-	var turkeyTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
-	turkeyTypeModifierText.x = 310;
-	turkeyTypeModifierText.y = 437;
-
-	var stuffingTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
-	stuffingTypeModifierText.x = 310
-	stuffingTypeModifierText.y = 457;
-
-	var frillsModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
-	frillsModifierText.x = 310
-	frillsModifierText.y = 477;
-
-	var hardcoreModifierText = new createjs.Text( "x"+"10", "20px Arial", "#00000000" );
-	hardcoreModifierText.x = 310
-	hardcoreModifierText.y = 497;
-
-	stage.addChild( stuffingTypeModifierText );
-	stage.addChild( turkeyTypeModifierText );
-	stage.addChild( frillsModifierText );
-	stage.addChild( hardcoreModifierText );
-
-    // Optimal Temperature to be served at
-	this.scoreDistribution= function(inputTemp) {
- 		desiredAverage = 162;
-		variance = 1000; //Std Deviation 31.62
- 		return(Math.exp(-(Math.pow((inputTemp-desiredAverage),2)/(2*variance))))
-	};
 
     return {
 		blit : function(){}

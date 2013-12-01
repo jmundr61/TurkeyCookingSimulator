@@ -114,6 +114,7 @@ function DialogUI( stage, gameState ){
  			console.log("random story");
  			this.showDialog( {seq: dialogueList[ randomKey ] || "Dad Tells a bad Joke", autoAdvance:true } );
  			delete story[ dialogueList[ randomKey ] ];
+ 			gameState.dialogueHeard++;
  		}
  	}
 
