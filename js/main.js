@@ -24,6 +24,7 @@ function GameState(){
     this.alarmTimer = 0;
     this.alarmBought = false;
     this.alarmActivated = false;
+    this.turkeyCookCounter = 0;
 
     // stats
     this.storeVisits = 0;

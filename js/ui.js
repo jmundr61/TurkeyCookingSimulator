@@ -400,7 +400,7 @@ function OvenUI( stage, gameState ){
 				 }
 
 				 // if over 1100 F, burn house down
-				 if( temp > 500 ){
+				 if( temp > 1100 ){
 				 	gameState.pubsub.publish("Death","");
 				 	return;
 				 }
@@ -565,7 +565,7 @@ function OvenUI( stage, gameState ){
     			that.secondTick( diff );
 
 	    		if( gameState.turkeyBought ){
-
+					gameState.turkeyCookCounter++;
 					// what's the state of the turkey
 					turkeyState = gameState.ovenModel.getTurkeyState();
 					gameState.turkeyStates[0].alpha = 1;
@@ -806,6 +806,11 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 	 				gameState.turkeyType = that.name;
 				    gameState.marketItems[ that.name ].delete();
 				    that.bought = true;
+
+				    // record time started
+    				gameState.pubsub.publish( "AddRecord", {type:"Note ", text:"Turkey bought and placed in oven" );
+
+
 				    gameState.pubsub.publish("Play", {name:"Buy", volume:0.7} );
 				    gameState.pubsub.publish("WalletAmount", gameState.wallet - Math.abs(cost))
 				    gameState.pubsub.publish("StartTurkeyModel","");

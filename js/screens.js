@@ -395,7 +395,7 @@ function ScoreScreen( stage, gameState ){
 	var that = this;
 
     // All the text for the entries
-    var totalCookTime = gameState.ovenModel.getCookTime();
+    var totalCookTime = gameState.turkeyCookCounter;
     var realTimeElapsed = Date.now() - gameState.startTime;
 
 	var turkeyState = gameState.ovenModel.getTurkeyState();
