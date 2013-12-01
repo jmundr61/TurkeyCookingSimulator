@@ -1,3 +1,5 @@
+// Robert- Here be dragons
+
 function GameState(){
 	var that = this;
 
@@ -144,6 +146,7 @@ function GameState(){
 	queue.loadFile( {id: "res/screens/KitchenScreen/OvenTurnRedState.png", src:"res/screens/KitchenScreen/OvenTurnRedState.png"});
 	queue.loadFile( {id: "res/screens/KitchenScreen/LightButtonDepressed.png", src:"res/screens/KitchenScreen/LightButtonDepressed.png"});
     queue.loadFile( {id: "res/screens/KitchenScreen/Cookbook-Open.png", src:"res/screens/KitchenScreen/Cookbook-Open.png"});
+    queue.loadFile( {id: "res/screens/KitchenScreen/Explosion_AnimationLowRes.png", src:"res/screens/KitchenScreen/Explosion_AnimationLowRes.png"});
 
 
 	// Kitchen Sounds
@@ -348,7 +351,7 @@ function GameUI( canvasElem, gameState ){
 	var soundManager = new SoundManager( gameState );
 
 	this.activeScreenObj = new LoadingScreen( this.stage, gameState );
-	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
+	var textContent = new createjs.Text( "", "20px Arial", "black" );
 	textContent.x = 750;
 	textContent.y = 30;
 	this.stage.addChild( textContent);

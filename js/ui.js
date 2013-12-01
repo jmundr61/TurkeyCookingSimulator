@@ -148,13 +148,52 @@ function FinalConfirmationUI(stage, gameState){
     gameState.pubsub.subscribe( "ShowFinalConfirm", this.showFinalConfirm );
 }
 
+function DeathUI(stage, gameState){
+	var that = this;
+	this.showingConfirm = false;
+
+	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/HouseFireRetry.png");
+	var deathCount = new createjs.Text( UtilityFunctions.randRange(1,6), "24px Arial", "black" );
+	deathCount.x = 695;
+	deathCount.y = 260;
+
+	var retryButton = new Button( stage, gameState, 578, 520, 200, 50, null, null, function(){
+		document.location.reload();
+	} );
+
+	var explosion = { boom:{ frames:[35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0], next:false } };
+	var data = {
+    	images: ["res/screens/KitchenScreen/Explosion_AnimationLowRes.png"],
+     	frames: { width:400, height:300 },
+     	animations: explosion
+ 	};
+
+ 	var spriteSheet = new createjs.SpriteSheet(data);
+ 	var animation = new createjs.Sprite(spriteSheet, "treeAnimations");
+ 	animation.x = 0;
+ 	animation.y = 0;
+ 	animation.scaleX = animation.scaleY = 2;
+
+	// Show core temperature
+	this.showDeath = function(){
+		stage.addChild( finalImg );
+	 	animation.gotoAndPlay("boom");
+	 	stage.addChild( deathCount );
+		stage.addChild( animation );
+		stage.addChild( retryButton );
+	};
+
+	// change temperature, this one's for the UI
+    gameState.pubsub.subscribe( "Death", this.showDeath );
+}
+
 function AlarmUI(stage, gameState){
 	var that = this;
 	this.showingConfirm = false;
 
 	var oldTime = Date.now();
 	var showColon = true;
-	var timerText = new createjs.Text("00:00", "24px Arial", "#ffffffff" );
+	var timerText = new createjs.Text("00:00", "24px Arial", "black" );
 	timerText.x = 372;
 	timerText.y = 290;
 
@@ -228,11 +267,11 @@ function CookbookUI( stage, gameState ){
 
 	var cookbookImg = new createjs.Bitmap("res/screens/KitchenScreen/Cookbook-Open.png");
 	var closeButton = new Button( stage, gameState, 710, 10, 100, 50, null, null, function(){that.hideCookbook();} );
-	var turkeyTypeText = new createjs.Text("", "18px Arial", "#ffffffff" );
+	var turkeyTypeText = new createjs.Text("", "18px Arial", "black" );
 	turkeyTypeText.x = 535;
 	turkeyTypeText.y = 56;
 
-	var turkeyWeightText = new createjs.Text("", "18px Arial", "#ffffffff" );
+	var turkeyWeightText = new createjs.Text("", "18px Arial", "black" );
 	turkeyWeightText.x = 553;
 	turkeyWeightText.y = 85;
 
@@ -262,7 +301,7 @@ function CookbookUI( stage, gameState ){
 				var record = gameState.peekRecords[i];
 				var time = new Date( gameState.peekRecords[i].getTime() );
 
-				var logLine = new createjs.Text( "OFF", "12px Arial", "#ffffffff" );
+				var logLine = new createjs.Text( "OFF", "12px Arial", "black" );
 
 				logLine.x = 423;
 				logLine.y = 50 * i+ 165;
@@ -295,6 +334,8 @@ function OvenUI( stage, gameState ){
 	ovenLight.graphics.beginFill( "black" ).drawCircle( 181, 126, 2 );
 
 	var confirmation = new FinalConfirmationUI(stage, gameState );
+	var death = new DeathUI(stage,gameState);
+
 	// Oven light control
 	this.changeOvenLight = function( state ){
 		if( state == "On" ){
@@ -359,8 +400,8 @@ function OvenUI( stage, gameState ){
 				 }
 
 				 // if over 1100 F, burn house down
-				 if( temp > 1100 ){
-				 	console.log("You have died in a fire");
+				 if( temp > 500 ){
+				 	gameState.pubsub.publish("Death","");
 				 	return;
 				 }
 
@@ -639,7 +680,7 @@ function WindowUI( stage, gameState ){
  	var animation = new createjs.Sprite(spriteSheet, "treeAnimations");
  	animation.x = 415;
  	animation.y = 30;
-	
+
 	// Fast forward, move sky
 	gameState.pubsub.subscribe( "SkipTime", function(){
 		var newpos =  -(new Date( gameState.currentTime ).getHours()*682.625);

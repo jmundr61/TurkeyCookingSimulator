@@ -50,7 +50,7 @@ function DialogUI( stage, gameState ){
 	this.currentFace = peopleImg["Male"];
 	this.currentFace.x = 0;
 
-	this.textContent = new createjs.Text( "", "24px Arial", "#00000000" );
+	this.textContent = new createjs.Text( "", "24px Arial", "black" );
 	this.textContent.x = 205;
 	this.textContent.y = 705;
 	this.textContent.lineWidth = 565;

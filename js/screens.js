@@ -18,7 +18,7 @@ function LoadingScreen( stage, gameState ){
 	stage.addChild( this.done );
 	stage.addChild( this.turkeyState[0] );
 
-	var textContent = new createjs.Text( "0 %", "25px Arial", "#ffffffff" );
+	var textContent = new createjs.Text( "0 %", "25px Arial", "black" );
 	textContent.x = 500;
 	textContent.y = 20;
 	stage.addChild( textContent);
@@ -158,7 +158,7 @@ function DifficultyScreen( stage, gameState ){
  	this.femaleSelection.alpha = 0;
  	stage.addChild( this.femaleSelection );
 
- 	var nameInput = new createjs.Text( "", "48px Arial", "#00000000" );
+ 	var nameInput = new createjs.Text( "", "48px Arial", "black" );
    		nameInput.x = 47;
 	 	nameInput.y = 85;
 	 	nameInput.lineWidth = 175;
@@ -274,7 +274,8 @@ function KitchenScreen( stage, gameState ){
 	if( !gameState.turkeyBought ){
 		gameState.pubsub.publish( "ShowDialog", {seq:"KitchenInitial", autoAdvance:false} );
 	}
-	
+
+
 	return {
 		blit : function(){
 
@@ -290,11 +291,11 @@ function MarketScreen( stage, gameState ){
 	var that = this;
 
     this.background = new createjs.Bitmap( "res/screens/MarketScreen/MarketScreen.png" );
-    var price = new createjs.Text( "", "16px Arial", "#00000000" );
+    var price = new createjs.Text( "", "16px Arial", "black" );
     	price.x = 120;
 	 	price.y = 560;
 
-	var wallet = new createjs.Text( "$" + parseFloat(gameState.wallet).toFixed(2), "20px Arial", "#00000000" );
+	var wallet = new createjs.Text( "$" + parseFloat(gameState.wallet).toFixed(2), "20px Arial", "black" );
    		wallet.x = 725;
 	 	wallet.y = 550;
 
@@ -306,17 +307,17 @@ function MarketScreen( stage, gameState ){
 		clipboardImg.x = 5;
 		clipboardImg.y = 315;
 
-	var clipboardTitle = new createjs.Text( "Shopping List", "18px Arial", "#00000000" );
+	var clipboardTitle = new createjs.Text( "Shopping List", "18px Arial", "black" );
    		clipboardTitle.x = 25;
 	 	clipboardTitle.y = 385;
 	 	clipboardTitle.lineWidth = 175;
 
-	var clipboardText = new createjs.Text( "Turkey", "16px Arial", "#00000000" );
+	var clipboardText = new createjs.Text( "Turkey", "16px Arial", "black" );
    		clipboardText.x = 23;
 	 	clipboardText.y = 425;
 	 	clipboardText.lineWidth = 173;
 
-	var clipboardWeight = new createjs.Text( "", "16px Arial", "#00000000" );
+	var clipboardWeight = new createjs.Text( "", "16px Arial", "black" );
    		clipboardWeight.x = 120;
 	 	clipboardWeight.y = 540;
 	 	clipboardWeight.lineWidth = 175;
@@ -506,7 +507,7 @@ function ScoreScreen( stage, gameState ){
 		var seconds = totalCookTime % 60;
 		var timeText = ("00"+hours).slice(-2) + ":" + ("00"+minutes).slice(-2) + ":" + ("00"+seconds).slice(-2);
 
-		var totalCookTimeText = new createjs.Text( timeText, "20px Arial", "#00000000" );
+		var totalCookTimeText = new createjs.Text( timeText, "20px Arial", "black" );
 		totalCookTimeText.x = 270;
 		totalCookTimeText.y = 107;
 
@@ -516,15 +517,15 @@ function ScoreScreen( stage, gameState ){
 		seconds = realTimeElapsed % 60;
 		timeText = ("00"+hours).slice(-2) + ":" + ("00"+minutes).slice(-2) + ":" + ("00"+seconds).slice(-2);
 
-		var realtimeElapsedText = new createjs.Text( timeText, "20px Arial", "#00000000" );
+		var realtimeElapsedText = new createjs.Text( timeText, "20px Arial", "black" );
 		realtimeElapsedText.x = 270;
 		realtimeElapsedText.y = 127;
 
-		var ovenOpenedText = new createjs.Text( gameState.ovenOpened, "20px Arial", "#00000000" );
+		var ovenOpenedText = new createjs.Text( gameState.ovenOpened, "20px Arial", "black" );
 		ovenOpenedText.x = 270;
 		ovenOpenedText.y = 147;
 
-		var dialogueHeardText = new createjs.Text( gameState.dialogueHeard, "20px Arial", "#00000000" );
+		var dialogueHeardText = new createjs.Text( gameState.dialogueHeard, "20px Arial", "black" );
 		dialogueHeardText.x = 270;
 		dialogueHeardText.y = 167;
 
@@ -535,19 +536,19 @@ function ScoreScreen( stage, gameState ){
 
 		// Cookedness Score
 
-		var outerConditionDesc = new createjs.Text( turkeyState.skin.cond[2], "20px Arial", "#00000000" );
+		var outerConditionDesc = new createjs.Text( turkeyState.skin.cond[2], "20px Arial", "black" );
 		outerConditionDesc.x = 150;
 		outerConditionDesc.y = 320;
 
-		var coreConditionDesc = new createjs.Text( turkeyState.core.cond[2], "20px Arial", "#00000000" );
+		var coreConditionDesc = new createjs.Text( turkeyState.core.cond[2], "20px Arial", "black" );
 		coreConditionDesc.x = 150;
 		coreConditionDesc.y = 340;
 
-		var outerConditionText = new createjs.Text( skinScoreChart[ turkeyState.skin.cond[2] ], "20px Arial", "#00000000" );
+		var outerConditionText = new createjs.Text( skinScoreChart[ turkeyState.skin.cond[2] ], "20px Arial", "black" );
 		outerConditionText.x = 310;
 		outerConditionText.y = 320;
 
-		var coreConditionText = new createjs.Text( coreScoreChart[  turkeyState.skin.cond[2] ], "20px Arial", "#00000000" );
+		var coreConditionText = new createjs.Text( coreScoreChart[  turkeyState.skin.cond[2] ], "20px Arial", "black" );
 		coreConditionText.x = 310;
 		coreConditionText.y = 340;
 
@@ -560,21 +561,21 @@ function ScoreScreen( stage, gameState ){
 
 		// Temperature Score
 
-		var outerTemperatureText = new createjs.Text( outerTempScore.toFixed(0), "20px Arial", "#00000000" );
+		var outerTemperatureText = new createjs.Text( outerTempScore.toFixed(0), "20px Arial", "black" );
 		outerTemperatureText.x = 680;
 		outerTemperatureText.y = 320;
 
-		var coreTemperatureText = new createjs.Text( coreTempScore.toFixed(0), "20px Arial", "#00000000" );
+		var coreTemperatureText = new createjs.Text( coreTempScore.toFixed(0), "20px Arial", "black" );
 		coreTemperatureText.x = 680;
 		coreTemperatureText.y = 340;
 
-		var outerTemperatureDesc = new createjs.Text( outerTemp + " F", "20px Arial", "#00000000" );
+		var outerTemperatureDesc = new createjs.Text( outerTemp + " F", "20px Arial", "black" );
 		outerTemperatureDesc.x = 530;
 		outerTemperatureDesc.y = 320;
 
 
 
-		var coreTemperatureDesc = new createjs.Text( coreTemp + " F", "20px Arial", "#00000000" );
+		var coreTemperatureDesc = new createjs.Text( coreTemp + " F", "20px Arial", "black" );
 		coreTemperatureDesc.x = 530;
 		coreTemperatureDesc.y = 340;
 
@@ -588,32 +589,32 @@ function ScoreScreen( stage, gameState ){
 
 		// Modifiers
 		var turkeyMod = typeToMod[gameState.turkeyType];
-		var turkeyTypeModifierText = new createjs.Text( "+"+((1-turkeyMod)*100).toFixed(0) + "%", "20px Arial", "#00000000" );
+		var turkeyTypeModifierText = new createjs.Text( "+"+(Math.abs(turkeyMod-1)*100).toFixed(0) + "%", "20px Arial", "black" );
 		turkeyTypeModifierText.x = 310;
 		turkeyTypeModifierText.y = 437;
 
 		totalScore *= turkeyMod;
 
 
-		var stuffingTypeModifierText = new createjs.Text( "+"+((gameState.stuffingTypeModifier-1)*100).toFixed(0)+"%" , "20px Arial", "#00000000" );
+		var stuffingTypeModifierText = new createjs.Text( "+"+(Math.abs(gameState.stuffingTypeModifier-1)*100).toFixed(0)+"%" , "20px Arial", "black" );
 		stuffingTypeModifierText.x = 310
 		stuffingTypeModifierText.y = 457;
 
 		totalScore *= gameState.stuffingTypeModifier;
 
-		var frillsModifierText = new createjs.Text( "x"+gameState.frillsModifier, "20px Arial", "#00000000" );
+		var frillsModifierText = new createjs.Text( "x"+gameState.frillsModifier, "20px Arial", "black" );
 		frillsModifierText.x = 310
 		frillsModifierText.y = 477;
 
 		totalScore *= gameState.frillsModifier;
 
-		var hardcoreModifierText = new createjs.Text( "x"+gameState.hardcoreModifier, "20px Arial", "#00000000" );
+		var hardcoreModifierText = new createjs.Text( "x"+gameState.hardcoreModifier, "20px Arial", "black" );
 		hardcoreModifierText.x = 310
 		hardcoreModifierText.y = 497;
 
 		totalScore *= gameState.hardcoreModifier;
 
-		var totalText = new createjs.Text( totalScore.toFixed(0), "32px Arial", "#00000000" );
+		var totalText = new createjs.Text( totalScore.toFixed(0), "32px Arial", "black" );
 		totalText.x = 250;
 		totalText.y = 550;
 		stage.addChild( totalText );
