@@ -2,13 +2,13 @@
 
 ## Overview
 
-It is another Thanksgiving holiday, a time of retrospect and 	blessings.
+It is another Thanksgiving holiday, a time of retrospect and blessings.
 You have been invited over for dinner.
-Wanting to make a good impression, you agreed to cook the turkey…
+Wanting to make a good impression, you agree to cook the turkey…
 
 # Turkey Cooking Simulator Features:
 * Real-time cooking action!
-* Unparalled turkey-based thermodyamics!
+* Unparalleled turkey-based thermodynamics!
 * Hours of gripping stories and drama!
 * Accessorize your turkey with stuffing, frills, and other awesomeness!
 * Day-night environmental cycle!
@@ -18,16 +18,15 @@ Wanting to make a good impression, you agreed to cook the turkey…
 
 
 ## Compatibility
-
-* [Chrome](https://www.google.com/intl/en/chrome/) - Full compatibility, reccomended browser.
-* [Safari](http://www.apple.com/safari/) -
-* [Firefox](www.firefox.com) - Some issues with svg
-* [Internet Explorer](http://windows.microsoft.com/en-us/internet-explorer/download-ie) - Not Reccomended. Sound issues
+* [Firefox](www.firefox.com) - Recommended  Browser, Gstreamer required for sound on Mac OS
+* [Chrome 22](https://www.google.com/intl/en/chrome/) - Full compatibility, recommended browser.
+* [Safari 6.0.5](http://www.apple.com/safari/) - Some incompatibility with SVG
+* [Internet Explorer 11](http://windows.microsoft.com/en-us/internet-explorer/download-ie) - Not recommended . Sound looping issues
 
 ## Authors
 
-* [Robert J. Chen](www.youtube.com) - Programming
-* [Benjamin Kwok](www.) - Art
-* [Scott R. Mobley](ww.ww.ewwe) - Math and Dialogue
-* [Sheen Kao](wwwwwjwhjehq) -  Supreme Commissar Overlord MC 
+* [Robert J. Chen](www.fernjager.net) - Programming
+* [Benjamin Kwok](tengen1112@gmail.com) - Art
+* [Scott R. Mobley](http://www.linkedin.com/in/mobleyscott) - Math and Dialogue
+* Sheen Kao -  Supreme Commissar Overlord MC 
 
