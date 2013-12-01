@@ -256,7 +256,9 @@ function KitchenScreen( stage, gameState ){
 
 	this.uiElems.push( gameState.ovenUI ? gameState.ovenUI.render() : ( gameState.ovenUI = new OvenUI( stage, gameState ) ).render() );
 	this.uiElems.push( new ClockUI( stage, gameState ) );
-	this.uiElems.push( new AlarmUI(stage, gameState) );
+
+	if( gameState.alarmBought )
+		this.uiElems.push( new AlarmUI(stage, gameState) );
 
 
 	stage.addChild( new Button( stage, gameState, 14, 17, 73, 45, null,null, function(){ gameState.pubsub.publish("ShowHelp","");} ) );
@@ -389,22 +391,144 @@ function MarketScreen( stage, gameState ){
 function ScoreScreen( stage, gameState ){
 	var that = this;
 
-	gameState.pubsub.publish( "FadeOut", "" );
-
-    this.background = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Tally.png" );
-    stage.addChild( this.background );
- 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:0.7} );
-
-    //
-
-    // Retry button
-    stage.addChild( new Button( stage, gameState, 590, 350, 200, 55, null, null, function(){ document.location.reload(); } ) );
-
     // All the text for the entries
-    var totalCookTime;
-    var realTimeElapsed;
+    var totalCookTime = gameState.ovenModel.getCookTime();
+    var realTimeElapsed = Date.now() - gameState.startTime;
+
+	var turkeyState = gameState.ovenModel.getTurkeyState();
     var finalCoreTemperature;
     var totalScore;
+
+	gameState.pubsub.publish( "FadeOut", "" );
+
+    this.background = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Evaluation-1.png" );
+    this.background.alpha = 0;
+    stage.addChild( this.background );
+
+    background1 = new createjs.Bitmap( "res/screens/ScoreScreen/Score-Evaluation-2.png" );
+    background1.alpha = 1;
+	stage.addChild( background1 );
+
+	for (i in gameState.turkeyStates){
+		gameState.turkeyStates[i].scaleX = gameState.turkeyStates[i].scaleY = 1;
+		gameState.turkeyStates[i].x = 490;
+		gameState.turkeyStates[i].y = 110;
+		stage.addChild(gameState.turkeyStates[i]);
+	}
+
+ 	gameState.pubsub.publish( "BackgroundLoop", {name:"TitleMusic", pos:5650, volume:0.7} );
+
+	gameState.pubsub.publish( "ShowDialog", {seq:"NoMoney", autoAdvance:true, endFunc:function(){
+		background1.alpha=1;
+
+	}} );
+
+	stage.addChild( new Button( stage, gameState, 590, 540, 190, 50, null, null, function(){ document.location.reload(); } ) );
+
+
+	// Cooking stats
+	var hours = parseInt( totalCookTime / 3600 ) % 24
+	var minutes = parseInt( totalCookTime / 60 ) % 60;
+	var timeText = hours + ":" + minutes;
+
+	var totalCookTimeText = new createjs.Text( timeText, "20px Arial", "#00000000" );
+	totalCookTimeText.x = 270;
+	totalCookTimeText.y = 107;
+
+	realTimeElapsed /= 1000;
+	hours = parseInt( realTimeElapsed / 3600 ) % 24
+	minutes = parseInt( realTimeElapsed / 60 ) % 60;
+	timeText = hours + ":" + minutes;
+
+	var realtimeElapsedText = new createjs.Text( timeText, "20px Arial", "#00000000" );
+	realtimeElapsedText.x = 270;
+	realtimeElapsedText.y = 127;
+
+	var ovenOpenedText = new createjs.Text( gameState.ovenOpened, "20px Arial", "#00000000" );
+	ovenOpenedText.x = 270;
+	ovenOpenedText.y = 147;
+
+	var dialogueHeardText = new createjs.Text( gameState.dialogHeard, "20px Arial", "#00000000" );
+	dialogueHeardText.x = 270;
+	dialogueHeardText.y = 167;
+
+
+	stage.addChild( totalCookTimeText );
+	stage.addChild( realtimeElapsedText );
+	stage.addChild( ovenOpenedText );
+	stage.addChild( dialogueHeardText );
+
+	// Cookedness Score
+	var outerConditionText = new createjs.Text( "100", "20px Arial", "#00000000" );
+	outerConditionText.x = 310;
+	outerConditionText.y = 320;
+
+	var coreConditionText = new createjs.Text( "200", "20px Arial", "#00000000" );
+	coreConditionText.x = 310;
+	coreConditionText.y = 340;
+
+	var outerConditionDesc = new createjs.Text( "RAW", "20px Arial", "#00000000" );
+	outerConditionDesc.x = 150;
+	outerConditionDesc.y = 320;
+
+	var coreConditionDesc = new createjs.Text( "COOKED", "20px Arial", "#00000000" );
+	coreConditionDesc.x = 150;
+	coreConditionDesc.y = 340;
+
+	stage.addChild( coreConditionText );
+	stage.addChild( outerConditionText );
+
+	stage.addChild( coreConditionDesc );
+	stage.addChild( outerConditionDesc );
+
+	// Temperature Score
+	var outerTemp = UtilityFunctions.C2F(turkeyState.skin.temp).toFixed(2);
+	var coreTemp = UtilityFunctions.C2F(turkeyState.core.temp).toFixed(2);
+
+	var outerTemperatureText = new createjs.Text( "100", "20px Arial", "#00000000" );
+	outerTemperatureText.x = 680;
+	outerTemperatureText.y = 320;
+
+	var coreTemperatureText = new createjs.Text( "200", "20px Arial", "#00000000" );
+	coreTemperatureText.x = 680;
+	coreTemperatureText.y = 340;
+
+	var outerTemperatureDesc = new createjs.Text( outerTemp + " F", "20px Arial", "#00000000" );
+	outerTemperatureDesc.x = 530;
+	outerTemperatureDesc.y = 320;
+
+	var coreTemperatureDesc = new createjs.Text( coreTemp + " F", "20px Arial", "#00000000" );
+	coreTemperatureDesc.x = 530;
+	coreTemperatureDesc.y = 340;
+
+	stage.addChild( outerTemperatureText );
+	stage.addChild( coreTemperatureText );
+
+	stage.addChild( coreTemperatureDesc );
+	stage.addChild( outerTemperatureDesc );
+
+
+	// Modifiers
+	var turkeyTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+	turkeyTypeModifierText.x = 310;
+	turkeyTypeModifierText.y = 437;
+
+	var stuffingTypeModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+	stuffingTypeModifierText.x = 310
+	stuffingTypeModifierText.y = 457;
+
+	var frillsModifierText = new createjs.Text( "x"+"1", "20px Arial", "#00000000" );
+	frillsModifierText.x = 310
+	frillsModifierText.y = 477;
+
+	var hardcoreModifierText = new createjs.Text( "x"+"10", "20px Arial", "#00000000" );
+	hardcoreModifierText.x = 310
+	hardcoreModifierText.y = 497;
+
+	stage.addChild( stuffingTypeModifierText );
+	stage.addChild( turkeyTypeModifierText );
+	stage.addChild( frillsModifierText );
+	stage.addChild( hardcoreModifierText );
 
     // Optimal Temperature to be served at
 	this.scoreDistribution= function(inputTemp) {
@@ -413,19 +537,9 @@ function ScoreScreen( stage, gameState ){
  		return(Math.exp(-(Math.pow((inputTemp-desiredAverage),2)/(2*variance))))
 	};
 
-
-    this.uiElems = [];
     return {
-		blit : function(){
-
-			// Draw all the uiElements
-	        for( var index in that.uiElems ){
-				that.uiElems[ index ].tick();
-			}
-		}
+		blit : function(){}
 	}
-
-	// Retry Button
 }
 
 function CreditsScreen( stage, gameState ){

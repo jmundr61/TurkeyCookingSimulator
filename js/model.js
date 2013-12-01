@@ -93,9 +93,9 @@ function OvenModel( turkeyWeight, gameState ) {
 				if (this.steadyTimer>=80) {
 				//Reset the model's time calculation if there are major changes in the tolerance of the temperature or the steady timer expires
 					this.steadyTimer = 0;
+					this.globalTime = 0;
 					this.steadyTemp = this.tempInfini
 					turkey.resetLayerTemps();
-					this.globalTime = 0;
 				}
 				return(true);
             }
@@ -128,6 +128,9 @@ function OvenModel( turkeyWeight, gameState ) {
     	},
     	getRawTemp: function(){
     		return that.tempInfini;
+    	},
+    	getCookTime: function(){
+    		return that.globalTime;
     	},
 	    secondTick: function(){
 			that.globalTime = that.globalTime + 1;
@@ -290,7 +293,7 @@ UtilityFunctions = {
 	cookCondition: function(cookValue,volume){
 		var multiplier = 1;
 		if (cookValue>=multiplier*600000) {
-			return ["House Fire", (cookValue-600000)/(multiplier*600000),"on fire"];
+			return ["Fire", (cookValue-600000)/(multiplier*600000),"like it's on fire"];
 		}
 		else if(cookValue>=multiplier*250000) {
 			return ["Burnt", (cookValue-250000)/(multiplier*600000), "burnt"];

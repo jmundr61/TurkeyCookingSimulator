@@ -152,28 +152,31 @@ function AlarmUI(stage, gameState){
 	var that = this;
 	this.showingConfirm = false;
 
-	var finalImg = new createjs.Bitmap("res/screens/KitchenScreen/AlarmKitchen.png");
-
+	var oldTime = Date.now();
+	var showColon = true;
 	var timerText = new createjs.Text("00:00", "24px Arial", "#ffffffff" );
 	timerText.x = 372;
 	timerText.y = 290;
 
 	var clearButton = new Button( stage, gameState, 364, 327, 17, 13, null, null, function(){
 		gameState.alarmTimer = 0;
+		gameState.alarmActivated = false;
 		that.updateTimer();
 	} );
 
 	var hourButton = new Button( stage, gameState, 386, 327, 24, 13, null, null, function(){
 		gameState.alarmTimer +=3600;
+		gameState.alarmActivated = true;
 		that.updateTimer();
 	} );
 	var minuteButton = new Button( stage, gameState, 414, 327, 24, 13, null, null, function(){
 		gameState.alarmTimer +=300;
+		gameState.alarmActivated = true;
 		that.updateTimer();
 	} );
 
 	this.updateTimer = function(){
-		var colon = gameState.currentTime%2 ? ":" : " ";
+		var colon = showColon ? ":" : " ";
 		var totalSec = gameState.alarmTimer;
 		var hours = parseInt( totalSec / 3600 ) % 24
 		var minutes = parseInt( totalSec / 60 ) % 60;
@@ -181,22 +184,38 @@ function AlarmUI(stage, gameState){
 		timerText.text = timeText;
 	}
 
+	this.activateTimer = function(){
+		gameState.alarmActivated = true;
+	}
+
 	// Show core temperature
-	//this.showAlarmUI = function(){
-		stage.addChild( finalImg );
-		stage.addChild( timerText );
-		stage.addChild( clearButton );
-		stage.addChild( hourButton );
-		stage.addChild( minuteButton );
-	//};
-	//alarmTimer
+
+	stage.addChild( timerText );
+	stage.addChild( clearButton );
+	stage.addChild( hourButton );
+	stage.addChild( minuteButton );
+
+
 	this.updateTimer();
 
 	return{
-		secondTick: function(){
-			that.updateTimer();
-		},
-		tick:function(){
+		tick: function(){
+			// IMPORTANT: SECOND TIMER
+    		var diff = Date.now() - oldTime;
+			if( diff > 1000 ){
+				if( gameState.alarmActivated && gameState.alarmTimer <=0 ){
+					gameState.alarmTimer = 0;
+					gameState.pubsub.publish("Play", "BeepBeep")
+				}
+
+    			that.updateTimer();
+    			showColon = !showColon;
+
+    			if( gameState.alarmActivated )
+    				gameState.alarmTimer --;
+
+    			oldTime = Date.now();
+    		}
 		}
 	}
 
@@ -272,10 +291,6 @@ function OvenUI( stage, gameState ){
 	var OVEN_OPEN = 2;
 
 	this.ovenDoor = OVEN_CLOSED;
-
-	// Important Model, dummy placeholder
-	var ovenModel = { secondTick:function(){}, setRawTemp:function(){}, getRawTemp:function(){} };
-
 	var ovenLight = new createjs.Shape();
 	ovenLight.graphics.beginFill( "black" ).drawCircle( 181, 126, 2 );
 
@@ -289,20 +304,13 @@ function OvenUI( stage, gameState ){
 		}
 	}
 	this.doneSkipTime = true;
-	var turkeyStates = [
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1Small.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2Small.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState3Small.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4Small.svg" ),
-		new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5Small.svg" )
-	];
 
 	// place turkeys in oven
-	for (i in turkeyStates){
-		turkeyStates[i].alpha = 0;
-		turkeyStates[i].scaleX = turkeyStates[i].scaleY =1;
-		turkeyStates[i].x = 75;
-		turkeyStates[i].y = 258;
+	for (i in gameState.turkeyStates){
+		gameState.turkeyStates[i].alpha = 0;
+		gameState.turkeyStates[i].scaleX = gameState.turkeyStates[i].scaleY =1;
+		gameState.turkeyStates[i].x = 75;
+		gameState.turkeyStates[i].y = 258;
 	}
 
 	var temperatureText = new createjs.Text( "OFF", "40px Arial", "#ff7700" );
@@ -346,6 +354,10 @@ function OvenUI( stage, gameState ){
 				 temp = temp < 150 ? temp = "OFF" : temp;
 
 				 // Check upper bound
+				 if( temp > 500 ){
+				 	redState.alpha = ( temp - 500 )/( 1100 - 500 );
+				 }
+
 				 // if over 1100 F, burn house down
 				 if( temp > 1100 ){
 				 	console.log("You have died in a fire");
@@ -356,7 +368,7 @@ function OvenUI( stage, gameState ){
 			}
 
 			 // Tell our model to set the actual temperature
-			 ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 125 : parseInt( temperatureText.text ) ) );
+			 gameState.ovenModel.changeTemp( UtilityFunctions.F2C( temperatureText.text == "OFF" ? 125 : parseInt( temperatureText.text ) ) );
 		}
 		else{
 			gameState.pubsub.publish("ShowDialog",{seq:"EmptyOven", autoAdvance: true});
@@ -382,8 +394,8 @@ function OvenUI( stage, gameState ){
 	}
 
 	this.startTurkeyModel = function(){
-		console.log("weight is" + gameState.turkeyWeight)
-		ovenModel = new OvenModel( gameState.turkeyWeight, gameState );
+		console.log("weight is" + gameState.turkeyWeight);
+		gameState.ovenModel = new OvenModel( gameState.turkeyWeight, gameState );
 	}
 
 	var handleBar = new createjs.Shape();
@@ -405,10 +417,10 @@ function OvenUI( stage, gameState ){
 			handleBar.alpha = 0.5;
 
 			if( gameState.turkeyBought ){
-				var state = ovenModel.getTurkeyState();
+				var state = gameState.ovenModel.getTurkeyState();
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Hmm... Looks " + turkeyState["skin"]["cond"][2] + "." } );
 				gameState.pubsub.publish( "AddRecord", {type:"Open ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
-				ovenModel.setRawTemp( (ovenModel.getRawTemp() - 25) < 150 ? 150 : ovenModel.getRawTemp() - 25 );
+				gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 25) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 25 );
 			}
 
 			gameState.pubsub.publish( "Play", "Oven_Door_Full_Open" );
@@ -436,7 +448,7 @@ function OvenUI( stage, gameState ){
 
 			handleBar.y = 48;
 			if( gameState.turkeyBought ){
-				var state = ovenModel.getTurkeyState();
+				var state = gameState.ovenModel.getTurkeyState();
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"Looks " + turkeyState["skin"]["cond"][2] } );
 				gameState.pubsub.publish( "AddRecord", {type:"Peek ", text:"The turkey looked " + turkeyState["skin"]["cond"][2]} );
     			that.ovenOpened++;
@@ -460,7 +472,7 @@ function OvenUI( stage, gameState ){
 			gameState.pubsub.publish("ShowDialog", {seq:"OpenDoor", autoAdvance:true});
 		}
 		else{
-			state = ovenModel.getTurkeyState();
+			state = gameState.ovenModel.getTurkeyState();
 			gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:"The core temperature of the turkey reads " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F" } );
 			gameState.pubsub.publish( "AddRecord", {type:"Probe", text:"Core temperature measured: " + UtilityFunctions.C2F(state.core.temp).toFixed(2) + " F"} );
 			that.ovenOpened++;
@@ -482,9 +494,9 @@ function OvenUI( stage, gameState ){
     		if( that.ovenDoor == OVEN_OPEN ){
 
     			// incur -25 upon door open and penalty -5 degrees a second for opening the oven.
-    			ovenModel.setRawTemp( (ovenModel.getRawTemp() - 5) < 150 ? 150 : ovenModel.getRawTemp() - 5 );
+    			gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 5) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 5 );
     		}
-    		ovenModel.secondTick();
+    		gameState.ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
 
@@ -507,18 +519,18 @@ function OvenUI( stage, gameState ){
 	    		if( gameState.turkeyBought ){
 
 					// what's the state of the turkey
-					turkeyState = ovenModel.getTurkeyState();
-					turkeyStates[0].alpha = 1;
+					turkeyState = gameState.ovenModel.getTurkeyState();
+					gameState.turkeyStates[0].alpha = 1;
 					if( turkeyState["skin"]["cond"][0] == "Undercooked" )
-						turkeyStates[1].alpha = turkeyState["skin"]["cond"][1];
+						gameState.turkeyStates[1].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "Cooked" )
-						turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
+						gameState.turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "Dry" )
-						turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
+						gameState.turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"][0] == "Burnt" )
-						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
-					if( turkeyState["skin"]["cond"][0] == "House Fire" )
-						turkeyStates[4].alpha = 1;
+						gameState.turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
+					if( turkeyState["skin"]["cond"][0] == "Fire" )
+						gameState.turkeyStates[4].alpha = 1;
 				}
 				gameState.oldTime = Date.now();
 			}
@@ -528,34 +540,33 @@ function OvenUI( stage, gameState ){
 			}
     	},
     	render: function(){
-
+    		stage.addChild( redState );
 		    stage.addChild( ovenLight );
 		    stage.addChild( temperatureText );
 
-		    stage.addChild( this.text );
 		    stage.addChild( lightPressedImg);
 			// Turkey goes here
 				// did the player actually buy a turkey? if so, determine its cooked state
 				if( gameState.turkeyBought ){
 
 					// what's the state of the turkey
-					turkeyState = ovenModel.getTurkeyState();
-					turkeyStates[0].alpha = 1;
+					turkeyState = gameState.ovenModel.getTurkeyState();
+					gameState.turkeyStates[0].alpha = 1;
 					if( turkeyState["skin"]["cond"] == "Undercooked" )
-						turkeyStates[1].alpha = turkeyState["skin"]["cond"][1];
+						gameState.turkeyStates[1].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"] == "Cooked" )
-						turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
+						gameState.turkeyStates[2].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"] == "Dry" )
-						turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
+						gameState.turkeyStates[3].alpha = turkeyState["skin"]["cond"][1];
 					if( turkeyState["skin"]["cond"] == "Burnt" )
-						turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
-					if( turkeyState["skin"]["cond"] == "House Fire" )
-						turkeyStates[4].alpha = 1;
+						gameState.turkeyStates[4].alpha = turkeyState["skin"]["cond"][1];
+					if( turkeyState["skin"]["cond"] == "Fire" )
+						gameState.turkeyStates[4].alpha = 1;
 
 					panFront.alpha = 1;
-					stage.addChild(turkeyStates[0]);
-					for(i in turkeyStates){
-						stage.addChild(turkeyStates[i]);
+					stage.addChild(gameState.turkeyStates[0]);
+					for(i in gameState.turkeyStates){
+						stage.addChild(gameState.turkeyStates[i]);
 					}
 					stage.addChild(panFront);
 				}
@@ -756,6 +767,9 @@ function MarketItem( gameState, name, x, y, cost, mouseOutImg, mouseOverImg, mou
 
 	 				// if we bought an oven light, enable it!
 	 				if( that.name.indexOf("Light") != -1 ) gameState.boughtOvenLight = true;
+
+	 				// if we bought a clock, enable it!
+	 				if( that.name.indexOf("Alarm") != -1 ) gameState.alarmBought = true;
 
 		 			gameState.purchasedItems.push( objReturn );
 		 			gameState.marketItems[ that.name ].delete();

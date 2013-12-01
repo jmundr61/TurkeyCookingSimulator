@@ -65,7 +65,10 @@ function DialogUI( stage, gameState ){
  	this.textContent.addEventListener( "mouseout", function(){ document.body.style.cursor='default'; } );
  	this.textContent.addEventListener( "click", function(){ setTimeout( clickEvent, 100); });
 
+	this.endFunc = function(){};
+
  	this.showDialog= function( textSeq ){
+ 		console.log("showing"+ textSeq);
  		if( !peopleImg["Me"] ){
  		   	 peopleImg["Me"] = peopleImg[gameState.gender];
  		}
@@ -89,6 +92,8 @@ function DialogUI( stage, gameState ){
 
  		that.currDialogueSeq = new DialogueSequence( textSeq.seq );
  		var nextDialogue = that.currDialogueSeq.next();
+
+ 		that.endFunc = textSeq.endFunc || function(){};
 
  		that.textContent.text=nextDialogue[1];
  		that.currentFace.y = 250;
@@ -137,9 +142,12 @@ function DialogUI( stage, gameState ){
  			that.currentFace.y = 0;
  		}else{
  			// pause and close dialog
- 			setTimeout( function(){that.dialogMotionQueue.push(DIALOG_RECEDING)}, 250 );
+ 			setTimeout( function(){
+ 				that.dialogMotionQueue.push(DIALOG_RECEDING);
+ 				if( that.endFunc )
+ 					that.endFunc();
+ 			}, 250 );
  		}
-
  			delayCounter = 0;
 			oldTime = new Date().getTime();
  	}

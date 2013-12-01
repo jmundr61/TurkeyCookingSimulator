@@ -3,9 +3,10 @@ function GameState(){
 
 	this.pubsub = {};
 	BindPubSub( this.pubsub );
-	this.currentTime = new Date().getTime();
-	this.oldTime = new Date().getTime();
-    this.oldDialogueTime = new Date().getTime();
+	this.currentTime = Date.now(); //new Date().getTime();
+    this.startTime =  Date.now();//new Date().getTime()
+	this.oldTime =  Date.now();// new Date().getTime();
+    this.oldDialogueTime =  Date.now();//new Date().getTime();
 
     this.gameStarted = false;
 	this.name = "";
@@ -18,13 +19,21 @@ function GameState(){
     this.turkeyCooking = false;
     this.turkeyType = "";
     this.alarmTimer = 0;
+    this.alarmBought = false;
+    this.alarmActivated = false;
 
     // stats
     this.storeVisits = 0;
     this.dialogHeard = 0;
     this.ovenOpened = 0;
 
-// Game State flags
+    // modifiers
+    this.turkeyTypeModifier = 1;
+    this.stuffingTypeModifier = 1;
+    this.frillsModifier = 1;
+    this.hardcoreModifier = 1;
+
+    // Game State flags
     this.turkeyBought = false;
     var randomWeight = [ (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
                          (UtilityFunctions.randRange(10,22)+"."+UtilityFunctions.randRange(10,99)),
@@ -74,8 +83,8 @@ function GameState(){
     queue.loadFile( {id: "HelpP7P8", src:"res/screens/HelpCreditsScreen/HelpP7P8.png" } );
 
 
-
-    queue.loadFile( {id: "ScoreScreenFile", src:"res/screens/ScoreScreen/Score-Tally.png" } );
+    queue.loadFile( {id: "ScoreScreenFile", src:"res/screens/ScoreScreen/Score-Evaluation-1.png" } );
+    queue.loadFile( {id: "ScoreScreenFile", src:"res/screens/ScoreScreen/Score-Evaluation-2.png" } );
     queue.loadFile( {id: "HelpScreenFile", src:"res/screens/HelpCreditsScreen/Credits.png" } );
 
     queue.loadFile( {id: "MarketScreenfile", src:"res/screens/MarketScreen/MarketScreen.png"} );
@@ -146,6 +155,7 @@ function GameState(){
     queue.loadFile( {id: "res/sound/Kitchen/Close_Cookbook.mp3", src:"res/sound/Kitchen/Close_Cookbook.mp3"});
     queue.loadFile( {id: "res/sound/Kitchen/Open_Cookbook.mp3", src:"res/sound/Kitchen/Open_Cookbook.mp3"});
     queue.loadFile( {id: "res/sound/Kitchen/sizzle.mp3", src:"res/sound/Kitchen/sizzle.mp3"} );
+    queue.loadFile( {id: "res/sound/Kitchen/Double_Beep.mp3", src:"res/sound/Kitchen/Double_Beep.mp3"} );
 
     // Market Items
     queue.loadFile( {id: "res/screens/MarketScreen/MarketTopShelf.png", src:"res/screens/MarketScreen/MarketTopShelf.png"});
@@ -262,6 +272,19 @@ function GameState(){
 		"General Turkey": new MarketItem( this, "General Turkey", 378,426, randomWeight[4]*0.80, "res/items/Turkey1.png", "res/items/Turkey1Glow.png",null,null, "100% General Satisfaction Guaranteed", parseFloat(randomWeight[4]) )
 	};
 
+        // Important Model, dummy placeholder
+    this.ovenModel = { secondTick:function(){}, setRawTemp:function(){}, getRawTemp:function(){}, getCookTime:function(){return 1000;} };
+
+
+    /* all turkeys */
+    this.turkeyStates = [
+        new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState1Small.svg" ),
+        new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState2Small.svg" ),
+        new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState3Small.svg" ),
+        new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState4Small.svg" ),
+        new createjs.Bitmap( "res/screens/KitchenScreen/TurkeyState5Small.svg" )
+    ];
+
 	this.purchasedItems = [];
 
 	// did we already show the player the kitchen intro?
@@ -325,7 +348,7 @@ function GameUI( canvasElem, gameState ){
 
 	var soundManager = new SoundManager( gameState );
 
-	this.activeScreenObj = new KitchenScreen( this.stage, gameState );
+	this.activeScreenObj = new LoadingScreen( this.stage, gameState );
 	var textContent = new createjs.Text( "", "20px Arial", "#00000000" );
 	textContent.x = 750;
 	textContent.y = 30;
@@ -357,7 +380,7 @@ function GameUI( canvasElem, gameState ){
 	gameState.pubsub.subscribe( "ActuallySwitchScreen", this.actuallySwitchScreen );
 
 	// Allow items to be removed if they don't have access to stage
-	gameState.pubsub.subscribe("RemoveItems", function(items){
+	gameState.pubsub.subscribe( "RemoveItems", function(items){
 		for (var index in items ){
 			that.stage.removeChild(items[index]);
 		}
