@@ -431,7 +431,7 @@ function OvenUI( stage, gameState ){
 				var state = gameState.ovenModel.getTurkeyState();
 				gameState.pubsub.publish( "ShowDialog", {seq:"custom", autoAdvance:true, customText:evalSkin[turkeyState["skin"]["cond"][2]] + "." } );
 				gameState.pubsub.publish( "AddRecord", {type:"Open ", "The turkey looked " + turkeyState["skin"]["cond"][2]} );
-				gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 25) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 25 );
+				//gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 25) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 25 );
 				gameState.ovenOpened++;
 			}
 
@@ -501,11 +501,6 @@ function OvenUI( stage, gameState ){
 
     this.secondTick = function(diff){
     		// check if oven door is open
-    		if( that.ovenDoor == OVEN_OPEN ){
-
-    			// incur -25 upon door open and penalty -5 degrees a second for opening the oven.
-    			gameState.ovenModel.setRawTemp( (gameState.ovenModel.getRawTemp() - 5) < 150 ? 150 : gameState.ovenModel.getRawTemp() - 5 );
-    		}
     		gameState.ovenModel.secondTick();
     		gameState.currentTime += diff;
 	}
