@@ -4,8 +4,8 @@ var messages = {
 	"CannotBuyTurkey" : ["Me: I barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
 	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
-	"EmptyOven" : ["Me: I'll start cooking once I get a turkey"],
-	"OpenDoor" :["Me: I should probably try opening the oven door to measure the turkey's temperature"]
+	"EmptyOven" : ["Me: I'll start cooking once I get a turkey."],
+	"OpenDoor" :["Me: I should probably try opening the oven door to measure the turkey's temperature."]
 }
 
 //Terrible Results
