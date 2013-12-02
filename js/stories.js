@@ -4,8 +4,8 @@ var messages = {
 	"CannotBuyTurkey" : ["Me: I barely have time for ONE turkey, let alone TWO!"],
 	"NoMoney" : ["Me: I can't afford this!"],
 	"BuyTurkeyFirst" : ["Me: I should buy a turkey first!"],
-	"EmptyOven" : ["Me: Ah, the oven is already preheated..."],
-	"OpenDoor" :["Me: I should probably try opening the oven door to measure the turkey's temperature"]
+	"EmptyOven" : ["Me: I'll start cooking once I get a turkey."],
+	"OpenDoor" :["Me: I should probably try opening the oven door to measure the turkey's temperature."]
 }
 
 //Terrible Results
@@ -18,7 +18,7 @@ var terrible = [
 "Brother: Who taught you how to cook?",
 "Brother: What an awful turkey.",
 "Spouse: I'm leaving you honey. It's not you, its the turkey.",
-"Cat: Meow Meow ('Get out of my house!')"];
+"Cat: Meow Meow (Get out of my house!)"];
 
 //Subpar Results
 var subPar = [
@@ -32,7 +32,7 @@ var subPar = [
 "Mom: You are welcome here no matter how well you cook.",
 "Mom: Honey, I think this turkey could have turned out better.",
 "Brother: Uhh, What's for dessert?",
-"Brother: We should get a pre-baked turkey next time",
+"Brother: We should get a pre-baked turkey next time.",
 "Spouse: Hey, the cat seems to like it.",
 "Spouse: We'll have to go to some cooking classes together.",
 "Cat: Hisssssss"];
@@ -45,7 +45,7 @@ var average = [
 "Mom: Tastes better than store cooked turkeys.",
 "Brother: This is way better than I expected.",
 "Spouse: Not bad.",
-"Cat: Meow meow ('I may not leave a present in your shoes today')"];
+"Cat: Meow meow (I may not leave a present in your shoes today)"];
 
 //Great Results
 var great = [
@@ -58,7 +58,7 @@ var great = [
 "Mom: You should teach me your secrets",
 "Brother: Way to go, this turkey is fantastic.",
 "Spouse: Oh, what a nice turkey.",
-"Cat: Meow MEOW! ('I am pleased, human')"];
+"Cat: Meow MEOW! (I am pleased, human)"];
 
 //Perfect Results
 var perfect = [
@@ -219,7 +219,7 @@ var story = {
 "Mom: Did you stay the whole time? I could not see myself walking out. I would feel too embarrassed about the whole audience staring at me.",
 "Spouse: It isn't that hard, you just treat it like you are headed to the bathroom. Except you never come back.",
 "Spouse: But yes, we did leave early, so we'll have to check the rest of the movie on DVD, or see it in theatres when it officially releases.",
-"Mom: Good thing the staff didn't send a search party for you. Maybe you fell into the toilet",
+"Mom: Good thing the staff didn't send a search party for you. Maybe you fell into the toilet.",
 "Spouse: Haha",
 "Dad: Say, what was the title of the movie?",
 "Spouse: 'Randy Staples Shares the Pain.' We saw all the build up, but missed the payoff.",
@@ -279,14 +279,14 @@ var story = {
 "Spouse: The free boba promotion ended at 8PM, and it was already 10!",
 "Mom: Aww, that's too bad",
 "Spouse: I decided to get a drink anyways.",
-"Spouse: But when I ordered, the worker said 'Would you like to try one of our free drinks?', and motioned towards the sign",
+"Spouse: But when I ordered, the worker said 'Would you like to try one of our free drinks?', and motioned towards the sign.",
 "Spouse: 'Sure!', Then he asked [Player] what [GenderPronoun] wanted.",
 "Spouse: So we both got a full-sized free drink!",
 "Mom: What flavor did you get? I assume there are flavors of boba?",
 "Spouse: Yes, there are. I ordered Strawberry. It tasted ok, but was really missing that strawberry flavor.",
 "Spouse: The worker asked how they were, and well Mom, you raised me to be an honest individual, so it was lacking in flavor.",
 "Spouse: So the worker says, 'Alright, let me make you another one'",
-"Spouse: He makes me a completely new boba drink, while letting me keep the old one to drink. At this point I haven't even paid for anything yet",
+"Spouse: He makes me a completely new boba drink, while letting me keep the old one to drink. At this point I haven't even paid for anything yet.",
 "Dad: That's just good customer service. Since this place is new, he is trying to build up customer relations.",
 "Spouse: True, but I feel like it got a little out of hand. The next drink also lacked the strawberry flavor. The worker said it is probably because of the syrup.",
 "Spouse: He then proceeded to make another drink, still free, using fresh strawberries in lieu of the syrup flavoring.",
@@ -346,7 +346,7 @@ var story = {
 "Grandpa: Enjoy your fandangled self-driving cars, if they ever come.",
 "Grandpa: In the 1960s they used to say we'd have flying cars in the 2000s, but you don't see that now.",
 "Brother: Maybe in my generation. First the self-driving cars, then the flying ones.",
-"Cat: Meow (and then the world!)"],
+"Cat: Meow (And then the world!)"],
 
 "Brother recounts a hockey game he saw recently, and his friend has to go to the hospital":
 ["Brother: Yo, I watched a hockey game recently. There were cheap group tickets, so a bunch of my friends jumped on it to watch the game.",
@@ -439,21 +439,21 @@ var story = {
 "Grandpa: All puffed up like a great big frog",
 "Grandpa: Sneaked up close and stuck him with a wire",
 "Grandpa: And he just went poof like an old flat tire.",
-"Grandpa: took his hide and hung it on a tree,",
-"Grandpa: and he said 'hey don't do that to me' ",
-"Grandpa: so I took it on home to my mother in law",
+"Grandpa: Took his hide and hung it on a tree,",
+"Grandpa: And he said 'hey don't do that to me' ",
+"Grandpa: So I took it on home to my mother in law",
 "Grandpa: She threw me outside with the Turkey in the Straw",
-"Grandma: Oooooh Adolf Hitler grabbed a tail, ",
-"Grandma: And he hung right on with tooth and nail, ",
-"Grandma: and he saw what he had and he began to swear, ",
-"Grandma: On the end of the tail was a Russian bear, ",
-"Grandpa: The old bear growled and started in to shake, ",
+"Grandma: Oooooh Adolf Hitler grabbed a tail,",
+"Grandma: And he hung right on with tooth and nail,",
+"Grandma: and he saw what he had and he began to swear,",
+"Grandma: On the end of the tail was a Russian bear,",
+"Grandpa: The old bear growled and started in to shake,",
 "Grandma: Adolf knew he'd made a big mistake.",
 "Grandpa: He tried to hang on and he tried to let go ",
 "Grandma: Now they have a new dance called Hitler in the snow. ",
 "Grandpa: Wow, I didn't know you knew that one. ",
 "Grandma: Word travels fast on the front. Just don't let the officers hear you singing it or they'll whoop your ass faster than you can say vodka. ",
-"Grandpa: Advice to keep close at heart. "],
+"Grandpa: Advice to keep close at heart."],
 
 "Dad Tells a Bad Dad Joke":
 ["Dad: Hey guys, what's the key to a great Thanksgiving dinner?",
@@ -467,7 +467,7 @@ var story = {
 "Spouse: Aww, come on Dad. That's terrible.",
 "Grandma: Is this a joke?",
 "Dad: Yes Mom,",
-"Grandma: Well, what do you mean 'key' .",
+"Grandma: Well, what do you mean 'key'.",
 "Dad: A 'key', something that is of vital importance.",
 "Grandma: hmmm, ok. I think I get it.",
 "Dad: Ok...."],
@@ -482,19 +482,19 @@ var story = {
 "Cat: Meow",
 "Mom: Look at it, poor thing wants some turkey!",
 "Cat: Meow",
-"Cat: (Translation) If you turn the oven past 1000 degrees, something fun happens!"],
+"Cat: (If you turn the oven past 1000 degrees, something fun happens!)"],
 
 "Cat Story II":
 ["Cat: Meow Meow Meow!",
 "Mom: What is it, sweetie?",
 "Cat: Meow Meow Meow!",
-"Cat: (Translation) Why aren't we cooking fish? I want fish for dinner.",
+"Cat: (Why aren't we cooking fish? I want fish for dinner.)",
 "Mom: Yes sweetie, that's an oven with a turkey inside! We're going to have a nice dinner.",
 "Cat: Meow",
-"Cat: (Translation) It's like you don't love me anymore.",
+"Cat: (It's like you don't love me anymore.)",
 "Mom: It'll be done very soon, I promise! You can have a few bites.",
 "Cat: Meow Meow Meow Meow!",
-"Cat: (Translation) I don't want turkey, I want fish!"],
+"Cat: (I don't want turkey, I want fish!)"],
 
 
 "Mom Talks About Her Bathroom Policy and her Students":
@@ -604,10 +604,10 @@ var story = {
 "Turkey: Male turkeys like their snood intact to attract a mate, and for dominance. Be kind to your turkey. Do not lose the snood."],
 
 "Turkey Fact - Cat Puns": 
-["Turkey: Gobble Gobble. I suppose it is too late to ask you not to eat me. But is it too late to ask for you to kick that cat of yours?",
+["Turkey: Gobble Gobble. I suppose it is too late to ask you not to eat me. But is it too late to ask for you to kick that cat?",
 "Cat: Hey Turkey, it has been a long time. I see you're dead.",
 "Turkey: Kasey, how dare you speak to me. First, you steal my plans for world domination and now you gloat at my passing. For shame.",
-"Cat: It isn't my fault you taste so delicious. I'm going to delight in eating your flesh. Maybe if I beg enough they may give me your head on a platter",
+"Cat: It isn't my fault you taste so delicious. I'm going to delight in eating your flesh. Maybe if I beg enough they may give me your head on a platter.",
 "Turkey: Oooh, don't get me fired up.",
 "Cat: Meow meow meow! The oven is doing that quite nicely.",
 "Turkey: Ga-Gobble!",
@@ -656,8 +656,8 @@ var story = {
 "Turkey: That's because a group of turkeys is called a gang.",
 "Turkey: A turkey group may also be called a rafter.",
 "Turkey: I'm more of a kayaker personally.",
-"Cat: Get meowta here",
-"Turkey: That pun was fowl",
+"Cat: Get meowta here.",
+"Turkey: That pun was fowl.",
 "Cat: Purrrsonally, not as bad as yours.",
 "Turkey: Gobble Gobble"]
 
