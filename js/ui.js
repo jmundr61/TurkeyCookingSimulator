@@ -747,7 +747,8 @@ function WindowUI( stage, gameState ){
 	dayNight.y=30;
 
 	var secondCounter = 0;
-	mood.x = dayNight.x = -(new Date( gameState.currentTime ).getHours()*682.625);
+	var newpos = -(new Date( gameState.currentTime ).getHours()*682.625);
+	mood.x = dayNight.x = newpos < -15583 ? 0 : newpos;
 
 	var ground = new createjs.Bitmap( "res/screens/Window/Ground.png" );
 	var houses = new createjs.Bitmap( "res/screens/Window/Housefar.png" );
@@ -770,7 +771,7 @@ function WindowUI( stage, gameState ){
 	// Fast forward, move sky
 	gameState.pubsub.subscribe( "SkipTime", function(){
 		var newpos =  -(new Date( gameState.currentTime ).getHours()*682.625);
-		 dayNight.x = mood.x =newpos < -15583 ? 0 : newpos;
+		 dayNight.x = mood.x = newpos < -15583 ? 0 : newpos;
 	});
 
     stage.addChild( dayNight );
