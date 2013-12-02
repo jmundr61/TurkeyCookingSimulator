@@ -41,6 +41,6 @@ You have been invited to craft the centerpiece of the American thanksgiving dinn
 * All original artwork and writing are licensed under the Creative Commons Attribution-NonCommercial BY-NC 
 * Artwork: Benjamin Kwok.
 * Writing: Scott Mobley.
-* Sourcecode is released under GPL v3 by Robert Chen.
+* Source code is released under GPL v3 by Robert Chen.
 * See credits screen for full attribution of all assets.
 
