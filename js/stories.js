@@ -468,7 +468,7 @@ var story = {
 "Grandma: Is this a joke?",
 "Dad: Yes Mom,",
 "Grandma: Well, what do you mean 'key'.",
-"Dad: A 'key', something that is of vital importance.",
+"Dad: 'Key', as in, characteristic, identifying.",
 "Grandma: hmmm, ok. I think I get it.",
 "Dad: Ok...."],
 
