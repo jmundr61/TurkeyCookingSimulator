@@ -38,7 +38,9 @@ You have been invited to craft the centerpiece of the American thanksgiving dinn
 ![CC](http://i.creativecommons.org/l/by-nc/3.0/88x31.png) 
 
 * Unless indicated otherwise in the credits page:
-* All artwork are licensed under the Creative Commons Attribution-NonCommercial BY-NC by Benjamin Kwok.
-* All writing are under the same license by Scott Mobley.
+* All original artwork and writing are licensed under the Creative Commons Attribution-NonCommercial BY-NC 
+* Artwork: Benjamin Kwok.
+* Writing: Scott Mobley.
+* Sourcecode is released under GPL v3 by Robert Chen.
 * See credits screen for full attribution of all assets.
 
