@@ -24,7 +24,7 @@ function LoadingScreen( stage, gameState ){
 
 	gameState.pubsub.subscribe( "Load", function(percent){
 		textContent.text = (percent * 25).toFixed(2) + " %";
-		var wholeNum = percent.toFixed(0);
+		var wholeNum = Math.floor(percent);
 		if( that.lastPercent != percent){
 			that.lastPercent = percent;
 			stage.addChild( that.turkeyState[wholeNum] );
