@@ -349,7 +349,6 @@ function GameUI( canvasElem, gameState ){
 		"KitchenScreen"		 : KitchenScreen,
 		"MarketScreen"		 : MarketScreen,
 		"ScoreScreen"		 : ScoreScreen,
-		"CreditsScreen"		 : CreditsScreen
 	}
 
 	var soundManager = new SoundManager( gameState );
